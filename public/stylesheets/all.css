@@ -1,0 +1,276 @@
+html, body {
+/*		width: 100%;*/
+/*		height: 100%;*/
+		margin: 0;
+		padding: 0;
+		font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
+		font-size: 95%;
+		}
+	
+	#header {
+		position: absolute;
+		width: 100%;
+		height: 50px;
+		background: rgb(56, 77, 110);
+/*		border: 1px solid #666666;*/
+		padding-left: 0px;
+		padding-right: 0px;
+		padding-top: 0px;
+		padding-bottom: 0px;
+		top: 0px;
+		z-index: 9999;
+	}
+	
+	.header-title {
+		margin: 10px 10px 10px 10px;
+		text-align: center;
+		color: white;
+	}
+	
+	#searchForm {
+		position: absolute;
+		margin: 1px;
+		padding: 5px;
+		top: 30px;
+	}
+	
+	#map {
+		position: absolute;
+		left: 0px;
+		top: 50px;
+		right: 0px;
+		bottom: 0px;
+	}
+	
+	#footer {
+		position: absolute;
+		background-color: #FFFAFA;
+		border: 1px solid #666666;
+		text-align: right;
+		left: 5px;
+		right: 5px;
+		padding: 5px 5px 0 5px;
+		height: 20px;
+		bottom: 5px;
+	}	
+
+	#legend {
+		position: absolute;
+		z-index: 20;
+		right: 25px;
+		bottom: 50px;
+		border: 1px solid #666666;
+		background-color: #FFFFFF;
+		padding: 10px;
+	}
+
+	p.title {
+		font-size: 140%;
+		font-weight: bold;
+		margin: 0;
+		margin-bottom: -10px;
+	}	
+
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		}
+		
+	td, tr {
+		background-color: #FFFFFF;
+		border: 1px solid black;
+		padding: 3px;
+		}
+		
+	th {
+		background-color: #DDDDDD;
+		border: 1px solid #666666;
+		text-align: center;
+		padding: 3px;
+		}
+		
+	.leaflet-popup-content {
+		/*margin: 14px 20px;*/
+		overflow: none;
+		width: auto !important;
+	}
+	
+	#info-area-title{
+		text-align: center;
+		background: rgb(56, 77, 110);
+		margin: 0 0 0 0;
+		line-height: 30px;
+		color: white;
+		height: 30px;
+	}
+	
+	.info-header{
+		margin-bottom: 5px;
+		text-align: left;
+		font-size: 17px;
+		text-align: center;
+	}
+	
+	.info-content{
+		margin-top: 5px;
+		font-size: 13px;
+/*		text-align: center;*/
+	}
+	
+	.info-ul{
+		margin-top: 5px;
+		margin-bottom: 5px;
+		padding-left: 30px;
+		font-size: 15px;
+		list-style-type: none;
+/*		width: 200px;*/
+		float: left;
+	}
+	
+	.info-image{
+		margin-bottom: 10px;
+	}
+	
+	#info-container{
+		position: absolute;
+		bottom: 0px;
+		left: 0px;
+/*		width: 300px;*/
+		width: 100%;
+		height: 250px;
+/*		height: 500px;*/
+		background-color: white;
+		background-color: rgba(255,255,255,0.9);
+		z-index: 9999;
+		overflow: hidden;
+	}
+	
+	#info-box{
+/*		position: absolute;*/
+		bottom: 0px;
+		left: 0px;
+/*		width: 300px;*/
+		width: 100%;
+		height: 220px;
+		background-color: white;
+		background-color: rgba(255,255,255,0.9);
+		z-index: 9999;
+		overflow-y: auto;
+	}
+	
+	#info-box-content{
+		overflow-y: auto;
+		height: 450px;
+	}
+	
+	.error-link{
+		margin-left: 25px;	
+	}
+	
+	#hover-box{
+		position: absolute;
+		bottom: 0px;
+		left: 0px;
+		background-color: white;
+		background-color: rgba(255,255,255,0.9);
+		z-index: 9999;
+		padding: 5px 5px 5px 5px;
+	}
+	
+	a.info-link{
+		text-decoration: none;
+		color: darkblue;
+	}
+	
+	#issue-box{
+/*		position: absolute;
+		top: 50px;
+		right: 175px;*/
+/*		background-color: white;
+		background-color: rgba(255,255,255,0.9);*/
+		color: red;
+		z-index: 9999;
+		overflow-y: auto;
+	}
+	
+	
+/*	CHART STYLES*/
+.bar {
+  fill: #205375;
+}
+
+.bar:hover {
+  fill: black;
+}
+
+.axis {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+#click-chart-panel{
+	z-index: 9999;
+	position: absolute;
+/*	bottom: 0px;*/
+	bottom: 250px;
+/*	left: 310px;*/
+	left: 0px;
+	background-color: white;
+	background-color: rgba(255,255,255,0.9);
+}
+
+.tooltip {   
+  position: absolute;           
+  text-align: left;           
+/*  width: 100px;                  */
+/*  height: 28px;                 */
+  padding: 10px;             
+  font: 16px sans-serif;        
+  background: lightsteelblue;   
+  border: 0px;      
+  border-radius: 8px;           
+  pointer-events: none;     
+  z-index: 999999;    
+}
+
+
+#pie{
+  padding: 10px;
+  text-align: center;
+    min-width: 225px;
+}
+
+.arc path {
+  stroke: #fff;
+}
+
+#time-slider-label-container{
+	    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    width: auto;
+    z-index: 9999;
+}
+#tick-slider{
+	 bottom: 10px;
+    position: absolute;
+    width: 80%;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+        z-index: 99999;
+}
+
+#time-slider-label{
+	font-weight: bold;
+}
