@@ -19,6 +19,10 @@ server.listen(server_port, server_ip_address, function () {
 
 var app = express();
 
+app.set('port', process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 3000);
+app.set('ip', process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1");
+
+
 app.get('/areas', geo.loadAreas);
 app.get('/todos', geo.loadToDos);
 app.get('/ticks', geo.loadTicks);
