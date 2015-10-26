@@ -27,6 +27,7 @@ app.listen(server_port, server_ip_address, function () {
 app.get('/areas', geo.loadAreas);
 app.get('/todos', geo.loadToDos);
 app.get('/ticks', geo.loadTicks);
+app.get('/missingareas', geo.loadMissingAreas);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

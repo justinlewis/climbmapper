@@ -108,3 +108,31 @@ exports.loadToDos = function(req, res) {
           res.end();
     })
 };
+
+exports.loadMissingAreas = function(req, res) {
+    var client = new pg.Client(conString);
+    client.connect();
+
+    var queryString = "SELECT r.name, r.mpurl FROM route r WHERE area = 999;";
+    var query = client.query(queryString);
+    
+    query.on('row', function(row, result) {
+        if (!result) {
+          return res.send('No data found');
+        } 
+        else {
+        		thisRowJSON = { "name": row.name, "mpurl": row.mpurl }
+        		result.addRow(thisRowJSON);
+        }
+    })
+    
+    query.on("end", function (result) {
+        		
+          res.send( 
+          	JSON.stringify(
+          		{ "missingAreas" : result.rows }
+          	) 
+          );
+          res.end();
+    })
+};

@@ -24,11 +24,13 @@
 	 			$.when(
 	 				getMPToDoData(),
 	 				getMPTicksData(),
-	 				getAreaPts()
-	 			).done(function (toDoResponse, tickResponse, arePtResponse) {
+	 				getAreaPts(),
+	 				getMissingAreas()
+	 			).done(function (toDoResponse, tickResponse, arePtResponse, missingAreasResponse) {
 					areaPts = arePtResponse[0];		
 					processRoutes(tickResponse[0]["routes"], 'tick');				
 					processRoutes(toDoResponse[0]["routes"], 'todo');
+					reportMissingAreas(missingAreasResponse);
 					
 					renderMap();
 					resizeLocations("tick");
@@ -133,6 +135,16 @@
 				})
 			}
 			
+			function getMissingAreas() {
+				return $.ajax({
+	  				url: "missingareas",
+	  				context: document.body,
+	  				type: "GET",
+	  				crossDomain: false,
+	  				dataType: "json"
+				})
+			}
+			
 			////
 			// Process route data
 			// content type can be 'todo' or 'tick'
@@ -152,6 +164,30 @@
 							setTickLocationRouteFrequency(route)
 						}
 				}
+			}
+			
+			function reportMissingAreas(data) {
+				var areas = data[0].missingAreas;
+				for(var i=0; i<areas.length; i++){
+					var area = areas[i];
+					$("#issue-box").dialog({
+							  title: "Current Data Issues",
+							  width: 700, 
+							  height: 400,
+							  resizable: true,
+							  buttons: [
+							    {
+							      text: "Got It",
+							      click: function() {
+							        $( this ).dialog( "close" );
+							      }
+							    }
+							  ]
+							});
+						
+						$("#issue-box").append("<h4 class='info-content'><b>Missing location for the route: "+ area.name +"</b><a class='error-link' href="+ area.mpurl+" target='_blank'>See it on Mountain Project!</a></h4>");				
+				}
+			
 			}
 			
 			////
@@ -178,29 +214,6 @@
 						areaPts.features[n].properties.customTicksCt = areaPts.features[n].properties.customTicksCt + 1;
 						areaPts.features[n].properties.customTicksArr.push(route);
 						found = true;
-					}
-				}
-								
-				if(!found){	
-					if($.inArray(route, orphanRouteArr !== -1)){
-						orphanRouteArr.push(route);
-	
-						$("#issue-box").dialog({
-							  title: "Current Data Issues",
-							  width: 700, 
-							  height: 400,
-							  resizable: true,
-							  buttons: [
-							    {
-							      text: "Got It",
-							      click: function() {
-							        $( this ).dialog( "close" );
-							      }
-							    }
-							  ]
-							});
-						
-						$("#issue-box").append("<h4 class='info-content'><b>Missing location for the tick: "+ route.name +"</b><a class='error-link' href="+route.url+" target='_blank'>See it on Mountain Project!</a></h4>");				
 					}
 				}
 			}
@@ -259,30 +272,7 @@
 						
 						found = true;
 					}
-				}	
-									
-				if(!found){	
-					if($.inArray(route, orphanRouteArr !== -1)){
-						orphanRouteArr.push(route);
-	
-						$("#issue-box").dialog({
-							  title: "Current Data Issues",
-							  width: 700, 
-							  height: 400,
-							  resizable: true,
-							  buttons: [
-							    {
-							      text: "Got It",
-							      click: function() {
-							        $( this ).dialog( "close" );
-							      }
-							    }
-							  ]
-							});
-						
-						$("#issue-box").append("<h4 class='info-content'><b>Missing location for the route: "+ route.name +"</b><a class='error-link' href="+route.url+" target='_blank'>See it on Mountain Project!</a></h4>");				
-					}
-				}
+				}								
 			}
 			
 			////
@@ -330,14 +320,18 @@
             				var feature = e.target;
             				
             				//////
-            				/// TODO: extract tick info from tickArr to make more interesting visuals
+            				/// TODO: this is really boring. Make this rout info more interesting
             				/////
-            				var html;
+            				var html = '<div class="tick-info-container">';
 								for(var i=0; i<tickArr.length; i++){
 									var rt = tickArr[i];
-									var newTickInfo = '<div class="info-content">' + rt.name + ' ' + rt.notes + ' ' + rt.date + '</div>'
+									var date = new Date(rt.date);
+									var dateStr = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear();
+									
+									var newTickInfo = '<div class="info-content"><b>' + rt.name + '</b> : ' + rt.notes + ' ' + dateStr + '</div>'
 									html += newTickInfo;		
 								}
+								html += "</div>";
 
 							   feature.setStyle({"fillColor":"#E6E600"})
 							    			    	
@@ -348,13 +342,18 @@
 							   	'<div class="info-header">' + '<b>' + layer.feature.properties.area + '</b></div>' +
 									'<div class="info-content">' + 'You have climbed  ' + '<b>' + feature.options.customTicksCt + '</b> routes here!' + '</div>' +
 									'<br/>' + 															
-									'<div id="hover-grade-chart"></div>'
+									'<div id="hover-grade-chart"></div>' + html
 								)
 							   .openOn(map);	
 							   
 							   // Render charts
 					   		var clickBarChart = new BarChart(feature.options.customTickArr, "#hover-grade-chart");	
 					   		clickBarChart.build();
+					   		
+					   		// Fixing the annoying issue when the popup is pushed right after the chart is dynamically added
+					   		var popWidth = $(".leaflet-popup").width();
+					   		$(".leaflet-popup").css({left: "-"+(popWidth/2)+"px"});
+
 								
 								// TODO: Add some more fun hover actions like a chart of all the comments from ticked routes
 
@@ -422,7 +421,7 @@
 					
 					function featureClickEvent(e) {	
 					 	var layer = e.target;
-						map.setView(layer.getLatLng(), 14);
+						//map.setView(layer.getLatLng(), 14);
 						
 						if(!$("#info-container").is(':visible')){
 							$("#info-container").show();

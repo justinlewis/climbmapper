@@ -271,6 +271,11 @@ html, body {
         z-index: 99999;
 }
 
+.tick-info-container{
+	max-height: 150px;
+	overflow-y: auto;
+}
+
 #time-slider-label{
 	font-weight: bold;
 }
