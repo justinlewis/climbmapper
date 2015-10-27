@@ -64,32 +64,42 @@
 				$("#tick-slider").slider({
 			      range: "min",
 			      value: allTickArr.length,
-			      min: 1,
+			      min: 0,
 			      max: allTickArr.length,
 			      slide: function( event, ui ) {
 			      	var sliderPos = ui.value;
 			      	var selectedDate = sortedAllTickArr[sliderPos];
 			     		
-			     		var tickLocs = tickLocations.getLayers();
-			     		var rtsCt = 0;
-			     		junk = []
-			     		for(var t=0; t<tickLocs.length; t++){
-			     			var thisLoc = tickLocs[t];
-			     			var thisLocTicks = thisLoc.options.customTickArr;
-			     			var laterThanTicksCt = 0;
-			     			for(var i=0; i<thisLocTicks.length; i++){
-			     				if(new Date(thisLocTicks[i].date) > selectedDate){
-			     					laterThanTicksCt = laterThanTicksCt + 1;
-			     				}
-			     				else{
-			     					rtsCt = rtsCt + 1;
-			     					junk.push(thisLocTicks[i])
-			     				}
-			     			}
-			     			var newRadius = thisLocTicks.length - laterThanTicksCt;
-			     			$("#time-slider-label").text( selectedDate.getMonth() + " / " + selectedDate.getDay() + " / " + selectedDate.getFullYear()  + " | " + rtsCt + " Ticks")
-			     			thisLoc.setRadius(newRadius);	
-
+			     		if(selectedDate){
+				     		var tickLocs = tickLocations.getLayers();
+				     		var rtsCt = 0;
+				     		for(var t=0; t<tickLocs.length; t++){
+				     			var thisLoc = tickLocs[t];
+				     			var thisLocTicks = thisLoc.options.customTickArr;
+				     			var laterThanTicksCt = 0;
+				     			
+				     			for(var i=0; i<thisLocTicks.length; i++){
+				     				if(new Date(thisLocTicks[i].date) > selectedDate){
+				     					laterThanTicksCt = laterThanTicksCt + 1;
+				     				}
+				     				else{
+				     					rtsCt = rtsCt + 1;
+				     				}
+				     			}
+				     			
+				     			if(thisLoc.options.areaName === "City of Rocks"){
+									console.log("city")				     			
+				     			}
+				     			var newRadius = thisLocTicks.length - laterThanTicksCt;
+				     			if(newRadius != 0 && newRadius < 4){
+									newRadius = 4;				     			
+				     			}
+				     			thisLoc.setRadius(newRadius);		
+				     		}
+				     		$("#time-slider-label").text( selectedDate.getMonth() + " / " + selectedDate.getDay() + " / " + selectedDate.getFullYear()  + " | " + rtsCt + " Ticks");
+			     		}
+			     		else {
+							console.log("else ", selectedDate, sliderPos)			     		
 			     		}
 			      }
 			   }); 		
@@ -196,7 +206,6 @@
 			// @route - a route representing either a tick or a todo 
 			////
 			function setTickLocationRouteFrequency(route) {	
-				var found = false;
 					
 				// @areaPts 
 				for(var n=0; n<areaPts.features.length; n++){
@@ -213,7 +222,6 @@
 					if(currAreaId === route.area){						
 						areaPts.features[n].properties.customTicksCt = areaPts.features[n].properties.customTicksCt + 1;
 						areaPts.features[n].properties.customTicksArr.push(route);
-						found = true;
 					}
 				}
 			}
@@ -225,8 +233,6 @@
 			// @route - a route object
 			////
 			function setToDoLocationRouteFrequency(route) {	
-			
-				var found = false;
 					
 				// @areaPts - globally imported in HTML head imports
 				for(var n=0; n<areaPts.features.length; n++){
@@ -269,8 +275,6 @@
 						else if(type.toLowerCase() === "alpine"){
 							areaPts.features[n].properties.customAlpineCt = areaPts.features[n].properties.customAlpineCt + 1;
 						}
-						
-						found = true;
 					}
 				}								
 			}
@@ -281,91 +285,110 @@
 			////
 			function resizeLocations(contentType) {	
 				
-				map.eachLayer(function(layer){
-					if(layer.feature){
-						// customRouteCt is currently ToDo frequency and will take priority over existing area points
-						if(layer.feature.properties.customRouteCt > 0){
-							var routeCt = layer.feature.properties.customRouteCt;
-							layer.setRadius(4 + routeCt);
-						}
-						//However, if there are also ticks for this area we will duplicate the area point to represent both 
-						else if(layer.feature.properties.customTicksCt > 0){
-							var tickCt = layer.feature.properties.customTicksCt;
-							var tickArr = layer.feature.properties.customTicksArr;
-							
-							var tickStyle = {
-					    		radius: tickCt + 4,
-					    		fillColor: "yellow",
-					    		stroke: false,
-					    		weight: 1,
-					    		opacity: 1,
-					    		fillOpacity: 0.5,
-					    		customTicksCt: layer.feature.properties.customTicksCt,
-					    		customTickArr: tickArr
+				if(contentType === "todo"){
+					map.eachLayer(function(layer){
+						if(layer.feature){
+							// customRouteCt is currently ToDo frequency and will take priority over existing area points
+							if(layer.feature.properties.customRouteCt > 0){
+								var routeCt = layer.feature.properties.customRouteCt;
+								layer.setRadius(4 + routeCt);
 							}
-							
-							var customCircleMarker = L.CircleMarker.extend({
-							   options: { 
-							      customTicksCt: 0, 
-							      customTickArr: []
-							   }
-							});
-							// The duplication step
-							var newFeature = new customCircleMarker(layer.getLatLng(), tickStyle);
-        
-							tickLocations.addLayer(newFeature);		
-							
-							// Hover events for new tick location features
-							newFeature.on('mouseover', function (e) {
-            				var feature = e.target;
-            				
-            				//////
-            				/// TODO: this is really boring. Make this rout info more interesting
-            				/////
-            				var html = '<div class="tick-info-container">';
-								for(var i=0; i<tickArr.length; i++){
-									var rt = tickArr[i];
-									var date = new Date(rt.date);
-									var dateStr = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear();
+						}	
+					});
+				}	
+				else if(contentType === "tick"){
+					map.eachLayer(function(layer){
+						
+						if(layer instanceof L.LayerGroup){ // only ticks should be in a LayerGroup
+							var layers = layer.getLayers();
+							for(var i=0; i<layers.length; i++){
+								var embededLayer = layers[i];
+								//However, if there are also ticks for this area we will duplicate the area point to represent both 
+								if(embededLayer.feature.properties.customTicksCt > 0){
+									var tickCt = embededLayer.feature.properties.customTicksCt;
+									var tickArr = embededLayer.feature.properties.customTicksArr;
 									
-									var newTickInfo = '<div class="info-content"><b>' + rt.name + '</b> : ' + rt.notes + ' ' + dateStr + '</div>'
-									html += newTickInfo;		
-								}
-								html += "</div>";
-
-							   feature.setStyle({"fillColor":"#E6E600"})
-							    			    	
-						      //open popup;
-							  	popup = L.popup({offset:new L.Point(0,0)})
-							   .setLatLng(e.latlng) 
-							   .setContent(
-							   	'<div class="info-header">' + '<b>' + layer.feature.properties.area + '</b></div>' +
-									'<div class="info-content">' + 'You have climbed  ' + '<b>' + feature.options.customTicksCt + '</b> routes here!' + '</div>' +
-									'<br/>' + 															
-									'<div id="hover-grade-chart"></div>' + html
-								)
-							   .openOn(map);	
-							   
-							   // Render charts
-					   		var clickBarChart = new BarChart(feature.options.customTickArr, "#hover-grade-chart");	
-					   		clickBarChart.build();
-					   		
-					   		// Fixing the annoying issue when the popup is pushed right after the chart is dynamically added
-					   		var popWidth = $(".leaflet-popup").width();
-					   		$(".leaflet-popup").css({left: "-"+(popWidth/2)+"px"});
-
-								
-								// TODO: Add some more fun hover actions like a chart of all the comments from ticked routes
-
-       					 });
-       					 newFeature.on('mouseout', function (e) {
-								var feature = e.target;
-								feature.setStyle({"fillColor":"yellow"});
-       					 });
+									var tickStyle = {
+							    		radius: tickCt + 4,
+							    		fillColor: "#752053",
+							    		stroke: false,
+							    		weight: 1,
+							    		opacity: 1,
+							    		fillOpacity: 0.8,
+							    		customTicksCt: embededLayer.feature.properties.customTicksCt,
+							    		customTickArr: tickArr,
+							    		areaName: embededLayer.feature.properties.area
+									}
+									
+									// I don't like this whole appending data to new circle markers business. 
+									// Look into either maintaining a better cache or something...
+									var customCircleMarker = L.CircleMarker.extend({
+									   options: { 
+									      customTicksCt: 0, 
+									      customTickArr: [],
+									      areaName: ""
+									   }
+									});
+									// The duplication step
+									var newFeature = new customCircleMarker(embededLayer.getLatLng(), tickStyle);
+		        
+		        					// add the feature to the layer group
+									tickLocations.addLayer(newFeature);		
+									
+									// Hover events for new tick location features
+									newFeature.on('mouseover', function (e) {
+		            				var feature = e.target;
+		            				
+		            				//////
+		            				/// TODO: this is really boring. Make this rout info more interesting
+		            				/////
+		            				var html = '<div class="tick-info-container">';
+										for(var i=0; i<feature.options.customTickArr.length; i++){
+											var rt = feature.options.customTickArr[i];
+											var date = new Date(rt.date);
+											var dateStr = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear();
+											
+											var newTickInfo = '<div class="info-content"><b>' + rt.name + '</b> : ' + rt.notes + ' ' + dateStr + '</div>'
+											html += newTickInfo;		
+										}
+										html += "</div>";
+		
+									   feature.setStyle({"fillColor":"#5E1A42"})
+									    			    	
+								      //open popup;
+									  	popup = L.popup({offset:new L.Point(0,0)})
+									   .setLatLng(e.latlng) 
+									   .setContent(
+									   	'<div class="info-header">' + '<b>' + feature.options.areaName + '</b></div>' +
+											'<div class="info-content">' + 'You have climbed  ' + '<b>' + feature.options.customTicksCt + '</b> routes here!' + '</div>' +
+											'<br/>' + 															
+											'<div id="hover-grade-chart"></div>' + html
+										)
+									   .openOn(map);	
+									   
+									   // Render charts
+							   		var clickBarChart = new BarChart(feature.options.customTickArr, "#hover-grade-chart");	
+							   		clickBarChart.build();
+							   		
+							   		// Fixing the annoying issue when the popup is pushed right after the chart is dynamically added
+							   		var popWidth = $(".leaflet-popup").width();
+							   		$(".leaflet-popup").css({left: "-"+(popWidth/2)+"px"});
+		
 										
+										// TODO: Add some more fun hover actions like a chart of all the comments from ticked routes
+		
+		       					 });
+		       					 newFeature.on('mouseout', function (e) {
+										var feature = e.target;
+										feature.setStyle({"fillColor":"#752053"});
+		       					 });
+											
+								}
+							}
 						}
-					}	
-				});
+					})
+				}
+
 				
 				// Add the new tick features to the map
 				if(tickLocations.getLayers().length > 0){

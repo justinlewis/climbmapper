@@ -262,13 +262,28 @@ html, body {
     z-index: 9999;
 }
 #tick-slider{
-	 bottom: 10px;
+	 bottom: 25px;
     position: absolute;
     width: 80%;
     margin: 0 auto;
     left: 0;
     right: 0;
-        z-index: 99999;
+    z-index: 99999;
+}
+
+.ui-slider-range.ui-widget-header.ui-corner-all.ui-slider-range-min{
+	background: #384D6E;
+	border: solid 2px white;
+}
+
+.ui-slider-handle.ui-state-default.ui-corner-all{
+	background: #6980A4;
+	border: solid 2px white;
+}
+
+.ui-slider-handle.ui-state-default.ui-corner-all.ui-state-hover{
+	background: #6980A4;
+	cursor: move;
 }
 
 .tick-info-container{
