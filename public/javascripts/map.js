@@ -182,9 +182,10 @@
 					var area = areas[i];
 					$("#issue-box").dialog({
 							  title: "Current Data Issues",
-							  width: 700, 
-							  height: 400,
+					  		  width: $(window).width()/1.5, 
+				  			  height: $(window).height()/1.5,
 							  resizable: true,
+							  dialogClass: 'issue-modal',
 							  buttons: [
 							    {
 							      text: "Got It",
@@ -583,9 +584,32 @@
 					map.addControl(new L.control.layers(baseMaps,overlays, {"collapsed":false}));
 			}
 
-		
+			var that = this;
+			$("#welcome-modal").dialog({
+				  title: "About This Project",
+				  width: $(window).width()/1.25, 
+				  height: $(window).height()/1.25,
+				  resizable: true,
+				  dialogClass: 'welcome-modal',
+				  closeOnEscape: false,
+				  open: function(event, ui) { 
+				  	$(".ui-dialog-titlebar-close", ui.dialog | ui).hide(); 
+				  	$(".ui-dialog-titlebar.ui-widget-header.ui-corner-all.ui-helper-clearfix.ui-draggable-handle").hide();
+				  },
+				  buttons: [
+				    {
+				      text: "Got It",
+				      click: function() {
+				        $( this ).dialog( "close" );						        
+				      }
+				    }
+				  ]
+			});
+									
+
 			// Initialize
-			this.init();
+			that.init();
+			
 		
 		});	
 		

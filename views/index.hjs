@@ -26,6 +26,51 @@
 		<div id="header">
 			<h2 class="header-title">{{ title }}</h2>
 	    </div> 
+	    
+	    <div id="welcome-modal" style="display:none;">
+	    		<div>
+	    			<h4>About This App</h4>	  
+	    			<p>This application is an experiment to visualize a climbers climbing past and future from a geographic perspective. 
+	    				Specifically, it displays climbing areas sized by number of Ticks and ToDos for each area. 
+	    				Charts are used throughout to display the breakdown of climb rating (using YDS) or type (ex: boulder, sport, traditionsl) by area.
+	    				All the scrapy code is available on <a href="https://github.com/justinlewis/climbmapper" target="_blank">one of my GitHub repos</a>.		
+	    			</p>
+	    		</div>
+	    		<div>
+	    			<h4>About The Data</h4>	 
+	    			<p>All route data (Ticks and ToDos) came from my user account on <a href="http://www.mountainproject.com/" target="_blank">Mountain Project</a>. All climbing area data is created by me independent of Mountain Project.</p>
+	    		</div>
+	    		<div>
+	    			<h4>About The Technology Used</h4>	 
+	    			<p>
+	    				The application is built on PostgreSQL/PostGIS, Node.js, Leaflet.js, D3.js, and JQuery. 
+	    				Needless to say there is a lot of Javascript used for presentation and a little Pyhon for data extraction/processing.
+	    			</p>
+	    		</div>
+	    		<div>
+	    			<h4>Future Plans</h4>	  
+	    			<p>
+	    				Because this is an experiment you can expect the visualizations to get better and more interesting. 
+	    				Specifically I want to add:
+	    				<ol>
+	    					<li>ability for others to add area points (that data would be shared back to the community)</li>
+	    					<li>different map layer point symbol types</li>
+	    					<li>better charts</li>
+	    					<li>a better time slider design</li>
+	    					<li>better popups on hover</li>
+	    					<li>better layout and behavior when clicking on area points</li>
+	    					<li>generally better page design and layout</li>
+	    				</ol> 
+	    				I would also like to add the ability for other Mountain Project users to visualize their info but a lot of work would need to be done before that is possible.
+	    			</p> 
+	    		</div>
+	    		<div>
+					<h4>About Me</h4>	  
+					<p>I am a software developer with a perticular interest in geography and web visualization. Ohh ya, I climb too. 
+						You can find me on <a href="https://twitter.com/jmapping" target="_blank">Twitter @jmapping</a>
+					</p>  
+				</div>
+	    </div>
 	   <div id="issue-box" style="display:none;"></div>
 	
 	   <div id="hover-box" style="display:none;"></div>

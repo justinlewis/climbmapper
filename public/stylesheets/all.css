@@ -294,3 +294,11 @@ html, body {
 #time-slider-label{
 	font-weight: bold;
 }
+
+.welcome-modal{
+	z-index: 9999 !important;
+}
+
+.issue-modal{
+	z-index: 999 !important;
+}
