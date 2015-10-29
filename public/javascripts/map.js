@@ -87,20 +87,27 @@
 				     				}
 				     			}
 				     			
-				     			if(thisLoc.options.areaName === "City of Rocks"){
-									console.log("city")				     			
-				     			}
 				     			var newRadius = thisLocTicks.length - laterThanTicksCt;
 				     			if(newRadius != 0 && newRadius < 4){
 									newRadius = 4;				     			
 				     			}
 				     			thisLoc.setRadius(newRadius);		
 				     		}
+				     		
+				     		if( ! $("#time-slider-label").is(":visible")){
+				     			$("#time-slider-label").show();
+				     		}
 				     		$("#time-slider-label").text( selectedDate.getMonth() + " / " + selectedDate.getDay() + " / " + selectedDate.getFullYear()  + " | " + rtsCt + " Ticks");
 			     		}
 			     		else {
-							console.log("else ", selectedDate, sliderPos)			     		
+							// no value 			     		
 			     		}
+			      },
+			      stop: function( event, ui ) {
+			      	setTimeout(function(){ 
+			      		$("#time-slider-label").fadeOut(400);
+			      	}, 30000);
+			      	
 			      }
 			   }); 		
 	 		}
@@ -311,7 +318,7 @@
 									
 									var tickStyle = {
 							    		radius: tickCt + 4,
-							    		fillColor: "#752053",
+							    		fillColor: "#505050",
 							    		stroke: false,
 							    		weight: 1,
 							    		opacity: 1,
@@ -354,7 +361,7 @@
 										}
 										html += "</div>";
 		
-									   feature.setStyle({"fillColor":"#5E1A42"})
+									   feature.setStyle({"fillColor":"#3F3F3F"})
 									    			    	
 								      //open popup;
 									  	popup = L.popup({offset:new L.Point(0,0)})
@@ -381,7 +388,7 @@
 		       					 });
 		       					 newFeature.on('mouseout', function (e) {
 										var feature = e.target;
-										feature.setStyle({"fillColor":"#752053"});
+										feature.setStyle({"fillColor":"#505050"});
 		       					 });
 											
 								}
@@ -415,7 +422,7 @@
 					function hoverAction(e) {
 					    	var layer = e.target;
 					    	
-					    	layer.setStyle({"fillColor":"#1A425E"})
+					    	layer.setStyle({"fillColor":"#083C49"})
 					    			    	
 					      //open popup;
 						  	popup = L.popup({offset:new L.Point(0,0)})
@@ -436,7 +443,7 @@
 					function resetHover(e) {  
 						var layer = e.target;
 						
-						layer.setStyle({"fillColor": "#205375"});
+						layer.setStyle({"fillColor": "#0a4958"});
 					    if(popup){			    
  						 	map.closePopup(popup);
  						 	pupup = null;
@@ -514,7 +521,7 @@
 					// define the default feature style		
 					var areaPtsDefaultStyle = {
 					    radius: 0,
-					    fillColor: "#205375",
+					    fillColor: "#0a4958",
 					    stroke: false,
 					    weight: 1,
 					    opacity: 1,

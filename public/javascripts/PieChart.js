@@ -24,7 +24,7 @@ function PieChart(feature) {
 	    labelr = radius -20; // radius for label anchor
 	
 	var color = d3.scale.ordinal()
-	    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b"]);
+	    .range(["#505050", "#0a4958", "#003399", "#a31e39"]);
 	
 	var arc = d3.svg.arc()
 	    .outerRadius(radius - 30)

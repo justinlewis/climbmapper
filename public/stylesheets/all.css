@@ -1,3 +1,14 @@
+
+/*Color Palett
+#a31e39 - red
+#0a4958 - dark turquis
+#028482 - light turquis
+#01b6ad - lighter turquis
+#003399 - dark blue
+#0099cc - light blue
+#66ccff - lighter blue
+#505050 - brown*/
+
 html, body {
 /*		width: 100%;*/
 /*		height: 100%;*/
@@ -11,7 +22,7 @@ html, body {
 		position: absolute;
 		width: 100%;
 		height: 50px;
-		background: rgb(56, 77, 110);
+		background: rgba(80, 80, 80, .9);
 /*		border: 1px solid #666666;*/
 		padding-left: 0px;
 		padding-right: 0px;
@@ -37,7 +48,7 @@ html, body {
 	#map {
 		position: absolute;
 		left: 0px;
-		top: 50px;
+		top: 0px;
 		right: 0px;
 		bottom: 0px;
 	}
@@ -95,9 +106,13 @@ html, body {
 		width: auto !important;
 	}
 	
+	.leaflet-top{
+			top: 50px;
+	}
+		
 	#info-area-title{
 		text-align: center;
-		background: rgb(56, 77, 110);
+		background: #505050;
 		margin: 0 0 0 0;
 		line-height: 30px;
 		color: white;
@@ -196,7 +211,7 @@ html, body {
 	
 /*	CHART STYLES*/
 .bar {
-  fill: #205375;
+  fill: #505050;
 }
 
 .bar:hover {
@@ -272,17 +287,17 @@ html, body {
 }
 
 .ui-slider-range.ui-widget-header.ui-corner-all.ui-slider-range-min{
-	background: #384D6E;
+	background: #505050;
 	border: solid 2px white;
 }
 
 .ui-slider-handle.ui-state-default.ui-corner-all{
-	background: #6980A4;
+	background: #757575;
 	border: solid 2px white;
 }
 
 .ui-slider-handle.ui-state-default.ui-corner-all.ui-state-hover{
-	background: #6980A4;
+	background: #505050;
 	cursor: move;
 }
 
