@@ -456,10 +456,13 @@
 						
 						if(!$("#info-container").is(':visible')){
 							$("#info-container").show();
+							$("#tick-slider").css("bottom", "275px");
 						}
-						if($("#info-box").html().length > 0){
-							$("#info-box").html("");
+						
+						if($(".info-ul").length > 0){
+							$(".info-ul").remove();
 						}
+						
 						if($(".info-area-title").text().length > 0){
 							$(".info-area-title").remove();
 						}
@@ -559,6 +562,7 @@
 						}
 						if($("#info-container").is(':visible')){
 							$("#info-container").hide();
+							$("#tick-slider").css("bottom", "25px");
 						}
 						
 						// Clear the chart

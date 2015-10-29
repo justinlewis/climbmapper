@@ -110,25 +110,6 @@ function BarChart(routeArr, targetEl){
 						rating = String(route.bouldergrade ? route.bouldergrade : 'n/a');							
 					}	
 				}	
-//				var rating = String(route.rating ? String(route.rating) : 'n/a').trim();						
-/*				rating = rating.toLowerCase().replace("pg13","");
-				rating = rating.toLowerCase().replace("-1","");
-				rating = rating.toLowerCase().replace("-2","");
-				rating = rating.toLowerCase().replace("-3","");
-				rating = rating.toLowerCase().replace("-4","");
-				rating = rating.toLowerCase().replace("-5","");
-				rating = rating.toLowerCase().replace("-6","");
-				rating = rating.toLowerCase().replace("-7","");
-				rating = rating.toLowerCase().replace("-8","");
-				rating = rating.toLowerCase().replace("-9","");
-				rating = rating.toLowerCase().replace("-","");						
-				rating = rating.toLowerCase().replace("+","");
-				rating = rating.toLowerCase().replace("r","");
-				rating = rating.toLowerCase().replace("/a","");
-				rating = rating.toLowerCase().replace("/b","");
-				rating = rating.toLowerCase().replace("/c","");
-				rating = rating.toLowerCase().replace("/d","");*/
-				rating = rating.trim();
 				
 				var stars = String(route.stars ? route.stars : 'n/a');
 					

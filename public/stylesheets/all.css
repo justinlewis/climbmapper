@@ -10,8 +10,6 @@
 #505050 - brown*/
 
 html, body {
-/*		width: 100%;*/
-/*		height: 100%;*/
 		margin: 0;
 		padding: 0;
 		font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
@@ -101,7 +99,6 @@ html, body {
 		}
 		
 	.leaflet-popup-content {
-		/*margin: 14px 20px;*/
 		overflow: none;
 		width: auto !important;
 	}
@@ -129,7 +126,6 @@ html, body {
 	.info-content{
 		margin-top: 5px;
 		font-size: 13px;
-/*		text-align: center;*/
 	}
 	
 	.info-ul{
@@ -138,7 +134,6 @@ html, body {
 		padding-left: 30px;
 		font-size: 15px;
 		list-style-type: none;
-/*		width: 200px;*/
 		float: left;
 	}
 	
@@ -150,10 +145,8 @@ html, body {
 		position: absolute;
 		bottom: 0px;
 		left: 0px;
-/*		width: 300px;*/
 		width: 100%;
 		height: 250px;
-/*		height: 500px;*/
 		background-color: white;
 		background-color: rgba(255,255,255,0.9);
 		z-index: 9999;
@@ -161,10 +154,8 @@ html, body {
 	}
 	
 	#info-box{
-/*		position: absolute;*/
 		bottom: 0px;
 		left: 0px;
-/*		width: 300px;*/
 		width: 100%;
 		height: 220px;
 		background-color: white;
@@ -198,11 +189,6 @@ html, body {
 	}
 	
 	#issue-box{
-/*		position: absolute;
-		top: 50px;
-		right: 175px;*/
-/*		background-color: white;
-		background-color: rgba(255,255,255,0.9);*/
 		color: red;
 		z-index: 9999;
 		overflow-y: auto;
@@ -235,20 +221,12 @@ html, body {
 
 #click-chart-panel{
 	z-index: 9999;
-	position: absolute;
-/*	bottom: 0px;*/
-	bottom: 250px;
-/*	left: 310px;*/
-	left: 0px;
-	background-color: white;
 	background-color: rgba(255,255,255,0.9);
 }
 
 .tooltip {   
   position: absolute;           
   text-align: left;           
-/*  width: 100px;                  */
-/*  height: 28px;                 */
   padding: 10px;             
   font: 16px sans-serif;        
   background: lightsteelblue;   

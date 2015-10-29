@@ -87,9 +87,11 @@
 	   <div id="hover-box" style="display:none;"></div>
 	   <div id="info-container" style="display:none;">
 	   	<h3 id='info-area-title'></h3>
-	   	<div id="info-box"></div>
+	   	<div id="info-box">
+				<div id="click-chart-panel"></div>	   	
+	   	</div>
 	   </div>
-		<div id="click-chart-panel"></div>
+		<!--<div id="click-chart-panel"></div>-->
 		
 <!--		<div id="time-slider-label-container">
 			<p id="time-slider-label"><p>
