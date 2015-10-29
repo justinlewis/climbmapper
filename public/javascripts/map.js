@@ -471,7 +471,7 @@
 					   var clickBarChart = new BarChart(layer.feature.properties.customRouteArr, "#click-chart-panel");	
 					   clickBarChart.build();	   			   
 						
-						$("#info-area-title").text(layer.feature.properties.area);
+						$("#info-area-title").text(layer.feature.properties.area + " ToDo Routes");
 //						$("#info-box").append("<h3 class='info-area-title'>" + layer.feature.properties.area + "</h3>");
 						
 						var layers = layer.feature.properties.customRouteArr;
@@ -587,7 +587,7 @@
 						
 					// define the overlay layer switcher
 					var overlays = {
-						"To-Do": areaPtsObj,
+						"ToDos": areaPtsObj,
 						"Ticks": tickLocations
 						}; 
 						
