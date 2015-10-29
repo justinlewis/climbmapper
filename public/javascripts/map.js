@@ -592,7 +592,7 @@
 						}; 
 						
 					// adds the layer switcher control
-					map.addControl(new L.control.layers(baseMaps,overlays, {"collapsed":false}));
+					map.addControl(new L.control.layers(baseMaps,overlays, {"collapsed":true}));
 			}
 
 			var that = this;
