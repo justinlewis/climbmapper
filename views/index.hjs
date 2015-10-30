@@ -49,7 +49,8 @@
 	    		</div>
 	    		<div>
 	    			<h4>About The Data</h4>	 
-	    			<p>All route data (Ticks and ToDos) came from my user account on <a href="http://www.mountainproject.com/" target="_blank">Mountain Project</a>. All climbing area data is created by me independent of Mountain Project.</p>
+	    			<p>All route data (Ticks and ToDos) came from my user account on <a href="http://www.mountainproject.com/" target="_blank">Mountain Project</a>. 
+	    			All climbing area data is created by me independent of Mountain Project.</p>
 	    		</div>
 	    		<div>
 	    			<h4>About The Technology Used</h4>	 
