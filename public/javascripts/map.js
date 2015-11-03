@@ -16,7 +16,7 @@
 	 		
 	 		
 	 		// Initialize 
-	 		this.init = function () {
+	 		this.init = function () { 			
 	 			
 	 			////
 	 			// Make all data requests and execute a single callback when they all finish... It's amazing
@@ -32,12 +32,62 @@
 					processRoutes(toDoResponse[0]["routes"], 'todo');
 					reportMissingAreas(missingAreasResponse);
 					
+					setSearchBar(areaPts);
+					
 					renderMap();
 					resizeLocations("tick");
 					resizeLocations("todo");
 					setTimeSlider();			
 	 			});	
 	 		} 		
+	 		
+	 		function setSearchBar(areas) {
+	 				var substringMatcher = function(strs) {
+					  return function findMatches(q, cb) {
+					    var matches, substringRegex;
+					
+					    // an array that will be populated with substring matches
+					    matches = [];
+					
+					    // regex used to determine if a string contains the substring `q`
+					    substrRegex = new RegExp(q, 'i');
+					
+					    // iterate through the pool of strings and for any string that
+					    // contains the substring `q`, add it to the `matches` array
+					    $.each(strs, function(i, str) {
+					      if (substrRegex.test(str)) {
+					        matches.push(str);
+					      }
+					    });
+					
+					    cb(matches);
+					  };
+					};
+					
+					var areasArr = [];
+					for(var i=0; i<areas.features.length; i++){
+						var areaName = areas.features[i].properties.area;
+						var geom = areas.features[i].geometry.coordinates;
+						areasArr.push(JSON.stringify({"areaName":areaName, "geom":geom}));
+					}
+					
+					
+					$('#area-search .typeahead').typeahead({
+					  hint: true,
+					  highlight: true,
+					  minLength: 1
+					},
+					{
+					  name: 'areas',
+					  source: substringMatcher(areasArr),
+					  display:function(area) {
+							return JSON.parse(area).areaName;
+					  },
+					}).bind('typeahead:select', function(e, suggestion) {
+  						var sugObj = JSON.parse(suggestion);
+  						map.setView(L.latLng(sugObj.geom[1],sugObj.geom[0]), 14);
+					});
+	 		}
 	 		
 	 		function setTimeSlider() {
 	 			var allTickArr = [];
