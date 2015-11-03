@@ -15,6 +15,7 @@ html, body {
 		font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
 		font-size: 95%;
 		overflow-x: hidden;
+		overflow-y: hidden;
 		}
 	
 	#header {
@@ -263,6 +264,7 @@ html, body {
     left: 0;
     right: 0;
     z-index: 99999;
+    background: #757575;
 }
 
 .ui-slider-range.ui-widget-header.ui-corner-all.ui-slider-range-min{

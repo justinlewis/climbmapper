@@ -103,12 +103,13 @@ function BarChart(routeArr, targetEl){
 				
 				var rating = "n/a";
 				if(route.type){
-					if(route.type.toLowerCase() === "trad" || route.type.toLowerCase() === "sport"){
+					if(route.type.toLowerCase() === "trad" || route.type.toLowerCase() === "sport" || route.type.toLowerCase() === "alpine"){
 						rating = String(route.ropegrade ? route.ropegrade : 'n/a');
 					}
 					else{
 						rating = String(route.bouldergrade ? route.bouldergrade : 'n/a');							
 					}	
+					rating = rating.toLowerCase().replace("+","").replace("-","");
 				}	
 				
 				var stars = String(route.stars ? route.stars : 'n/a');
