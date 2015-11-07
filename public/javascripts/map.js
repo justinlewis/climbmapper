@@ -5,8 +5,9 @@
 			var map;	
 			var popup;
 			var orphanRouteArr = [];
-			var areaPts;
-			var tickLocations = L.featureGroup();
+			var todoAreaPts;
+			var tickAreaPts;
+			var cragPts;
 	 				
 	 		var outdoors = new L.tileLayer.provider('Thunderforest.Outdoors');		
 	 		var mqosm = new L.tileLayer.provider('MapQuestOpen');		
@@ -24,15 +25,19 @@
 	 			$.when(
 	 				getMPToDoData(),
 	 				getMPTicksData(),
-	 				getAreaPts(),
+	 				getTodoAreaPts(),
+	 				getTickAreaPts(),
+	 				getCragPts(),
 	 				getMissingAreas()
-	 			).done(function (toDoResponse, tickResponse, arePtResponse, missingAreasResponse) {
-					areaPts = arePtResponse[0];		
+	 			).done(function (toDoResponse, tickResponse, areaTodoPtResponse, areaTickPtResponse, cragPtResponse, missingAreasResponse) {
+					todoAreaPts = areaTodoPtResponse[0];	
+					tickAreaPts = areaTickPtResponse[0];
+					cragPts = cragPtResponse[0];	
 					processRoutes(tickResponse[0]["routes"], 'tick');				
 					processRoutes(toDoResponse[0]["routes"], 'todo');
 					reportMissingAreas(missingAreasResponse);
 					
-					setSearchBar(areaPts);
+					setSearchBar(todoAreaPts);
 					
 					renderMap();
 					resizeLocations("tick");
@@ -91,8 +96,8 @@
 	 		
 	 		function setTimeSlider() {
 	 			var allTickArr = [];
-	 			for(var n=0; n<tickLocations.getLayers().length; n++){
-					var tickArr = tickLocations.getLayers()[n].options.customTickArr;
+	 			for(var n=0; n<tickAreaPts.features.length; n++){
+					var tickArr = tickAreaPts.features[n].properties.customTicksArr;
 					
 					if(tickArr){
 						for(var d=0; d<tickArr.length; d++){
@@ -121,11 +126,11 @@
 			      	var selectedDate = sortedAllTickArr[sliderPos];
 			     		
 			     		if(selectedDate){
-				     		var tickLocs = tickLocations.getLayers();
+				     		var tickLocs = tickAreaPts.features;
 				     		var rtsCt = 0;
 				     		for(var t=0; t<tickLocs.length; t++){
 				     			var thisLoc = tickLocs[t];
-				     			var thisLocTicks = thisLoc.options.customTickArr;
+				     			var thisLocTicks = thisLoc.properties.customTicksArr;
 				     			var laterThanTicksCt = 0;
 				     			
 				     			for(var i=0; i<thisLocTicks.length; i++){
@@ -137,11 +142,17 @@
 				     				}
 				     			}
 				     			
-				     			var newRadius = thisLocTicks.length - laterThanTicksCt;
-				     			if(newRadius != 0 && newRadius < 4){
-									newRadius = 4;				     			
-				     			}
-				     			thisLoc.setRadius(newRadius);		
+				     			var newRadius = getLocationSizeBucket(thisLocTicks.length - laterThanTicksCt);
+				     			
+				     			map.eachLayer(function (layer) {
+				     				if(layer.feature && layer.feature.properties.customTicksCt){
+									    var mapLayerId = layer.feature.properties.id;
+									    if(thisLoc.properties.id === mapLayerId){
+									    	 layer.setRadius(newRadius);	
+									    }
+									 }
+								});
+				     				
 				     		}
 				     		
 				     		if( ! $("#time-slider-label").is(":visible")){
@@ -165,9 +176,35 @@
 	 		////
 	 		// Area points are the climbing area locations
 	 		////
-	 		function getAreaPts() {	
+	 		function getTodoAreaPts() {	
 	 			return $.ajax({
-	  				url: "areas",
+	  				url: "todoareas",
+	  				context: document.body,
+	  				type: "GET",
+	  				crossDomain: false,
+	  				dataType: "json"
+				})
+	 		}
+	 		
+	 		////
+	 		// Area points are the climbing area locations
+	 		////
+	 		function getTickAreaPts() {	
+	 			return $.ajax({
+	  				url: "tickareas",
+	  				context: document.body,
+	  				type: "GET",
+	  				crossDomain: false,
+	  				dataType: "json"
+				})
+	 		}
+	 		
+	 		////
+	 		// Area points are the climbing area locations
+	 		////
+	 		function getCragPts() {	
+	 			return $.ajax({
+	  				url: "crags",
 	  				context: document.body,
 	  				type: "GET",
 	  				crossDomain: false,
@@ -224,11 +261,13 @@
 						// a better approach is to parse the location string in a better way. 
 						if(contentType === 'todo'){
 							route.routeCategory = "TODO";
-							setToDoLocationRouteFrequency(route);
+							setToDoLocationRouteFrequency();
+							setToDoLocationRouteAttributes(route);
 						}
 						else if(contentType === 'tick'){
 							route.routeCategory = "TICK";
-							setTickLocationRouteFrequency(route)
+							setTickLocationRouteFrequency();
+							setTickLocationRouteAttributes(route);
 						}
 				}
 			}
@@ -261,26 +300,18 @@
 			////
 			// Set the frequency of ticks on locations that will dictate the point size.
 			//
-			// @route - a route representing either a tick or a todo 
 			////
-			function setTickLocationRouteFrequency(route) {	
+			function setTickLocationRouteFrequency() {	
 					
-				// @areaPts 
-				for(var n=0; n<areaPts.features.length; n++){
-					var currAreaId = areaPts.features[n].properties.id;
-					
-					// ticks
-					if(!areaPts.features[n].properties.customTicksCt){
-						areaPts.features[n].properties.customTicksCt = 0;
+				// @tickAreaPts 
+				for(var n=0; n<tickAreaPts.features.length; n++){
+					var currAreaId = tickAreaPts.features[n].properties.id;
+
+					if(!tickAreaPts.features[n].properties.customTicksCt){
+						tickAreaPts.features[n].properties.customTicksCt = 0;
 					}			
-					if(!areaPts.features[n].properties.customTicksArr){
-						areaPts.features[n].properties.customTicksArr = [];
-					}	
 					
-					if(currAreaId === route.area){						
-						areaPts.features[n].properties.customTicksCt = areaPts.features[n].properties.customTicksCt + 1;
-						areaPts.features[n].properties.customTicksArr.push(route);
-					}
+					tickAreaPts.features[n].properties.customTicksCt = tickAreaPts.features[n].properties.count;
 				}
 			}
 
@@ -288,188 +319,206 @@
 			////
 			// Set the frequency of todos on locations that will dictate the point size.
 			//
-			// @route - a route object
 			////
-			function setToDoLocationRouteFrequency(route) {	
+			function setToDoLocationRouteFrequency() {	
 					
-				// @areaPts - globally imported in HTML head imports
-				for(var n=0; n<areaPts.features.length; n++){
-					var currAreaId = areaPts.features[n].properties.id;
+				// @todoAreaPts - globally imported in HTML head imports
+				for(var n=0; n<todoAreaPts.features.length; n++){
+					var currAreaId = todoAreaPts.features[n].properties.id;
+
+					if(!todoAreaPts.features[n].properties.customRouteCt){
+						todoAreaPts.features[n].properties.customRouteCt = 0;
+					}
 					
-					// routes
-					if(!areaPts.features[n].properties.customRouteArr){
-						areaPts.features[n].properties.customRouteArr = [];
-					}
-					if(!areaPts.features[n].properties.customRouteCt){
-						areaPts.features[n].properties.customRouteCt = 0;
-					}
-					if(!areaPts.features[n].properties.customTradCt){
-						areaPts.features[n].properties.customTradCt = 0;
-					}
-					if(!areaPts.features[n].properties.customSportCt){
-						areaPts.features[n].properties.customSportCt = 0;
-					}
-					if(!areaPts.features[n].properties.customBoulderCt){
-						areaPts.features[n].properties.customBoulderCt = 0;
-					}
-					if(!areaPts.features[n].properties.customAlpineCt){
-						areaPts.features[n].properties.customAlpineCt = 0;
-					}					
-					
-					if(currAreaId === route.area){						
-						areaPts.features[n].properties.customRouteArr.push(route);
-						areaPts.features[n].properties.customRouteCt = areaPts.features[n].properties.customRouteCt + 1;
-						
-						var type = String(route.type ? String(route.type) : 'n/a').trim();
-						if(type.toLowerCase() === "trad"){
-							areaPts.features[n].properties.customTradCt = areaPts.features[n].properties.customTradCt + 1;
-						}
-						else if(type.toLowerCase() === "sport"){
-							areaPts.features[n].properties.customSportCt = areaPts.features[n].properties.customSportCt + 1;
-						}
-						else if(type.toLowerCase() === "boulder"){
-							areaPts.features[n].properties.customBoulderCt = areaPts.features[n].properties.customBoulderCt + 1;
-						}
-						else if(type.toLowerCase() === "alpine"){
-							areaPts.features[n].properties.customAlpineCt = areaPts.features[n].properties.customAlpineCt + 1;
-						}
-					}
+					todoAreaPts.features[n].properties.customRouteCt = todoAreaPts.features[n].properties.count;
 				}								
 			}
 			
 			////
-			// Sets the size of the location points respective to the amount of climbs in that area
+			// Sets custom attributes of ticks on locations.
+			//
+			// @route - a route representing either a tick or a todo 
+			////
+			function setTickLocationRouteAttributes(route) {	
+					
+				// @tickAreaPts 
+				for(var n=0; n<tickAreaPts.features.length; n++){
+					var currAreaId = tickAreaPts.features[n].properties.id;
+
+					if(!tickAreaPts.features[n].properties.customTicksArr){
+						tickAreaPts.features[n].properties.customTicksArr = [];
+					}	
+					
+					if(currAreaId === route.area){						
+						tickAreaPts.features[n].properties.customTicksArr.push(route);
+					}
+				}
+			}
+			
+			////
+			// Set the types (trad, sport, boulder, etc...) and the route tracking array on the location objects
 			//
 			////
-			function resizeLocations(contentType) {	
+			function setToDoLocationRouteAttributes(route) {
 				
-				if(contentType === "todo"){
+				// @todoAreaPts - globally imported in HTML head imports
+				for(var n=0; n<todoAreaPts.features.length; n++){
+					var currAreaId = todoAreaPts.features[n].properties.id;
+					
+					if(!todoAreaPts.features[n].properties.customRouteArr){
+						todoAreaPts.features[n].properties.customRouteArr = [];
+					}
+					if(!todoAreaPts.features[n].properties.customTradCt){
+						todoAreaPts.features[n].properties.customTradCt = 0;
+					}
+					if(!todoAreaPts.features[n].properties.customSportCt){
+						todoAreaPts.features[n].properties.customSportCt = 0;
+					}
+					if(!todoAreaPts.features[n].properties.customBoulderCt){
+						todoAreaPts.features[n].properties.customBoulderCt = 0;
+					}
+					if(!todoAreaPts.features[n].properties.customAlpineCt){
+						todoAreaPts.features[n].properties.customAlpineCt = 0;
+					}	
+					
+					if(currAreaId === route.area){						
+						todoAreaPts.features[n].properties.customRouteArr.push(route);
+						
+						var type = String(route.type ? String(route.type) : 'n/a').trim();
+						if(type.toLowerCase() === "trad"){
+							todoAreaPts.features[n].properties.customTradCt = todoAreaPts.features[n].properties.customTradCt + 1;
+						}
+						else if(type.toLowerCase() === "sport"){
+							todoAreaPts.features[n].properties.customSportCt = todoAreaPts.features[n].properties.customSportCt + 1;
+						}
+						else if(type.toLowerCase() === "boulder"){
+							todoAreaPts.features[n].properties.customBoulderCt = todoAreaPts.features[n].properties.customBoulderCt + 1;
+						}
+						else if(type.toLowerCase() === "alpine"){
+							todoAreaPts.features[n].properties.customAlpineCt = todoAreaPts.features[n].properties.customAlpineCt + 1;
+						}
+					}
+				}
+			}
+			
+			////
+			// Simple way to control the size of the location points
+			//
+			////
+			function getLocationSizeBucket(rtCount) {
+				if(rtCount < 1){
+					return 0
+				}
+				else if(rtCount < 5){
+					return 5
+				}
+				else if(rtCount >= 5 && rtCount < 10){
+					return 10
+				}
+				else if(rtCount >= 10 && rtCount < 30){
+					return 15
+				}
+				else if(rtCount >= 30 && rtCount < 50){
+					return 25
+				}
+				else if(rtCount >= 50 && rtCount < 70){
+					return 35
+				}
+				else if(rtCount >= 70 && rtCount < 100){
+					return 45
+				}
+				else if(rtCount >= 100 && rtCount < 150){
+					return 60
+				}
+				else if(rtCount >= 150){
+					return 80
+				}
+			}
+			
+			
+			////
+			// Sets the size of the location points respective to the amount of climbs in that area
+			// TODO: better check for ticks vs. todos
+			////
+			function resizeLocations(contentType) {	
 					map.eachLayer(function(layer){
 						if(layer.feature){
 							// customRouteCt is currently ToDo frequency and will take priority over existing area points
 							if(layer.feature.properties.customRouteCt > 0){
-								var routeCt = layer.feature.properties.customRouteCt;
-								layer.setRadius(4 + routeCt);
+								var routeCt = getLocationSizeBucket(layer.feature.properties.customRouteCt);
+								layer.setRadius(routeCt);
+							}
+							if(layer.feature.properties.customTicksCt > 0){
+								var ticksCt = getLocationSizeBucket(layer.feature.properties.customTicksCt);
+								layer.setRadius(ticksCt);
 							}
 						}	
-					});
-				}	
-				else if(contentType === "tick"){
-					map.eachLayer(function(layer){
-						
-						if(layer instanceof L.LayerGroup){ // only ticks should be in a LayerGroup
-							var layers = layer.getLayers();
-							for(var i=0; i<layers.length; i++){
-								var embededLayer = layers[i];
-								//However, if there are also ticks for this area we will duplicate the area point to represent both 
-								if(embededLayer.feature.properties.customTicksCt > 0){
-									var tickCt = embededLayer.feature.properties.customTicksCt;
-									var tickArr = embededLayer.feature.properties.customTicksArr;
-									
-									var tickStyle = {
-							    		radius: tickCt + 4,
-							    		fillColor: "#505050",
-							    		stroke: false,
-							    		weight: 1,
-							    		opacity: 1,
-							    		fillOpacity: 0.8,
-							    		customTicksCt: embededLayer.feature.properties.customTicksCt,
-							    		customTickArr: tickArr,
-							    		areaName: embededLayer.feature.properties.area
-									}
-									
-									// I don't like this whole appending data to new circle markers business. 
-									// Look into either maintaining a better cache or something...
-									var customCircleMarker = L.CircleMarker.extend({
-									   options: { 
-									      customTicksCt: 0, 
-									      customTickArr: [],
-									      areaName: ""
-									   }
-									});
-									// The duplication step
-									var newFeature = new customCircleMarker(embededLayer.getLatLng(), tickStyle);
-		        
-		        					// add the feature to the layer group
-									tickLocations.addLayer(newFeature);		
-									
-									// Hover events for new tick location features
-									newFeature.on('mouseover', function (e) {
-		            				var feature = e.target;
-		            				
-		            				//////
-		            				/// TODO: this is really boring. Make this rout info more interesting
-		            				/////
-		            				var html = '<div class="tick-info-container">';
-										for(var i=0; i<feature.options.customTickArr.length; i++){
-											var rt = feature.options.customTickArr[i];
-											var date = new Date(rt.date);
-											var dateStr = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear();
-											
-											var newTickInfo = '<div class="info-content"><b>' + rt.name + '</b> : ' + rt.notes + ' ' + dateStr + '</div>'
-											html += newTickInfo;		
-										}
-										html += "</div>";
-		
-									   feature.setStyle({"fillColor":"#3F3F3F"})
-									    			    	
-								      //open popup;
-									  	popup = L.popup({offset:new L.Point(0,0)})
-									   .setLatLng(e.latlng) 
-									   .setContent(
-									   	'<div class="info-header">' + '<b>' + feature.options.areaName + '</b></div>' +
-											'<div class="info-content">' + 'You have climbed  ' + '<b>' + feature.options.customTicksCt + '</b> routes here!' + '</div>' +
-											'<br/>' + 															
-											'<div id="hover-grade-chart"></div>' + html
-										)
-									   .openOn(map);	
-									   
-									   // Render charts
-							   		var clickBarChart = new BarChart(feature.options.customTickArr, "#hover-grade-chart");	
-							   		clickBarChart.build();
-							   		
-							   		// Fixing the annoying issue when the popup is pushed right after the chart is dynamically added
-							   		var popWidth = $(".leaflet-popup").width();
-							   		$(".leaflet-popup").css({left: "-"+(popWidth/2)+"px"});
-		
-										
-										// TODO: Add some more fun hover actions like a chart of all the comments from ticked routes
-		
-		       					 });
-		       					 newFeature.on('mouseout', function (e) {
-										var feature = e.target;
-										feature.setStyle({"fillColor":"#505050"});
-		       					 });
-											
-								}
-							}
-						}
-					})
-				}
-
-				
-				// Add the new tick features to the map
-				if(tickLocations.getLayers().length > 0){
-					map.addLayer(tickLocations);
-					tickLocations.bringToBack();
-				}
-			      
+					});			     
 			}
 				
 			
 			function renderMap() {
 					
 					// properties set on each feature of a Leaflet layer object
-					function onEachFeature(feature, layer) {
+					function onEachTodoFeature(feature, layer) {
 						layer.on({
-			            mouseover: hoverAction,
-			            mouseout: resetHover,
+			            mouseover: todoHoverAction,
+			            mouseout: resetTodoHover,
 			            click: featureClickEvent
 			            });
 					}	
 					
+					function onEachTickFeature(feature, layer) {
+						layer.on({
+			            mouseover: tickHoverAction,
+			            mouseout: resetTickHover
+			            });
+					}	
+					
+					function tickHoverAction(e) {
+      				var layer = e.target;
+      				
+      				//////
+      				/// TODO: this is really boring. Make this rout info more interesting
+      				/////
+      				var html = '<div class="tick-info-container">';
+						for(var i=0; i<layer.feature.properties.customTicksArr.length; i++){
+							var rt = layer.feature.properties.customTicksArr[i];
+							var date = new Date(rt.date);
+							var dateStr = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear();
+							
+							var newTickInfo = '<div class="info-content"><b>' + rt.name + '</b> : ' + rt.notes + ' ' + dateStr + '</div>'
+							html += newTickInfo;		
+						}
+						html += "</div>";
+
+					   layer.setStyle({"fillColor":"#3F3F3F"})
+					    			    	
+				      //open popup;
+					  	popup = L.popup({offset:new L.Point(0,0)})
+					   .setLatLng(e.latlng) 
+					   .setContent(
+					   	'<div class="info-header">' + '<b>' + layer.feature.properties.area + '</b></div>' +
+							'<div class="info-content">' + 'You have climbed  ' + '<b>' + layer.feature.properties.customTicksCt + '</b> routes here!' + '</div>' +
+							'<br/>' + 															
+							'<div id="hover-grade-chart"></div>' + html
+						)
+					   .openOn(map);	
+					   
+					   // Render charts
+			   		var clickBarChart = new BarChart(layer.feature.properties.customTicksArr, "#hover-grade-chart");	
+			   		clickBarChart.build();
+			   		
+			   		// Fixing the annoying issue when the popup is pushed right after the chart is dynamically added
+			   		var popWidth = $(".leaflet-popup").width();
+			   		$(".leaflet-popup").css({left: "-"+(popWidth/2)+"px"});
+
+						
+						// TODO: Add some more fun hover actions like a chart of all the comments from ticked routes	       					 
+					}
+					
 					// action to perform when mousing over a feature
-					function hoverAction(e) {
+					function todoHoverAction(e) {
 					    	var layer = e.target;
 					    	
 					    	layer.setStyle({"fillColor":"#083C49"})
@@ -488,9 +537,17 @@
 							var svg = new PieChart(layer.feature);
 					}
 					
+					function resetTickHover(e) {
+						var feature = e.target;
+						feature.setStyle({"fillColor":"#505050"});
+						 if(popup){			    
+ 						 	map.closePopup(popup);
+ 						 	pupup = null;
+ 						 }
+ 					 }
 					
 					// action to perform when mousing off of a feature 
-					function resetHover(e) {  
+					function resetTodoHover(e) {  
 						var layer = e.target;
 						
 						layer.setStyle({"fillColor": "#0a4958"});
@@ -560,10 +617,10 @@
 						
 						function getLocationName(areaId) {
 							var areaName = "";
-							for(var n=0; n<areaPts.features.length; n++){
-								var thisAreaId = areaPts.features[n].properties.id;
+							for(var n=0; n<todoAreaPts.features.length; n++){
+								var thisAreaId = todoAreaPts.features[n].properties.id;
 								if(areaId === thisAreaId){
-									areaName = areaPts.features[n].properties.area;
+									areaName = todoAreaPts.features[n].properties.area;
 								}
 							}
 							
@@ -572,22 +629,39 @@
 					}
 					
 					// define the default feature style		
-					var areaPtsDefaultStyle = {
+					var areaTodoPtsDefaultStyle = {
 					    radius: 0,
 					    fillColor: "#0a4958",
 					    stroke: false,
 					    weight: 1,
 					    opacity: 1,
 					    fillOpacity: 0.8
-					};				
+					};	
+					
+					var areaTickPtsDefaultStyle = {
+			    		radius: 0,
+			    		fillColor: "#505050",
+			    		stroke: false,
+			    		weight: 1,
+			    		opacity: 1,
+			    		fillOpacity: 0.8,
+					}			
 				
-					//add geojson lines with popup and style
-					var areaPtsObj = new L.GeoJSON(areaPts, {
+					// add todo pts to map
+					var areaTodoPtsObj = new L.GeoJSON(todoAreaPts, {
 							pointToLayer: function (feature, latlng) {
-		        				return L.circleMarker(latlng, areaPtsDefaultStyle);
+		        				return L.circleMarker(latlng, areaTodoPtsDefaultStyle);
 		   				},
-							onEachFeature: onEachFeature		
+							onEachFeature: onEachTodoFeature		
 					});		
+					
+					// add tick pts to map
+					var areaTickPtsObj = new L.GeoJSON(tickAreaPts, {
+							pointToLayer: function (feature, latlng) {
+		        				return L.circleMarker(latlng, areaTickPtsDefaultStyle);
+		   				},
+							onEachFeature: onEachTickFeature		
+					});	
 					
 					
 					// initialize the Leaflet map object
@@ -622,9 +696,11 @@
 					}
 					
 					// add overlays to the map object	
-					map.addLayer(areaPtsObj);
+					map.addLayer(areaTodoPtsObj);
+					map.addLayer(areaTickPtsObj);
 					
-					map.fitBounds(areaPtsObj.getBounds());
+					
+					map.fitBounds(areaTodoPtsObj.getBounds());
 								
 						
 					// define the base layer switcher
@@ -637,8 +713,8 @@
 						
 					// define the overlay layer switcher
 					var overlays = {
-						"ToDos": areaPtsObj,
-						"Ticks": tickLocations
+						"ToDos": areaTodoPtsObj,
+						"Ticks": areaTickPtsObj
 						}; 
 						
 					// adds the layer switcher control

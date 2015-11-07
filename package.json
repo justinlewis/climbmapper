@@ -13,6 +13,8 @@
     "express": "~4.13.1",
     "hjs": "~0.0.6",
     "morgan": "~1.6.1",
-    "serve-favicon": "~2.3.0"
+    "serve-favicon": "~2.3.0",
+ 	 "passport": "^0.2.2",
+    "passport-http": "^0.3.0"
   }
 }

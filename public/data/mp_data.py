@@ -5,7 +5,7 @@ class MPData:
 	def init(self):
 		print "init"
 		#DB connection properties
-		conn = psycopg2.connect(dbname = 'climbmapper', host= 'localhost', port= 5432, user = 'postgres',password= 'SUPERSECRET')
+		conn = psycopg2.connect(dbname = 'climbmapper', host= 'localhost', port= 5432, user = 'postgres',password= '29just29')
 		cur = conn.cursor()  ## open a cursor
 		
 		cur.execute("TRUNCATE route;")
@@ -17,7 +17,7 @@ class MPData:
 		
 	def getToDos(self):
 		#DB connection properties
-		conn = psycopg2.connect(dbname = 'climbmapper', host= 'localhost', port= 5432, user = 'postgres',password= 'SUPERSECRET')
+		conn = psycopg2.connect(dbname = 'climbmapper', host= 'localhost', port= 5432, user = 'postgres',password= '29just29')
 		cur = conn.cursor()  ## open a cursor
 		
 		urlRoot = "http://www.mountainproject.com/data?action=getToDos"
@@ -50,7 +50,7 @@ class MPData:
 	def getTicks(self):
 		
 		#DB connection properties
-		conn = psycopg2.connect(dbname = 'climbmapper', host= 'localhost', port= 5432, user = 'postgres',password= 'SUPERSECRET')
+		conn = psycopg2.connect(dbname = 'climbmapper', host= 'localhost', port= 5432, user = 'postgres',password= '29just29')
 		cur = conn.cursor()  ## open a cursor
 		
 		root = "http://www.mountainproject.com/data?action=getTicks"
@@ -71,7 +71,7 @@ class MPData:
 			
 			if reqChunks == 0:
 				hardestTick = ticksResp["hardest"]
-				print hardestTick
+				#print hardestTick
 			
 			# {"date": "2015-10-16", "notes": "pretty ok", "routeId": 106360348}
 			for tick in ticksResp["ticks"]:
@@ -90,29 +90,32 @@ class MPData:
 	def getRoutes(self, idsList, contentType):
 		
 		#DB connection properties
-		conn = psycopg2.connect(dbname = 'climbmapper', host= 'localhost', port= 5432, user = 'postgres',password= 'SUPERSECRET')
+		conn = psycopg2.connect(dbname = 'climbmapper', host= 'localhost', port= 5432, user = 'postgres',password= '29just29')
 		cur = conn.cursor()  ## open a cursor
 		
 		root = "http://www.mountainproject.com/data?action=getRoutes&routeIds="
 		ids = ''
 	 	key = "&key=106251374-a0e6d43518505bec412a547956f25216"
-
-		if(contentType == 'todo'):
-			open('toDoRoutes.json', 'w').close()	
-		elif(contentType == 'tick'):
-			open('ticks.json', 'w').close()	
 		
 		
 		cur.execute("SELECT id, usa, hueco FROM grade;")
+		global gradesLookup
 		gradesLookup = cur.fetchall()	
 		
 		cur.execute("SELECT id, type FROM route_type;")	
+		global typeLookup
 		typeLookup = cur.fetchall()	
 		
-		cur.execute("SELECT id, name FROM area;")	
+		cur.execute("SELECT a.id as areaId, a.name as areaName, c.id as cragId, c.name as cragName FROM area a INNER JOIN crag c ON a.id = c.area;")	
+		global cragLookup
+		cragLookup = cur.fetchall()	
+		
+		cur.execute("SELECT a.id as areaId, a.name as areaName FROM area a;")	
+		global areaLookup
 		areaLookup = cur.fetchall()	
 		
 		cur.execute("SELECT id FROM route;")	
+		global routeLookup
 		routeLookup = cur.fetchall()	
 		
 		idCt = 1
@@ -133,103 +136,45 @@ class MPData:
 					resp = requests.get(url=url)
 					for rt in json.loads(resp.text)["routes"]:
 						
-						# check if the route already exists
-						routeExists = False
-						for routeId in routeLookup:
-							if str(routeId[0]) == str(rt["id"]):
-								routeExists = True
-								print routeId, " exists"
-								break
-								
+						# Check if the route exists in the db
+						routeExists = self.routeExists(rt["id"])
+						
+						# Check if this is a duplicate route
+						# Could be caused by duplicate Ticks
+						# We want to avoid adding duplicate routes to the DB		
 						if rt["id"] in idTracking:
 							routeExists = True
 
 						if routeExists is False:
 							routes["routes"].append(rt)	
 							area = ','.join(rt["location"])
-							rating = str(rt["rating"]).lower().replace("r", "")
-							rating = rating.replace("pg13", "")
-							rating = rating.replace("/b", "")
-							rating = rating.replace("/c", "")
-							rating = rating.replace("/d", "")
-							rating = rating.replace("-2", "")
-							rating = rating.replace("-3", "")
-							rating = rating.replace("-4", "")
-							rating = rating.replace("-5", "")
-							rating = rating.replace("-6", "")
-							rating = rating.replace("-7", "")
-							rating = rating.replace("-8", "")
-							rating = rating.replace("-9", "")
-							rating = rating.replace("-10", "")
-							rating = rating.replace("-11", "")
-							rating = rating.replace("-12", "")
-							rating = rating.replace("-13", "")
-							rating = rating.replace("-14", "")
-							rating = rating.replace("-15", "")
-							rating = rating.replace("-easy", "")
-							rating = rating.replace("easy snow", "")
-							rating = rating.replace("?", "")
-							rating = rating.replace("x", "")
-							rating = rating.replace("+", "")
-							rating = rating.replace("-", "")
-							rating = rating.strip()
 							
-							grade = 999 # TODO better trapping of non-matches than just setting 999
-							for row in gradesLookup:
-								gradeId = row[0]
-								ydsGrade = row[1]
-								
-								if row[2] is None:
-									boulderGrade = ""
-								else:
-									boulderGrade = row[2].lower()
-									boulderGrade = boulderGrade.replace("+", "")
-									boulderGrade = boulderGrade.replace("-", "")
-									boulderGrade = boulderGrade.strip()
-				
-								if rating in ydsGrade.lower():
-									grade = gradeId
-									break
-								elif rating in boulderGrade:
-									grade = gradeId
-									break
-									
-							if grade == 999:
-								print "Missing grade -> ", rating
+							# Locations from MP are arrays of location names
+							thisLocArr = rt["location"]
+							thisAreaId = self.getAreaMatchId(reversed(thisLocArr))
+							if thisAreaId == 999:
+								print thisLocArr
+							thisCragId = self.getCragMatchId(reversed(thisLocArr))
+							rating = self.getCleanRating(str(rt["rating"]))
+							routeType = self.getRouteType(rt["type"])
 							
-							type = 999		# TODO better trapping of non-matches than just setting 999
-							for tRow in typeLookup:
-								typeId = tRow[0]
-								typeName = tRow[1]
-								if typeName.lower() in rt["type"].lower():
-									type = typeId
-									break
+							# Get the grade
+							if "boulder" in rt["type"].lower():
+								grade = self.getBoulderGrade(rating)
+							else:
+								grade = self.getYDSGrade(rating)							
 							
-							thisLoc = rt["location"]
-							thisLocId = 999  # TODO better trapping of non-matches than just setting 999
-							for loc in reversed(thisLoc):
-								#print loc, " the loc"
-									
-								for a in areaLookup:
-									aId = a[0]
-									aName = a[1]
-		
-									if aName.lower().lstrip("*").replace(" ", "") == loc.lower().lstrip("*").replace(" ", ""):
-										thisLocId = aId
-										break
-							
-							pitches = 999
 							if len(str(rt["pitches"])) > 0:
 								pitches = rt["pitches"]
-							#print rt["name"]
-							if thisLocId == 999:
-								print thisLoc	
-							#print rt["rating"], " - ", grade, rt["type"], " - ", type
-							query = cur.mogrify("INSERT INTO route(id,routeid,name,area,type,grade,mpurl,mpimgmedurl,mpimgsmallurl,mpstars,mpstarvotes,pitches) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (str(rt["id"]), str(rt["id"]), rt["name"], str(thisLocId), str(type), str(grade), str(rt["url"]), str(rt["imgMed"]), str(rt["imgSmall"]), str(rt["stars"]), str(rt["starVotes"]), str(pitches)))
-							
+							else:
+								pitches = 0 # a better default than n/a
+
+							query = cur.mogrify("INSERT INTO route(id,routeid,name,area,type,grade,mpurl,mpimgmedurl,mpimgsmallurl,mpstars,mpstarvotes,pitches,crag) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (str(rt["id"]), str(rt["id"]), rt["name"], str(thisAreaId), str(routeType), str(grade), str(rt["url"]), str(rt["imgMed"]), str(rt["imgSmall"]), str(rt["stars"]), str(rt["starVotes"]), str(pitches), str(thisCragId)))
+
 							cur.execute(query)
 							conn.commit()
 							
+							# tracking to prevent duplicates which can occur with Ticks
 							idTracking.append(rt["id"])
 							
 							# TODO: add additional info to db table		
@@ -238,20 +183,145 @@ class MPData:
 							#u'pitches': u'', u'starVotes': u'6', u'imgSmall': u'http://www.mountainproject.com/images/24/49/106042449_small_7fd478.jpg', 
 							#u'location': [u'Colorado', u'Morrison/Evergreen', u'Morrison Boulders', u'The Dark Side'], u'stars': u'3.8', 
 							#u'type': u'Boulder', u'id': u'106042278'}
-	
 				ids = ''
 			idCt += 1	
 		conn.close()		
-	
-		# Write to file
-		if(contentType == 'todo'):
-			with open('toDoRoutes.json', 'w') as toDoRoutesFile:
-				json.dump(routes, toDoRoutesFile)
-		elif(contentType == 'tick'):	
-			with open('ticks.json', 'w') as ticksFile:
-				json.dump(routes, ticksFile)
 		
 		#self.printRoutesInfo(routes)
+	
+	
+	def getAreaMatchId(self, locationArr):
+		for loc in locationArr:		
+			for a in areaLookup:
+				aId = a[0]
+				aName = a[1]
+				
+				if aName.lower().lstrip("*").replace(" ", "") == loc.lower().lstrip("*").replace(" ", ""):
+					return aId
+		
+		# no match found
+		return -1
+	
+	
+	# currently only matching crags with known areas (check sql query for cragLookup)
+	def getCragMatchId(self, locationArr):
+		for loc in locationArr:	
+			for a in cragLookup:
+				cId = a[2]
+				cName = a[3]
+				
+				if cName.lower().lstrip("*").replace(" ", "") == loc.lower().lstrip("*").replace(" ", ""):
+					return cId
+		
+		#no match found
+		return -1
+	
+	def routeExists(self, inRouteId):
+		for routeId in routeLookup:
+			if str(routeId[0]) == str(inRouteId):
+				return True
+				
+		return False
+	
+	
+	def getCleanRating(self, rating):
+		rating = rating.lower().replace("r", "")
+		rating = rating.replace("pg13", "")
+		rating = rating.replace("/b", "")
+		rating = rating.replace("/c", "")
+		rating = rating.replace("/d", "")
+		rating = rating.replace("-2", "")
+		rating = rating.replace("-3", "")
+		rating = rating.replace("-4", "")
+		rating = rating.replace("-5", "")
+		rating = rating.replace("-6", "")
+		rating = rating.replace("-7", "")
+		rating = rating.replace("-8", "")
+		rating = rating.replace("-9", "")
+		rating = rating.replace("-10", "")
+		rating = rating.replace("-11", "")
+		rating = rating.replace("-12", "")
+		rating = rating.replace("-13", "")
+		rating = rating.replace("-14", "")
+		rating = rating.replace("-15", "")
+		rating = rating.replace("-easy", "")
+		rating = rating.replace("easy snow", "")
+		rating = rating.replace("?", "")
+		rating = rating.replace("x", "")
+		rating = rating.replace("+", "")
+		rating = rating.replace("-", "")
+		rating = rating.strip()
+		
+		return rating				
+					
+							
+	def getCleanTypeName(self, type):
+		# We are doing this if/else check because types can come in all kinds of combinations
+		# I.E. "trad, bouder"
+		if "boulder" in type.lower():
+			# sometimes types are boulder, trad. this is non-sense. its boulder
+			type = "Boulder"	
+		elif "trad" in type.lower():
+			# i don't care if it's "sport, trad". lets consider it trad if you use passive gear
+			type = "Trad"
+		elif "alpine" in type.lower():
+			type = "Alpine"
+		elif "sport" in type.lower():
+			type = "Sport"
+		elif "tr" in type.lower():
+			type = "Top-Rope"
+		
+		return type
+
+
+	def getRouteType(self, type):
+		type = self.getCleanTypeName(type)		
+		for tRow in typeLookup:
+			typeId = tRow[0]
+			typeName = tRow[1]
+				
+			if typeName.lower() in type.lower():
+				return typeId
+		
+		print "Can't find type = ", typeName
+		return 999
+
+
+	def getYDSGrade(self, inGrade):
+		found = False
+		for row in gradesLookup:
+			gradeId = row[0]
+			ydsGrade = row[1]
+			boulderGrade = row[2]
+
+			if inGrade in ydsGrade:
+				return gradeId
+		
+		# If we got this far there was no match for rope YDS grades. 
+		# Lets check if its a boulder grade
+		grade = self.getBoulderGrade(inGrade, gradesLookup)
+		
+		if grade == 999:
+			print "Missing YDS and boulder grade -> ", inGrade
+		return grade
+	
+	
+	def getBoulderGrade(self, inGrade):
+		for row in gradesLookup:
+			gradeId = row[0]
+			
+			if row[2] is None:
+				boulderGrade = ""
+			else:
+				boulderGrade = row[2].lower()
+				boulderGrade = boulderGrade.replace("+", "")
+				boulderGrade = boulderGrade.replace("-", "")
+				boulderGrade = boulderGrade.strip()
+
+			if inGrade in boulderGrade:
+				return gradeId		
+		
+		return 999
 
 
 	def printRoutesInfo(self, routesJSON):
@@ -286,6 +356,7 @@ class MPData:
 			
 			routeCt += 1
 		print "Route Count = " + str(routeCt)
+
 
 if __name__ == '__main__':
 	
