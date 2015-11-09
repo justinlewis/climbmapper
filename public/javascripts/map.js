@@ -157,10 +157,8 @@
 									    	 layer.setRadius(newRadius);	
 									    }
 									 }
-								});
-				     				
+								});	
 				     		}
-				     		
 
 				     		if( ! $("#time-slider-label").is(":visible")){
 				     			$("#time-slider-label").show();
@@ -576,16 +574,18 @@
 							$(".info-area-title").remove();
 						}
 						
-
-						$("#info-area-title").text("Routes: "+layer.feature.properties.area);
-						
 						// This is a really weak check. we need to make sure this is 
+						var subHeading = "";
 						if(layer.feature.properties.customTicksArr){
-							var layers = layer.feature.properties.customTicksArr;						
+							var layers = layer.feature.properties.customTicksArr;	
+							subHeading = "Ticks";				
 						}
 						else {
 							var layers = layer.feature.properties.customRouteArr;	
+							subHeading = "ToDo";	
 						}
+						
+						$("#info-area-title").text(subHeading+": "+layer.feature.properties.area);
 					
 						for(var l=0; l<layers.length; l++){						
 							var name = String(layers[l].name ? layers[l].name : 'n/a');
@@ -699,7 +699,6 @@
 					map.addLayer(areaTodoPtsObj);
 					map.addLayer(areaTickPtsObj);
 					
-					
 					map.fitBounds(areaTodoPtsObj.getBounds());
 								
 						
@@ -722,26 +721,6 @@
 			}
 
 			var that = this;
-/*			$("#welcome-modal").dialog({
-				  title: "About This Project",
-				  width: $(window).width()/1.25, 
-				  height: $(window).height()/1.25,
-				  resizable: true,
-				  dialogClass: 'welcome-modal',
-				  closeOnEscape: false,
-				  open: function(event, ui) { 
-				  	$(".ui-dialog-titlebar-close", ui.dialog | ui).hide(); 
-				  	$(".ui-dialog-titlebar.ui-widget-header.ui-corner-all.ui-helper-clearfix.ui-draggable-handle").hide();
-				  },
-				  buttons: [
-				    {
-				      text: "Got It",
-				      click: function() {
-				        $( this ).dialog( "close" );						        
-				      }
-				    }
-				  ]
-			});*/
 									
 
 			// Initialize
