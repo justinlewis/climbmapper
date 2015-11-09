@@ -5,7 +5,7 @@ class MPData:
 	def init(self):
 		print "init"
 		#DB connection properties
-		conn = psycopg2.connect(dbname = 'climbmapper', host= 'localhost', port= 5432, user = 'postgres',password= '29just29')
+		conn = psycopg2.connect(dbname = 'climbmapper', host= 'localhost', port= 5432, user = 'USER',password= 'PASSWORD')
 		cur = conn.cursor()  ## open a cursor
 		
 		cur.execute("TRUNCATE route;")
@@ -17,14 +17,14 @@ class MPData:
 		
 	def getToDos(self):
 		#DB connection properties
-		conn = psycopg2.connect(dbname = 'climbmapper', host= 'localhost', port= 5432, user = 'postgres',password= '29just29')
+		conn = psycopg2.connect(dbname = 'climbmapper', host= 'localhost', port= 5432, user = 'USER',password= 'PASSWORD')
 		cur = conn.cursor()  ## open a cursor
 		
 		urlRoot = "http://www.mountainproject.com/data?action=getToDos"
 		urlPropId = "&userId=106251374"
 		urlPropStartPos = "&startPos="
 		urlPropStartPosList = [0, 200, 400]
-		mpKey = "&key=106251374-a0e6d43518505bec412a547956f25216"
+		mpKey = "&key=SUPERSECRETKEY"
 		toDoList = []
 		
 		
@@ -50,12 +50,12 @@ class MPData:
 	def getTicks(self):
 		
 		#DB connection properties
-		conn = psycopg2.connect(dbname = 'climbmapper', host= 'localhost', port= 5432, user = 'postgres',password= '29just29')
+		conn = psycopg2.connect(dbname = 'climbmapper', host= 'localhost', port= 5432, user = 'USER',password= 'PASSWORD')
 		cur = conn.cursor()  ## open a cursor
 		
 		root = "http://www.mountainproject.com/data?action=getTicks"
 		uid = "&userId=106251374"
-		key = "&key=106251374-a0e6d43518505bec412a547956f25216"
+		key = "&key=SUPERSECRETKEY"
 		
 		
 		# the api returns a max of 200 ticks in a request so we have to do this in chunks
@@ -90,12 +90,12 @@ class MPData:
 	def getRoutes(self, idsList, contentType):
 		
 		#DB connection properties
-		conn = psycopg2.connect(dbname = 'climbmapper', host= 'localhost', port= 5432, user = 'postgres',password= '29just29')
+		conn = psycopg2.connect(dbname = 'climbmapper', host= 'localhost', port= 5432, user = 'USER',password= 'PASSWORD')
 		cur = conn.cursor()  ## open a cursor
 		
 		root = "http://www.mountainproject.com/data?action=getRoutes&routeIds="
 		ids = ''
-	 	key = "&key=106251374-a0e6d43518505bec412a547956f25216"
+	 	key = "&key=SUPERSECRETKEY"
 		
 		
 		cur.execute("SELECT id, usa, hueco FROM grade;")
