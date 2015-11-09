@@ -121,6 +121,12 @@
 			      value: allTickArr.length,
 			      min: 0,
 			      max: allTickArr.length,
+			      create: function( event, ui ) {
+			      		// A silly hack because the slider is appending a ghostly empty <p> element to my label. No time to look deeper now.
+			      		if($("#time-slider-label").next("p").text().trim().length === 0){
+				     			$("#time-slider-label").next("p").remove();
+				     		}	
+			      },
 			      slide: function( event, ui ) {
 			      	var sliderPos = ui.value;
 			      	var selectedDate = sortedAllTickArr[sliderPos];
@@ -155,13 +161,11 @@
 				     				
 				     		}
 				     		
+
 				     		if( ! $("#time-slider-label").is(":visible")){
 				     			$("#time-slider-label").show();
 				     		}
 				     		$("#time-slider-label").text( selectedDate.getMonth() + " / " + selectedDate.getDay() + " / " + selectedDate.getFullYear()  + " | " + rtsCt + " Ticks");
-			     		}
-			     		else {
-							// no value 			     		
 			     		}
 			      },
 			      stop: function( event, ui ) {
@@ -471,7 +475,8 @@
 					function onEachTickFeature(feature, layer) {
 						layer.on({
 			            mouseover: tickHoverAction,
-			            mouseout: resetTickHover
+			            mouseout: resetTickHover,
+			            click: featureClickEvent
 			            });
 					}	
 					
@@ -492,28 +497,19 @@
 						}
 						html += "</div>";
 
-					   layer.setStyle({"fillColor":"#3F3F3F"})
-					    			    	
-				      //open popup;
-					  	popup = L.popup({offset:new L.Point(0,0)})
-					   .setLatLng(e.latlng) 
-					   .setContent(
-					   	'<div class="info-header">' + '<b>' + layer.feature.properties.area + '</b></div>' +
-							'<div class="info-content">' + 'You have climbed  ' + '<b>' + layer.feature.properties.customTicksCt + '</b> routes here!' + '</div>' +
-							'<br/>' + 															
-							'<div id="hover-grade-chart"></div>' + html
-						)
-					   .openOn(map);	
-					   
-					   // Render charts
-			   		var clickBarChart = new BarChart(layer.feature.properties.customTicksArr, "#hover-grade-chart");	
-			   		clickBarChart.build();
-			   		
-			   		// Fixing the annoying issue when the popup is pushed right after the chart is dynamically added
-			   		var popWidth = $(".leaflet-popup").width();
-			   		$(".leaflet-popup").css({left: "-"+(popWidth/2)+"px"});
+					   layer.setStyle({"fillColor":"#878787"})
 
-						
+					   $("#left-sidebar-heading").text(layer.feature.properties.area);
+					   $("#hover-text-info-container").html('<p class="info-content">You ticked ' + '<b>' + layer.feature.properties.customTicksCt + '</b> routes here!</p>')
+					   
+					   if(!$("#chart-row-1").is(':visible')){
+							$("#chart-row-1").show();
+						}
+							
+					   $("#chart-row-1").append('<div id="tick-grade-chart" ></div>');
+			   		var hoverBarChart = new BarChart(layer.feature.properties.customTicksArr, "#tick-grade-chart", $("#tick-grade-chart").parent().width());	
+			   		hoverBarChart.build();
+			   							
 						// TODO: Add some more fun hover actions like a chart of all the comments from ticked routes	       					 
 					}
 					
@@ -521,49 +517,55 @@
 					function todoHoverAction(e) {
 					    	var layer = e.target;
 					    	
-					    	layer.setStyle({"fillColor":"#083C49"})
-					    			    	
-					      //open popup;
-						  	popup = L.popup({offset:new L.Point(0,0)})
-						   .setLatLng(e.latlng) 
-						   .setContent(
-						   	'<div class="info-header">' + '<b>' + layer.feature.properties.area + '</b>' +
-								'</div><div class="info-content">' + 'There are  ' + '<b>' + layer.feature.properties.customRouteCt + '</b> ToDos here. <b>Go get em!!!</b>' +
-								'<br/>' + 																
-								'<div id="pie"></div>'
-							)
-						   .openOn(map);	
+					    	layer.setStyle({"fillColor":"#138DA9"})
+   
+						   $("#left-sidebar-heading").text(layer.feature.properties.area);
+					   	$("#hover-text-info-container").html('<p class="info-content">There are  ' + '<b>' + layer.feature.properties.customRouteCt + '</b> ToDos here. <b>Go get em!!!</b></p>');
 							
-							var svg = new PieChart(layer.feature);
+							if(!$("#chart-row-1").is(':visible')){
+								$("#chart-row-1").show();
+							}
+							if(!$("#chart-row-2").is(':visible')){
+								$("#chart-row-2").show();
+							}
+						
+							$("#chart-row-1").append('<div id="todo-type-chart" ></div>');
+							var svg = new PieChart(layer.feature, "#todo-type-chart", $("#todo-type-chart").parent().width());
+							
+							$("#chart-row-2").append('<div id="todo-grade-chart" ></div>');
+					   	var todoBarChart = new BarChart(layer.feature.properties.customRouteArr, "#todo-grade-chart", $("#todo-grade-chart").parent().width());	
+					   	todoBarChart.build();	   			   
+						
 					}
 					
 					function resetTickHover(e) {
 						var feature = e.target;
 						feature.setStyle({"fillColor":"#505050"});
-						 if(popup){			    
- 						 	map.closePopup(popup);
- 						 	pupup = null;
- 						 }
+						$("#tick-grade-chart").remove();
+						$("#left-sidebar-heading").text("");
+					   $("#hover-text-info-container").html("");
+						$("#chart-row-1").hide();
  					 }
 					
 					// action to perform when mousing off of a feature 
 					function resetTodoHover(e) {  
 						var layer = e.target;
-						
 						layer.setStyle({"fillColor": "#0a4958"});
-					    if(popup){			    
- 						 	map.closePopup(popup);
- 						 	pupup = null;
- 						 }
+						$("#todo-grade-chart").remove();
+						$("#todo-type-chart").remove();
+						$("#left-sidebar-heading").text("");
+					   $("#hover-text-info-container").html("");
+					   $("#chart-row-1").hide();
+					   $("#chart-row-2").hide();
 					}		
 					
+					////
+					// click event for areas
 					function featureClickEvent(e) {	
 					 	var layer = e.target;
-						//map.setView(layer.getLatLng(), 14);
 						
 						if(!$("#info-container").is(':visible')){
 							$("#info-container").show();
-							$("#tick-slider").css("bottom", "275px");
 						}
 						
 						if($(".info-ul").length > 0){
@@ -574,14 +576,17 @@
 							$(".info-area-title").remove();
 						}
 						
-					   // Render charts
-					   var clickBarChart = new BarChart(layer.feature.properties.customRouteArr, "#click-chart-panel");	
-					   clickBarChart.build();	   			   
+
+						$("#info-area-title").text("Routes: "+layer.feature.properties.area);
 						
-						$("#info-area-title").text(layer.feature.properties.area + " ToDo Routes");
-//						$("#info-box").append("<h3 class='info-area-title'>" + layer.feature.properties.area + "</h3>");
-						
-						var layers = layer.feature.properties.customRouteArr;
+						// This is a really weak check. we need to make sure this is 
+						if(layer.feature.properties.customTicksArr){
+							var layers = layer.feature.properties.customTicksArr;						
+						}
+						else {
+							var layers = layer.feature.properties.customRouteArr;	
+						}
+					
 						for(var l=0; l<layers.length; l++){						
 							var name = String(layers[l].name ? layers[l].name : 'n/a');
 							var type = String(layers[l].type ? layers[l].type :"n/a");
@@ -598,17 +603,17 @@
 							var geoLoc = String(layers[l].location ? layers[l].location :"n/a");
 							var crag = getLocationName(layers[l].area) ;
 							var imgMed = String(layers[l].imgMed ? layers[l].imgMed :"n/a");
-							var imgSmall = String(layers[l].imgSmall ? layers[l].imgSmall :"n/a");
+							var imgMed = String(layers[l].imgMed ? layers[l].imgMed :"n/a");
 							  
 							var routeHTMLStr = "<ul class='info-ul'>";
-							routeHTMLStr += "<li class='info-text'><h3 class='info-header'>" +  name + "</h3></li>";
+							routeHTMLStr += "<li class='info-text'><h3 class='info-header'><u>" +  name + "</u></h3></li>";
 							routeHTMLStr += "<li class='info-text'><i>Rating:  </i>" +  rating + "</li>";
 							routeHTMLStr += "<li class='info-text'><i>Type:  </i>" +  type + "</li>";
 							routeHTMLStr += "<li class='info-text'><i>Pitches:  </i>" +  pitches + "</li>";
 							routeHTMLStr += "<li class='info-text'><i>Stars:  </i>" +  stars + " out of "+ starVotes + " votes</li>";
 							routeHTMLStr += "<li class='info-text'><i>Crag:  </i>" +  crag + "</li>";
-							routeHTMLStr += "<li><a class='info-link' target='_blank' href='"+  url + "'>See it on Mountain Project</a></li>";	
-							routeHTMLStr += "<li class='info-link'> <img class='info-image' src="+ imgSmall +" alt='Climbing Img'> </li>";						
+							routeHTMLStr += "<li class='info-text'><a class='info-link' target='_blank' href='"+  url + "'>See it on Mountain Project</a></li>";	
+							routeHTMLStr += "<li class='info-link'> <img class='info-image' src="+ imgMed +" alt='Climbing Img'> </li>";						
 							routeHTMLStr += "</ul>";
 							
 							$("#info-box").append(routeHTMLStr);
@@ -670,9 +675,10 @@
 						zoom: 9,
 						zoomAnimation: false,
 						layers: [positron],
-						zoomControl: true
+						zoomControl: false
 					});
 					
+					new L.Control.Zoom({ position: 'topright' }).addTo(map);
 					map.on('click', mapClickEvent);
 					
 					function mapClickEvent(e) {
@@ -686,13 +692,7 @@
 						}
 						if($("#info-container").is(':visible')){
 							$("#info-container").hide();
-							$("#tick-slider").css("bottom", "25px");
-						}
-						
-						// Clear the chart
-						if($("#click-chart-panel")){
-							$("#click-chart-panel").html("");
-						}
+						}				
 					}
 					
 					// add overlays to the map object	
@@ -722,7 +722,7 @@
 			}
 
 			var that = this;
-			$("#welcome-modal").dialog({
+/*			$("#welcome-modal").dialog({
 				  title: "About This Project",
 				  width: $(window).width()/1.25, 
 				  height: $(window).height()/1.25,
@@ -741,7 +741,7 @@
 				      }
 				    }
 				  ]
-			});
+			});*/
 									
 
 			// Initialize

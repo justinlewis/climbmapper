@@ -5,7 +5,10 @@
 // This needs so much work it's not even funny
 //
 ////
-function BarChart(routeArr, targetEl){
+function BarChart(routeArr, targetEl, width){
+	this.width = width;
+	this.targetEl = targetEl;
+	this.routeArr = routeArr;
 						
 	// TODO: replace with database lookup
 	this.ratingLookup = { "ratings": 
@@ -190,20 +193,27 @@ function BarChart(routeArr, targetEl){
 							
 		var gradeArr = this.getGradeArr(routeArr);
 		
-		var dynamicWidth = gradeArr.length * 35;
-		if(dynamicWidth < 300){
-			dynamicWidth = 300;
+		var margin = {top: 20, right: 20, bottom: 40, left: 40};
+		
+		if(!this.width){
+			var dynamicWidth = gradeArr.length * 35;
+			if(dynamicWidth < 300){
+				this.width = 300;
+			}
+			else if (dynamicWidth > 1000){
+				this.width = 1000;
+			}
+			this.width = this.width - margin.left - margin.right;
 		}
-		else if (dynamicWidth > 1000){
-			dynamicWidth = 1000;
+		else{
+			this.width = this.width - margin.left - margin.right;
 		}
 		
-		var margin = {top: 20, right: 20, bottom: 40, left: 40},
-		    width = dynamicWidth - margin.left - margin.right,
-		    height = 200 - margin.top - margin.bottom;
+		
+		var height = 200 - margin.top - margin.bottom;
 		
 		var x = d3.scale.ordinal()
-		    .rangeRoundBands([0, width], .2);
+		    .rangeRoundBands([0, this.width], .2);
 		
 		var y = d3.scale.linear()
 		    .rangeRound([height, 0]);
@@ -218,7 +228,7 @@ function BarChart(routeArr, targetEl){
 		    .tickValues(this.getTickArray(gradeArr));
 		
 		var svg = d3.select(targetEl).append("svg")
-		    .attr("width", width + margin.left + margin.right)
+		    .attr("width", this.width + margin.left + margin.right)
 		    .attr("height", height + margin.top + margin.bottom)
 		    .append("g")
 		    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");

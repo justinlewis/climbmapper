@@ -1,4 +1,4 @@
-function PieChart(feature) {
+function PieChart(feature, targetEl, width) {
 	var data = [];
 	var trad = feature.properties.customTradCt;
 	var sport = feature.properties.customSportCt;
@@ -18,23 +18,26 @@ function PieChart(feature) {
 		data.push({"count":alpine, "type":"Alpine ("+alpine+")"});
 	}
 	
-	var width = 225,
-	    height = 150,
+	if (!width) {
+		var width = 200;
+	}
+	
+	var height = 200,
 	    radius = Math.min(width, height) / 2,
-	    labelr = radius -20; // radius for label anchor
+	    labelr = radius - 25; // radius for label anchor
 	
 	var color = d3.scale.ordinal()
 	    .range(["#505050", "#0a4958", "#003399", "#a31e39"]);
 	
 	var arc = d3.svg.arc()
-	    .outerRadius(radius - 30)
-	    .innerRadius(0);
+	    .outerRadius(radius - 40)
+	    .innerRadius(25);
 	
 	var pie = d3.layout.pie()
 	    .sort(null)
 	    .value(function(d) { return d.count; });
 	
-	var svg = d3.select("#pie").append("svg")
+	var svg = d3.select(targetEl).append("svg")
 	    .attr("width", width)
 	    .attr("height", height)
 	    .append("g")
