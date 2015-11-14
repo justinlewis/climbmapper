@@ -37,7 +37,7 @@
 					processRoutes(toDoResponse[0]["routes"], 'todo');
 					reportMissingAreas(missingAreasResponse);
 					
-					setSearchBar(todoAreaPts);
+					setSearchBar(todoAreaPts.features.concat(tickAreaPts.features));
 					
 					renderMap();
 					resizeLocations("tick");
@@ -70,9 +70,9 @@
 					};
 					
 					var areasArr = [];
-					for(var i=0; i<areas.features.length; i++){
-						var areaName = areas.features[i].properties.area;
-						var geom = areas.features[i].geometry.coordinates;
+					for(var i=0; i<areas.length; i++){
+						var areaName = areas[i].properties.area;
+						var geom = areas[i].geometry.coordinates;
 						areasArr.push(JSON.stringify({"areaName":areaName, "geom":geom}));
 					}
 					
@@ -350,6 +350,35 @@
 					if(!tickAreaPts.features[n].properties.customTicksArr){
 						tickAreaPts.features[n].properties.customTicksArr = [];
 					}	
+					if(!tickAreaPts.features[n].properties.customTradCt){
+						tickAreaPts.features[n].properties.customTradCt = 0;
+					}
+					if(!tickAreaPts.features[n].properties.customSportCt){
+						tickAreaPts.features[n].properties.customSportCt = 0;
+					}
+					if(!tickAreaPts.features[n].properties.customBoulderCt){
+						tickAreaPts.features[n].properties.customBoulderCt = 0;
+					}
+					if(!tickAreaPts.features[n].properties.customAlpineCt){
+						tickAreaPts.features[n].properties.customAlpineCt = 0;
+					}	
+					
+					if(currAreaId === route.area){									
+						var type = String(route.type ? String(route.type) : 'n/a').trim();
+						if(type.toLowerCase() === "trad"){
+							tickAreaPts.features[n].properties.customTradCt = tickAreaPts.features[n].properties.customTradCt + 1;
+						}
+						else if(type.toLowerCase() === "sport"){
+							tickAreaPts.features[n].properties.customSportCt = tickAreaPts.features[n].properties.customSportCt + 1;
+						}
+						else if(type.toLowerCase() === "boulder"){
+							tickAreaPts.features[n].properties.customBoulderCt = tickAreaPts.features[n].properties.customBoulderCt + 1;
+						}
+						else if(type.toLowerCase() === "alpine"){
+							tickAreaPts.features[n].properties.customAlpineCt = tickAreaPts.features[n].properties.customAlpineCt + 1;
+						}
+					}
+					
 					
 					if(currAreaId === route.area){						
 						tickAreaPts.features[n].properties.customTicksArr.push(route);
@@ -498,15 +527,21 @@
 					   layer.setStyle({"fillColor":"#878787"})
 
 					   $("#left-sidebar-heading").text(layer.feature.properties.area);
-					   $("#hover-text-info-container").html('<p class="info-content">You ticked ' + '<b>' + layer.feature.properties.customTicksCt + '</b> routes here!</p>')
+					   $("#hover-text-info-container").html('<p class="info-content"><b>' + layer.feature.properties.customTicksCt + '</b> Ticks</p>')
 					   
 					   if(!$("#chart-row-1").is(':visible')){
 							$("#chart-row-1").show();
+						}
+						if(!$("#chart-row-2").is(':visible')){
+							$("#chart-row-2").show();
 						}
 							
 					   $("#chart-row-1").append('<div id="tick-grade-chart" ></div>');
 			   		var hoverBarChart = new BarChart(layer.feature.properties.customTicksArr, "#tick-grade-chart", $("#tick-grade-chart").parent().width());	
 			   		hoverBarChart.build();
+			   		
+			   		$("#chart-row-2").append('<div id="tick-type-chart" ></div>');
+			   		var svg = new PieChart(layer.feature, "#tick-type-chart", $("#tick-type-chart").parent().width());
 			   							
 						// TODO: Add some more fun hover actions like a chart of all the comments from ticked routes	       					 
 					}
@@ -518,7 +553,7 @@
 					    	layer.setStyle({"fillColor":"#138DA9"})
    
 						   $("#left-sidebar-heading").text(layer.feature.properties.area);
-					   	$("#hover-text-info-container").html('<p class="info-content">There are  ' + '<b>' + layer.feature.properties.customRouteCt + '</b> ToDos here. <b>Go get em!!!</b></p>');
+					   	$("#hover-text-info-container").html('<p class="info-content"><b>' + layer.feature.properties.customRouteCt + '</b> ToDos</p>');
 							
 							if(!$("#chart-row-1").is(':visible')){
 								$("#chart-row-1").show();
@@ -527,12 +562,12 @@
 								$("#chart-row-2").show();
 							}
 						
-							$("#chart-row-1").append('<div id="todo-type-chart" ></div>');
-							var svg = new PieChart(layer.feature, "#todo-type-chart", $("#todo-type-chart").parent().width());
-							
-							$("#chart-row-2").append('<div id="todo-grade-chart" ></div>');
+							$("#chart-row-1").append('<div id="todo-grade-chart" ></div>');
 					   	var todoBarChart = new BarChart(layer.feature.properties.customRouteArr, "#todo-grade-chart", $("#todo-grade-chart").parent().width());	
-					   	todoBarChart.build();	   			   
+					   	todoBarChart.build();	
+					   	
+					   	$("#chart-row-2").append('<div id="todo-type-chart" ></div>');
+							var svg = new PieChart(layer.feature, "#todo-type-chart", $("#todo-type-chart").parent().width());   			   
 						
 					}
 					
@@ -540,9 +575,11 @@
 						var feature = e.target;
 						feature.setStyle({"fillColor":"#505050"});
 						$("#tick-grade-chart").remove();
+						$("#tick-type-chart").remove();
 						$("#left-sidebar-heading").text("");
 					   $("#hover-text-info-container").html("");
 						$("#chart-row-1").hide();
+						$("#chart-row-2").hide();
  					 }
 					
 					// action to perform when mousing off of a feature 
@@ -700,7 +737,15 @@
 					map.addLayer(areaTickPtsObj);
 					
 					map.fitBounds(areaTodoPtsObj.getBounds());
-								
+					
+					// Putting ticks below todos
+					map.eachLayer(function(layer){
+						if(layer.feature){
+							if(layer.feature.properties.customTicksArr){
+								layer.bringToBack()	;				
+							}
+						}
+					});
 						
 					// define the base layer switcher
 					var baseMaps = {

@@ -5,17 +5,22 @@ function PieChart(feature, targetEl, width) {
 	var boulder = feature.properties.customBoulderCt;
 	var alpine = feature.properties.customAlpineCt;
 	
+	function getAvg(targetCt, allCt) {
+		var percent = (targetCt/allCt) * 100;
+		return Math.round(percent);
+	}
+	
 	if(trad > 0){
-		data.push({"count":trad, "type":"Trad ("+trad+")"});
+		data.push({"count":trad, "type":"Trad ("+trad+" - "+getAvg(trad, trad+sport+boulder+alpine)+"%)"});
 	}
 	if(sport > 0){
-		data.push({"count":sport, "type":"Sport ("+sport+")"});
+		data.push({"count":sport, "type":"Sport ("+sport+" - "+getAvg(sport, trad+sport+boulder+alpine)+"%)"});
 	}
 	if(boulder > 0){
-		data.push({"count":boulder, "type":"Boulder ("+boulder+")"});
+		data.push({"count":boulder, "type":"Boulder ("+boulder+" - "+getAvg(boulder, trad+sport+boulder+alpine)+"%)"});
 	}
 	if(alpine > 0){
-		data.push({"count":alpine, "type":"Alpine ("+alpine+")"});
+		data.push({"count":alpine, "type":"Alpine ("+alpine+" - "+getAvg(alpine, trad+sport+boulder+alpine)+"%)"});
 	}
 	
 	if (!width) {
@@ -27,7 +32,7 @@ function PieChart(feature, targetEl, width) {
 	    labelr = radius - 25; // radius for label anchor
 	
 	var color = d3.scale.ordinal()
-	    .range(["#505050", "#0a4958", "#003399", "#a31e39"]);
+	    .range(["#193441", "#3E606F", "#91AA9D", "#D1DBBD"]);
 	
 	var arc = d3.svg.arc()
 	    .outerRadius(radius - 40)
@@ -44,13 +49,23 @@ function PieChart(feature, targetEl, width) {
 	    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 										
 	  var g = svg.selectAll(".arc")
-	      .data(pie(data))
+	    .data(pie(data))
 	    .enter().append("g")
-	      .attr("class", "arc");
+	    .attr("class", "arc");
 	
 	  g.append("path")
 	      .attr("d", arc)
-	      .style("fill", function(d) { return color(d.data.type); });
+	      .style("fill", function(d) { return color(d.data.type); })
+	      .transition()
+//	      .delay(function(d, i) { return i * 500; })
+	      .duration(500)
+	      .attrTween('d', function(d) {
+       		var i = d3.interpolate(d.startAngle+0.1, d.endAngle);
+       		return function(t) {
+           		d.endAngle = i(t);
+         		return arc(d);
+      		}
+  			});
 	
 	  g.append("text")
 	      //.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
@@ -65,7 +80,6 @@ function PieChart(feature, targetEl, width) {
 			       (y/h * labelr) +  ")"; 
 			})					      
 	      .attr("text-anchor", function(d) {
-			    // are we past the center?
 			    return (d.endAngle + d.startAngle)/2 > Math.PI ?
 			        "end" : "start";
 			})

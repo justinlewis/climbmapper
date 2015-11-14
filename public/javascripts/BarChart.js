@@ -267,10 +267,14 @@ function BarChart(routeArr, targetEl, width){
 		    	.enter().append("rect")
 		      .attr("class", "bar")
 		      .attr("x", function(d) { return x(d.rating); })
+		      .attr("y", height )
+		      .attr("height", 0 )
 		      .attr("width", x.rangeBand())
+		      .transition().delay(function (d, i) { return i*100; })
+		      .duration(500)
 		      .attr("y", function(d) { return y(d.frequency); })
 		      .attr("height", function(d) { return height - y(d.frequency); })
-		      .on("mouseover", function(d) {      
+	/*	      .on("mouseover", function(d) {      
 	            tooltip.transition()        
 	                .duration(200)      
 	                .style("opacity", .9);      
@@ -282,6 +286,6 @@ function BarChart(routeArr, targetEl, width){
 	            tooltip.transition()        
 	                .duration(500)      
 	                .style("opacity", 0);   
-			   });
+			   });*/
 	}
 }
