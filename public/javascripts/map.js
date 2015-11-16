@@ -130,6 +130,13 @@
 			      slide: function( event, ui ) {
 			      	var sliderPos = ui.value;
 			      	var selectedDate = sortedAllTickArr[sliderPos];
+			      	
+			      	if(!$("#chart-row-1").is(':visible')){
+							$("#chart-row-1").show();
+						}
+					   $("#chart-row-1").append('<div id="tick-time-chart" ></div>');
+					   var lineChart = new LineChart(tickAreaPts.features, "#tick-time-chart", $("#tick-time-chart").parent().width());
+					   lineChart.build();	
 			     		
 			     		if(selectedDate){
 				     		var tickLocs = tickAreaPts.features;
@@ -169,10 +176,12 @@
 			      stop: function( event, ui ) {
 			      	setTimeout(function(){ 
 			      		$("#time-slider-label").fadeOut(400);
+			      		$("#chart-row-1").fadeOut(400);
+			      		$("#time-time-chart").remove();
 			      	}, 30000);
 			      	
 			      }
-			   }); 		
+			   }); 		   
 	 		}
 	 		 		
 	 		////
@@ -510,6 +519,10 @@
 					function tickHoverAction(e) {
       				var layer = e.target;
       				
+      				if($("#tick-time-chart")){
+      					$("#tick-time-chart").remove()
+      				}
+      				
       				//////
       				/// TODO: this is really boring. Make this rout info more interesting
       				/////
@@ -550,6 +563,10 @@
 					function todoHoverAction(e) {
 					    	var layer = e.target;
 					    	
+					    	if($("#tick-time-chart")){
+      						$("#tick-time-chart").remove()
+      					}
+      				
 					    	layer.setStyle({"fillColor":"#138DA9"})
    
 						   $("#left-sidebar-heading").text(layer.feature.properties.area);

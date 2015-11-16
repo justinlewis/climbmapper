@@ -325,6 +325,20 @@ body{
 	 	left: 0;
 	 	right: 0;
 	}
+	
+
+	.axis line {
+	  fill: none;
+	  stroke: #000;
+	  shape-rendering: crispEdges;
+	}
+	
+	
+	.line {
+	  fill: none;
+	  stroke: steelblue;
+	  stroke-width: 1.5px;
+	}
 
 .tick-info-container{
 	max-height: 150px;
