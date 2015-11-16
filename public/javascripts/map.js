@@ -131,6 +131,10 @@
 			      	var sliderPos = ui.value;
 			      	var selectedDate = sortedAllTickArr[sliderPos];
 			      	
+			      	if($("#tick-time-chart")){
+      					$("#tick-time-chart").remove()
+      				}
+      				
 			      	if(!$("#chart-row-1").is(':visible')){
 							$("#chart-row-1").show();
 						}

@@ -181,17 +181,17 @@ function LineChart(dataArr, targetEl, width) {
 	      .style("text-anchor", "end")
 	      .text("Count");
 		
-		var city = svg.selectAll(".city")
+		var types = svg.selectAll(".types")
 	      .data(climbType)
 	    	.enter().append("g")
-	      .attr("class", "city");
+	      .attr("class", "types");
 		
-		city.append("path")
+		types.append("path")
 	      .attr("class", "line")
 	      .attr("d", function(d) { return line(d.values); })
 	      .style("stroke", function(d) { return color(d.name); });
 		
-		city.append("text")
+		types.append("text")
 	      .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
 	      .attr("transform", function(d) { return "translate(" + x(d.value.date) + "," + y(d.value.total) + ")"; })
 	      .attr("x", 3)
