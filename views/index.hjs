@@ -55,7 +55,7 @@
 		      <form class="navbar-form">
 		        <div class="form-group" style="display:inline;">
 		          <div id="area-search" class="input-group pull-right">
-		            <input type="text" class="typeahead form-control" placeholder="What are searching for?">
+		            <input type="text" class="typeahead form-control" placeholder="Search for a crag/area">
 		            <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span> </span>
 		          </div>
 		        </div>
