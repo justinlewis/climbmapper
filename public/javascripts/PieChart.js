@@ -11,25 +11,25 @@ function PieChart(feature, targetEl, width) {
 	}
 	
 	if(trad > 0){
-		data.push({"count":trad, "type":"Trad ("+trad+" - "+getAvg(trad, trad+sport+boulder+alpine)+"%)"});
+		data.push({"count":trad, "type":"Trad ("+trad+")"});
 	}
 	if(sport > 0){
-		data.push({"count":sport, "type":"Sport ("+sport+" - "+getAvg(sport, trad+sport+boulder+alpine)+"%)"});
+		data.push({"count":sport, "type":"Sport ("+sport+")"});
 	}
 	if(boulder > 0){
-		data.push({"count":boulder, "type":"Boulder ("+boulder+" - "+getAvg(boulder, trad+sport+boulder+alpine)+"%)"});
+		data.push({"count":boulder, "type":"Boulder ("+boulder+")"});
 	}
 	if(alpine > 0){
-		data.push({"count":alpine, "type":"Alpine ("+alpine+" - "+getAvg(alpine, trad+sport+boulder+alpine)+"%)"});
+		data.push({"count":alpine, "type":"Alpine ("+alpine+")"});
 	}
 	
 	if (!width) {
 		var width = 200;
 	}
 	
-	var height = 200,
+	var height = 175,
 	    radius = Math.min(width, height) / 2,
-	    labelr = radius - 25; // radius for label anchor
+	    labelr = radius - 30; // radius for label anchor
 	
 	var color = d3.scale.ordinal()
 	    .range(["#193441", "#3E606F", "#91AA9D", "#D1DBBD"]);
@@ -46,7 +46,15 @@ function PieChart(feature, targetEl, width) {
 	    .attr("width", width)
 	    .attr("height", height)
 	    .append("g")
-	    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+	    .attr("transform", "translate(" + width / 2 + "," + height / 1.75  + ")");
+	    
+	svg.append("text")
+        		.attr("x", 0)             
+        		.attr("y", 10 - height/2)
+        		.attr("text-anchor", "middle")  
+        		.style("font-size", "16px") 
+        		.style("text-decoration", "underline")  
+        		.text("Routes by Type");
 										
 	  var g = svg.selectAll(".arc")
 	    .data(pie(data))
@@ -84,7 +92,10 @@ function PieChart(feature, targetEl, width) {
 			        "end" : "start";
 			})
 			.style("font-size","14px")
-	      .text(function(d) { return d.data.type; });
+	      .text(function(d) { 
+	      	return d.data.type; 
+	      });
+	      
 	
 	return svg;
 }

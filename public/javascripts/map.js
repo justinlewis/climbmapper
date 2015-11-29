@@ -180,8 +180,10 @@
 			      stop: function( event, ui ) {
 			      	setTimeout(function(){ 
 			      		$("#time-slider-label").fadeOut(400);
-			      		$("#chart-row-1").fadeOut(400);
-			      		$("#time-time-chart").remove();
+			      		if($("#tick-time-chart:visible").length > 0){
+			      			$("#chart-row-1").fadeOut(400);
+			      			$("#time-time-chart").remove();
+			      		}
 			      	}, 30000);
 			      	
 			      }
@@ -557,8 +559,9 @@
 			   		var hoverBarChart = new BarChart(layer.feature.properties.customTicksArr, "#tick-grade-chart", $("#tick-grade-chart").parent().width());	
 			   		hoverBarChart.build();
 			   		
-			   		$("#chart-row-2").append('<div id="tick-type-chart" ></div>');
-			   		var svg = new PieChart(layer.feature, "#tick-type-chart", $("#tick-type-chart").parent().width());
+			   		$("#chart-row-2").append('<div id="tick-type-chart" ></div> <div id="tick-height-chart" ></div>');
+			   		new PieChart(layer.feature, "#tick-type-chart", $("#tick-type-chart").parent().width()/2);
+			   		new RouteHeightPieChart(layer.feature, "#tick-height-chart", $("#tick-height-chart").parent().width()/2);
 			   							
 						// TODO: Add some more fun hover actions like a chart of all the comments from ticked routes	       					 
 					}
@@ -587,8 +590,9 @@
 					   	var todoBarChart = new BarChart(layer.feature.properties.customRouteArr, "#todo-grade-chart", $("#todo-grade-chart").parent().width());	
 					   	todoBarChart.build();	
 					   	
-					   	$("#chart-row-2").append('<div id="todo-type-chart" ></div>');
-							var svg = new PieChart(layer.feature, "#todo-type-chart", $("#todo-type-chart").parent().width());   			   
+					   	$("#chart-row-2").append('<div id="todo-type-chart" ></div> <div id="todo-height-chart" ></div>');
+							new PieChart(layer.feature, "#todo-type-chart", $("#todo-type-chart").parent().width()/2);   
+							new RouteHeightPieChart(layer.feature, "#todo-height-chart", $("#todo-height-chart").parent().width()/2);			   
 						
 					}
 					
@@ -597,6 +601,7 @@
 						feature.setStyle({"fillColor":"#505050"});
 						$("#tick-grade-chart").remove();
 						$("#tick-type-chart").remove();
+						$("#tick-height-chart").remove();
 						$("#left-sidebar-heading").text("");
 					   $("#hover-text-info-container").html("");
 						$("#chart-row-1").hide();
@@ -609,6 +614,7 @@
 						layer.setStyle({"fillColor": "#0a4958"});
 						$("#todo-grade-chart").remove();
 						$("#todo-type-chart").remove();
+						$("#todo-height-chart").remove();
 						$("#left-sidebar-heading").text("");
 					   $("#hover-text-info-container").html("");
 					   $("#chart-row-1").hide();

@@ -250,17 +250,13 @@ function BarChart(routeArr, targetEl, width){
 		
 		  svg.append("g")
 		      .attr("class", "y axis")
-		      .call(yAxis);
-		    /*.append("text")
+		      .call(yAxis)
+		    .append("text")
 		      .attr("transform", "rotate(-90)")
 		      .attr("y", 4)
 		      .attr("dy", ".71em")
 		      .style("text-anchor", "end")
-		      .text("Route Count");*/
-		
-		  var tooltip = d3.select("body").append("div")   
-		      .attr("class", "tooltip")               
-		      .style("opacity", 0);
+		      .text("Routes");
 		      
 		  svg.selectAll(".bar")
 		      .data(gradeArr)
@@ -274,18 +270,7 @@ function BarChart(routeArr, targetEl, width){
 		      .duration(500)
 		      .attr("y", function(d) { return y(d.frequency); })
 		      .attr("height", function(d) { return height - y(d.frequency); })
-	/*	      .on("mouseover", function(d) {      
-	            tooltip.transition()        
-	                .duration(200)      
-	                .style("opacity", .9);      
-	            tooltip.html("<b>Type Breakdown</b>" + "<br/>" + "Boulder: " + d.boulderFrequency + "<br/>"  + "Sport: " + d.sportFrequency + "<br/>" + "Trad: " + d.tradFrequency)  
-	                .style("left", (d3.event.pageX) + "px")     
-	                .style("top", (d3.event.pageY - 28) + "px")  
-	         })                  
-	        .on("mouseout", function(d) {       
-	            tooltip.transition()        
-	                .duration(500)      
-	                .style("opacity", 0);   
-			   });*/
+		      
+		   
 	}
 }

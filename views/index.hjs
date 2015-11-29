@@ -25,6 +25,7 @@
 
     <script src="javascripts/map.js" ></script>
     <script src="javascripts/PieChart.js" ></script>
+     <script src="javascripts/RouteHeightPieChart.js" ></script>
     <script src="javascripts/BarChart.js" ></script>
     <script src="javascripts/LineChart.js" ></script>
     

@@ -96,7 +96,7 @@ body{
 	}
 	
 	#left-sidebar-heading{
-	
+		font-weight: bolder;
 	}
 	
 	.row{
@@ -304,27 +304,16 @@ body{
 	  display: none;
 	}
 	
-	.tooltip {   
-	  position: absolute;           
-	  text-align: left;           
-	  padding: 10px;             
-	  font: 16px sans-serif;        
-	  background: lightsteelblue;   
-	  border: 0px;      
-	  border-radius: 8px;           
-	  pointer-events: none;     
-	  z-index: 999999;    
-	}
 	
 	.arc path {
 /*	  stroke: #fff;*/
 	}
 	
-	#todo-type-chart{
+/*	#todo-type-chart{
 		margin: 0 auto;
 	 	left: 0;
 	 	right: 0;
-	}
+	}*/
 	
 
 	.axis line {
@@ -338,6 +327,38 @@ body{
 	  fill: none;
 	  stroke: steelblue;
 	  stroke-width: 1.5px;
+	}
+	
+	#tick-type-chart{
+		width: 50%;
+    	float: left;	
+    	position: relative;
+  		top: 50%;
+  		transform: translateY(-50%);
+	}
+	
+	#tick-height-chart{
+		width: 50%;
+    	float: left;	
+    	position: relative;
+  		top: 50%;
+ 		transform: translateY(-50%);
+	}
+	
+	#todo-type-chart{
+		width: 50%;
+    	float: left;	
+    	position: relative;
+  		top: 50%;
+  		transform: translateY(-50%);
+	}
+	
+	#todo-height-chart{
+		width: 50%;
+    	float: left;	
+    	position: relative;
+  		top: 50%;
+ 		transform: translateY(-50%);
 	}
 
 .tick-info-container{
