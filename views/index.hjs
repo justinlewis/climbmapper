@@ -52,6 +52,8 @@
 		      <ul class="nav navbar-nav">
 		        <li class="active" data-toggle="modal" data-target="#about-modal"><a href="#">About</a></li>
 		        <li>&nbsp;</li>
+		        <li class="active" data-toggle="modal" data-target="#issues-modal"><a href="#">Data Issues</a></li>
+		        <li>&nbsp;</li>
 		      </ul>
 		      <form class="navbar-form">
 		        <div class="form-group" style="display:inline;">
@@ -64,7 +66,7 @@
 		    </div>
 		</div>
 
-	   <div id="issue-box" style="display:none;"></div>
+<!--	   <div id="issue-box" style="display:none;"></div>-->
 		
 	   <div class="container" id="main">
 		  <div class="row" style="">
@@ -160,7 +162,31 @@
 		      
 		    </div>
 		  </div>
-	  </div>
+		  
+		  <div class="modal fade" id="issues-modal" role="dialog">
+		    <div class="modal-dialog">
+		    
+		      <!-- Modal content-->
+		      <div class="modal-content">
+		        <div class="modal-header">
+		          <button type="button" class="close" data-dismiss="modal">&times;</button>
+		          <h4 class="modal-title">Known Issues</h4>
+		        </div>
+		        <div class="modal-body">
+
+						<div id="issues-content"></div>			    		
+			    		
+		        </div>
+		        <div class="modal-footer">
+		          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		        </div>
+		      </div>
+		      
+		    </div>
+		  </div>
+		  
+		  
+	  </div> <!-- end main -->
 
 	</body>
 </html>

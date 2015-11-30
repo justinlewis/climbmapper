@@ -291,27 +291,15 @@
 			
 			function reportMissingAreas(data) {
 				var areas = data[0].missingAreas;
-				for(var i=0; i<areas.length; i++){
-					var area = areas[i];
-					$("#issue-box").dialog({
-							  title: "Current Data Issues",
-					  		  width: $(window).width()/1.5, 
-				  			  height: $(window).height()/1.5,
-							  resizable: true,
-							  dialogClass: 'issue-modal',
-							  buttons: [
-							    {
-							      text: "Got It",
-							      click: function() {
-							        $( this ).dialog( "close" );
-							      }
-							    }
-							  ]
-							});
-						
-						$("#issue-box").append("<h4 class='info-content'><b>Missing location for the route: "+ area.name +"</b><a class='error-link' href="+ area.mpurl+" target='_blank'>See it on Mountain Project!</a></h4>");				
+				if(areas.length === 0){
+					$("#issues-content").append("<h5 class='info-content'><b>There are no known issues.</b></h5>");								
 				}
-			
+				else{
+					for(var i=0; i<areas.length; i++){
+						var area = areas[i];
+						$("#issues-content").append("<h5 class='info-content'><b>Missing location for the route: "+ area.name +" - </b><a class='error-link' href="+ area.mpurl+" target='_blank'>See it on Mountain Project!</a></h5>");				
+					}
+				}
 			}
 			
 			////
