@@ -6,4 +6,7 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'My Climb Mapper' });
 });
 
+exports.users = require('./users');
+
+
 module.exports = router;
