@@ -1,6 +1,6 @@
 var config = {};
 
-config.user_name = process.env.APP_USER || 'app_user';
-config.password=  process.env.APP_USER_PASSWORD || 'reader';
+config.user_name = process.env.OPENSHIFT_POSTGRESQL_DB_USERNAME || 'app_user';
+config.password = process.env.OPENSHIFT_POSTGRESQL_DB_PASSWORD || 'reader';  
 
 module.exports = config;

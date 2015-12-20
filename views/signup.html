@@ -1,0 +1,54 @@
+<!-- views/signup.ejs -->
+<!doctype html>
+<html>
+<head>
+    <title>Node Authentication</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+    <link rel="stylesheet" type="text/css" href="/stylesheets/modal.css" />
+    <style>
+        body        { padding-top:80px; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+	<div class="col-sm-6 col-sm-offset-3">
+	    
+	    <h4><strong>Why sign up?</strong></h4>
+	    <p>Remember, this is an experimental project the is more fun to share with others than hide behind closed doors. I want other Mountain Project users to be able to explore their past and future in climbing while also helping to influence ClimbMappers future. Signing is needed to:
+	    	<ol>
+	    		<li>Maintain your Mountain Project API authentication data (user email and user key).</li>
+				<li>Allow the application to manage your climbing route Tick and ToDo data without overloading the Mountain Project server with data downloads each time you visit the site.</li>   
+				<li>Allow you to help add climbing area/crag location data which will be freely available by the public (feature coming soon).</li> 	
+	    	</ol>
+	    </p>
+	
+		<h1><span class="fa fa-sign-in"></span> Sign Up</h1>
+		
+		<h3 class="error-message">{{message}}</h3>
+		
+	    <!-- LOGIN FORM -->
+	    <form action="/signup" method="post">
+	        <div class="form-group">
+	            <label>User Name</label>
+	            <input type="text" class="form-control" name="username">
+	        </div>
+	        <div class="form-group">
+	            <label>Password</label>
+	            <input type="password" class="form-control" name="password">
+	        </div>
+	
+	        <button type="submit" class="btn btn-warning btn-lg">Signup</button>
+	    </form>
+	
+	    <hr>
+	
+	    <p>Already have an account? <a href="/login">Login</a></p>
+	    <p>Or go <a href="/">home</a>.</p>
+	
+	</div>
+
+</div>
+</body>
+</html>

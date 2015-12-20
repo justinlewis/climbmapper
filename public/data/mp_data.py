@@ -1,102 +1,26 @@
-import json, requests, psycopg2, collections
+import json, requests, psycopg2, collections, sys, os
 
 class MPData:
 	
-	def init(self):
-		print "init"
-		#DB connection properties
-		conn = psycopg2.connect(dbname = 'climbmapper', host= 'localhost', port= 5432, user = 'USER',password= 'PASSWORD')
-		cur = conn.cursor()  ## open a cursor
+	def init(self, appuserid):
 		
-		cur.execute("TRUNCATE route;")
-		cur.execute("TRUNCATE tick;")
-		cur.execute("TRUNCATE todo;")
-		conn.commit()
-		conn.close()	
-		print "cleaned db"
-		
-	def getToDos(self):
-		#DB connection properties
-		conn = psycopg2.connect(dbname = 'climbmapper', host= 'localhost', port= 5432, user = 'USER',password= 'PASSWORD')
-		cur = conn.cursor()  ## open a cursor
-		
-		urlRoot = "http://www.mountainproject.com/data?action=getToDos"
-		urlPropId = "&userId=106251374"
-		urlPropStartPos = "&startPos="
-		urlPropStartPosList = [0, 200, 400]
-		mpKey = "&key=SUPERSECRETKEY"
-		toDoList = []
-		
-		
-		toDoCt = 1
-		for pos in urlPropStartPosList:
-			url = urlRoot + urlPropId + urlPropStartPos + str(pos) + mpKey
-			resp = requests.get(url=url)
-			toDos = json.loads(resp.text)								
-			
-			for toDoId in toDos["toDos"]:
-				toDoList.append(toDoId)
-				query = cur.mogrify("INSERT INTO todo(id,routeid,climberid) VALUES (%s, %s, %s)", (str(toDoId), str(toDoId), str(1)))
-						
-				cur.execute(query)
-				conn.commit()
-				
-				toDoCt += 1
-		
-		conn.close()
-		return toDoList
-	
-	
-	def getTicks(self):
-		
-		#DB connection properties
-		conn = psycopg2.connect(dbname = 'climbmapper', host= 'localhost', port= 5432, user = 'USER',password= 'PASSWORD')
-		cur = conn.cursor()  ## open a cursor
-		
-		root = "http://www.mountainproject.com/data?action=getTicks"
-		uid = "&userId=106251374"
-		key = "&key=SUPERSECRETKEY"
-		
-		
-		# the api returns a max of 200 ticks in a request so we have to do this in chunks
-		reqChunks = 0
-		ticks = {}
-		ticksArr = []
-		while reqChunks < 600:
-			reqStartPos = "&startPos=" + str(reqChunks)
-			url = root + uid + key + reqStartPos
+		dbHost = os.environ['OPENSHIFT_POSTGRESQL_DB_HOST']
+		dbPort = os.environ['OPENSHIFT_POSTGRESQL_DB_PORT']
+		dbUser = os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME']
+		dbPass = os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD']
 
-			resp = requests.get(url=url)
-			ticksResp = json.loads(resp.text)
-			
-			if reqChunks == 0:
-				hardestTick = ticksResp["hardest"]
-				#print hardestTick
-			
-			# {"date": "2015-10-16", "notes": "pretty ok", "routeId": 106360348}
-			for tick in ticksResp["ticks"]:
-				ticksArr.append(tick["routeId"])
-				query = cur.mogrify("INSERT INTO tick(id,routeid,climberid,notes,date) VALUES (%s, %s, %s, %s, %s)", (str(tick["routeId"]), str(tick["routeId"]), str(1), tick["notes"], str(tick["date"])))
-						
-				cur.execute(query)
-				conn.commit()
-
-			reqChunks = reqChunks + 200
-			
-		conn.close()	
-		return ticksArr
-		
-	# @contentType can be 'todo' or 'tick'	
-	def getRoutes(self, idsList, contentType):
-		
 		#DB connection properties
-		conn = psycopg2.connect(dbname = 'climbmapper', host= 'localhost', port= 5432, user = 'USER',password= 'PASSWORD')
+		conn = psycopg2.connect(dbname = 'climbmapper', host= dbHost, port= dbPort, user = dbUser,password= dbPass)
 		cur = conn.cursor()  ## open a cursor
 		
-		root = "http://www.mountainproject.com/data?action=getRoutes&routeIds="
-		ids = ''
-	 	key = "&key=SUPERSECRETKEY"
 		
+		cur.execute("SELECT routeid FROM tick WHERE climberid = "+str(appuserid)+";")
+		global existingUserTicks
+		existingUserTicks = cur.fetchall()
+		
+		cur.execute("SELECT routeid from todo WHERE climberid = "+str(appuserid)+";")
+		global existingUserTodos
+		existingUserTodos = cur.fetchall()
 		
 		cur.execute("SELECT id, usa, hueco FROM grade;")
 		global gradesLookup
@@ -116,7 +40,112 @@ class MPData:
 		
 		cur.execute("SELECT id FROM route;")	
 		global routeLookup
-		routeLookup = cur.fetchall()	
+		routeLookup = cur.fetchall()
+
+		
+		#cur.execute("TRUNCATE route;")
+		#cur.execute("TRUNCATE tick;")
+		#cur.execute("TRUNCATE todo;")
+		#conn.commit()
+		#conn.close()	
+		#print "cleaned db"
+		
+	def getToDos(self, mpUserKey, mpUserEmail):
+		dbHost = os.environ['OPENSHIFT_POSTGRESQL_DB_HOST']
+		dbPort = os.environ['OPENSHIFT_POSTGRESQL_DB_PORT']
+		dbUser = os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME']
+		dbPass = os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD']
+
+		#DB connection properties
+		conn = psycopg2.connect(dbname = 'climbmapper', host= dbHost, port= dbPort, user = dbUser,password= dbPass)
+		cur = conn.cursor()  ## open a cursor
+		
+		urlRoot = "http://www.mountainproject.com/data?action=getToDos"
+		urlPropId = "&email="+mpUserEmail
+		urlPropStartPos = "&startPos="
+		urlPropStartPosList = [0, 200, 400]
+		mpKey = "&key="+mpUserKey
+		toDoList = []
+		
+		
+		toDoCt = 1
+		for pos in urlPropStartPosList:
+			url = urlRoot + urlPropId + urlPropStartPos + str(pos) + mpKey
+			resp = requests.get(url=url)
+			toDos = json.loads(resp.text)								
+			
+			for toDoId in toDos["toDos"]:
+				if not self.todoExists(toDoId):
+					toDoList.append(toDoId)
+					query = cur.mogrify("INSERT INTO todo(id,routeid,climberid) VALUES (%s, %s, %s)", (str(toDoId), str(toDoId), str(1)))
+						
+					cur.execute(query)
+					conn.commit()	
+		
+		conn.close()
+		return toDoList
+	
+	
+	def getTicks(self, mpUserKey, mpUserEmail):
+		
+		dbHost = os.environ['OPENSHIFT_POSTGRESQL_DB_HOST']
+		dbPort = os.environ['OPENSHIFT_POSTGRESQL_DB_PORT']
+		dbUser = os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME']
+		dbPass = os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD']
+
+		#DB connection properties
+		conn = psycopg2.connect(dbname = 'climbmapper', host= dbHost, port= dbPort, user = dbUser,password= dbPass)
+		cur = conn.cursor()  ## open a cursor
+		
+		root = "http://www.mountainproject.com/data?action=getTicks"
+		uid = "&email="+mpUserEmail
+		key = "&key="+mpUserKey
+		
+		
+		# the api returns a max of 200 ticks in a request so we have to do this in chunks
+		reqChunks = 0
+		ticks = {}
+		ticksArr = []
+		while reqChunks < 600:
+			reqStartPos = "&startPos=" + str(reqChunks)
+			url = root + uid + key + reqStartPos
+
+			resp = requests.get(url=url)
+			ticksResp = json.loads(resp.text)
+			
+			if reqChunks == 0:
+				hardestTick = ticksResp["hardest"]
+				#print hardestTick
+			
+			# {"date": "2015-10-16", "notes": "pretty ok", "routeId": 106360348}
+			for tick in ticksResp["ticks"]:
+				if not self.tickExists(tick["routeId"]):
+					ticksArr.append(tick["routeId"])
+					query = cur.mogrify("INSERT INTO tick(id,routeid,climberid,notes,date) VALUES (%s, %s, %s, %s, %s)", (str(tick["routeId"]), str(tick["routeId"]), str(1), tick["notes"], str(tick["date"])))
+						
+					cur.execute(query)
+					conn.commit()
+
+			reqChunks = reqChunks + 200
+			
+		conn.close()	
+		return ticksArr
+		
+	# @contentType can be 'todo' or 'tick'	
+	def getRoutes(self, idsList, contentType, mpUserKey):
+		dbHost = os.environ['OPENSHIFT_POSTGRESQL_DB_HOST']
+		dbPort = os.environ['OPENSHIFT_POSTGRESQL_DB_PORT']
+		dbUser = os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME']
+		dbPass = os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD']
+
+		#DB connection properties
+		conn = psycopg2.connect(dbname = 'climbmapper', host= dbHost, port= dbPort, user = dbUser,password= dbPass)
+		cur = conn.cursor()  ## open a cursor
+		
+		root = "http://www.mountainproject.com/data?action=getRoutes&routeIds="
+		ids = ''
+	 	key = "&key="+mpUserKey
+			
 		
 		idCt = 1
 		rows = []
@@ -146,7 +175,7 @@ class MPData:
 							routeExists = True
 
 						if routeExists is False:
-							routes["routes"].append(rt)	
+							#routes["routes"].append(rt)	
 							area = ','.join(rt["location"])
 							
 							# Locations from MP are arrays of location names
@@ -222,7 +251,21 @@ class MPData:
 				return True
 				
 		return False
+		
+	def todoExists(self, inRouteId):
+		for routeId in existingUserTodos:
+			if str(routeId[0]) == str(inRouteId):
+				return True
+				
+		return False
 	
+	def tickExists(self, inRouteId):
+		for routeId in existingUserTicks:
+			if str(routeId[0]) == str(inRouteId):
+				return True
+				
+		return False
+		
 	
 	def getCleanRating(self, rating):
 		rating = rating.lower().replace("r", "")
@@ -360,10 +403,19 @@ class MPData:
 
 if __name__ == '__main__':
 	
-	MPData = MPData()
-	MPData.init()
-	toDoIdList = MPData.getToDos()
-	MPData.getRoutes(toDoIdList, 'todo')
+	mpUserKey = sys.argv[1]
+	mpUserEmail = sys.argv[2]
 	
-	tickIdList = MPData.getTicks()
-	MPData.getRoutes(tickIdList, 'tick')
+	print mpUserKey
+	print mpUserEmail
+	
+	MPData = MPData()
+	MPData.init(1)
+	toDoIdList = MPData.getToDos(mpUserKey, mpUserEmail)
+	MPData.getRoutes(toDoIdList, 'todo', mpUserKey)
+	
+	tickIdList = MPData.getTicks(mpUserKey, mpUserEmail)
+	MPData.getRoutes(tickIdList, 'tick', mpUserKey)
+	
+	print("DONE")
+	sys.stdout.flush()

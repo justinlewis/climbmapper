@@ -242,6 +242,10 @@ body{
       width: 70%;
 	}
 	
+	.error-message{
+		color: red;	
+	}
+	
 	#hover-box{
 		position: absolute;
 		bottom: 0px;

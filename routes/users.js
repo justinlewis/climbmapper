@@ -1,20 +1,12 @@
 var express = require('express');
 var router = express.Router();
 var pg = require('pg');
-// TODO: finish setting up config
-//var config = require('./config');
+var config = require('../config.js');
 
 if(process.env.OPENSHIFT_POSTGRESQL_DB_URL){
 	var dbUrl = process.env.OPENSHIFT_POSTGRESQL_DB_URL + "/climbmapper";
 }
-var conString = dbUrl || 'postgres://app_user:reader@localhost:5432/climbmapper';
-
-/* GET users listing. */
-/*router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
-
-module.exports = router;*/
+var conString = dbUrl || 'postgres://'+config.user_name+':'+config.password+'@localhost:5432/climbmapper';
 
 
 exports.createUser = function(username, password) {
@@ -27,7 +19,7 @@ exports.createUser = function(username, password) {
    var userQuery = client.query("SELECT id, username, password, displayname, email FROM appuser WHERE username = '"+username+"';");
     
 	var newUserObj = {
- 			"id": 0, // TODO: this is fine for now but need to decide whether to use complex id's or db sequence ids.  
+ 			"id": 0, // TODO: this is fine for now  
  			"username": username, 
  			"displayname": username, 
  			"emails": ["email"] 
@@ -35,6 +27,26 @@ exports.createUser = function(username, password) {
  			
     return newUserObj;
 }
+
+exports.updateProfile = function(user, mpuserkey, email, password) {
+	console.log(user, " - " ,mpuserkey, " - ", email, " - ", password)
+	
+	var client = new pg.Client(conString);
+   client.connect();
+   
+   console.log("Updating user")
+   if(mpuserkey.length > 0) {
+   	console.log("UPDATE appuser SET mountainprojkey='"+mpuserkey+ "' WHERE id ='"+user.id.toString()+"';")
+   	client.query("UPDATE appuser SET mountainprojkey='"+mpuserkey+ "' WHERE id ='"+user.id.toString()+"';");
+   }
+   if(email.length > 0){
+   	client.query("UPDATE appuser SET email='"+email+"' WHERE id ='"+user.id.toString()+"';");
+   }
+   if(password.length > 0){
+   	client.query("UPDATE appuser SET password='"+password+"' WHERE id ='"+user.id.toString()+"';");
+   }
+}
+
 
 exports.verifyPassword = function (password) {
 	if(password.length < 1){
@@ -48,11 +60,11 @@ exports.verifyUser = function (username, cb) {
 	var client = new pg.Client(conString);
    client.connect();
    
-	var query = client.query("SELECT id, username, password, displayname, email FROM appuser;");
+	var query = client.query("SELECT id, username, password, displayname, email, mountainprojkey FROM appuser;");
    
     query.on('row', function(row, result) {
     	if (row) {
-    	  rowJSON = { "id": row.id, "username": row.username, "password": row.password, "displayname": row.displayname, "emails": [row.email] };
+    	  rowJSON = { "id": row.id, "username": row.username, "password": row.password, "displayname": row.displayname, "emails": [row.email], "mountainprojkey": row.mountainprojkey };
         result.addRow(rowJSON);
       }
     })
@@ -79,12 +91,12 @@ exports.findByUsername = function(username, cb) {
   	 var client = new pg.Client(conString);
     client.connect();
     
-    var query = client.query("SELECT id, username, password, displayname, email FROM appuser;");
+    var query = client.query("SELECT id, username, password, displayname, email, mountainprojkey FROM appuser;");
    
     query.on('row', function(row, result) {
     	  
         if (row) {
-        		rowJSON = { "id": row.id, "username": row.username, "password": row.password, "displayname": row.displayname, "emails": [row.email] };
+        		rowJSON = { "id": row.id, "username": row.username, "password": row.password, "displayname": row.displayname, "emails": [row.email], "mountainprojkey": row.mountainprojkey };
         		result.addRow(rowJSON);
         }
     })
@@ -97,9 +109,6 @@ exports.findByUsername = function(username, cb) {
 		      var record = records[i];
 		      if (record.username === username) {
 		        return cb(null, record);
-		      }
-		      else{
-					console.log("nope")		      
 		      }
 		    }
 
@@ -153,11 +162,11 @@ exports.findById = function(id, cb) {
   	 var client = new pg.Client(conString);
     client.connect();
     
-    var query = client.query("SELECT id, username, password, displayname, email FROM appuser;");
+    var query = client.query("SELECT id, username, password, displayname, email, mountainprojkey FROM appuser;");
    
     query.on('row', function(row, result) {
         if (row) {
-        		rowJSON = { "id": row.id, "username": row.username, "password": row.password, "displayname": row.displayname, "emails": [row.email] };
+        		rowJSON = { "id": row.id, "username": row.username, "password": row.password, "displayname": row.displayname, "emails": [row.email], "mountainprojkey": row.mountainprojkey };
         		result.addRow(rowJSON);
         }
     })
@@ -168,9 +177,6 @@ exports.findById = function(id, cb) {
 		      var record = records[i];
 		      if (record.id === id) {
 		        return cb(null, record);
-		      }
-		      else{
-					console.log("nope")		      
 		      }
 		    }
 

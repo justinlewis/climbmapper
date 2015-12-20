@@ -751,7 +751,13 @@
 					map.addLayer(areaTodoPtsObj);
 					map.addLayer(areaTickPtsObj);
 					
-					map.fitBounds(areaTodoPtsObj.getBounds());
+					if(areaTodoPtsObj.getLayers().length > 0){
+						map.fitBounds(areaTodoPtsObj.getBounds());				
+					}
+					else{
+						map.fitWorld();					
+					}
+					
 					
 					// Putting ticks below todos
 					map.eachLayer(function(layer){
