@@ -51,7 +51,7 @@ class MPData:
 		#conn.close()	
 		#print "cleaned db"
 		
-	def getToDos(self, mpUserKey, mpUserEmail):
+	def getToDos(self, mpUserKey, mpUserEmail, appUserId):
 		dbHost = os.environ['OPENSHIFT_POSTGRESQL_DB_HOST']
 		dbPort = os.environ['OPENSHIFT_POSTGRESQL_DB_PORT']
 		dbUser = os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME']
@@ -79,7 +79,7 @@ class MPData:
 			for toDoId in toDos["toDos"]:
 				if not self.todoExists(toDoId):
 					toDoList.append(toDoId)
-					query = cur.mogrify("INSERT INTO todo(id,routeid,climberid) VALUES (%s, %s, %s)", (str(toDoId), str(toDoId), str(1)))
+					query = cur.mogrify("INSERT INTO todo(id,routeid,climberid) VALUES (%s, %s, %s)", (str(toDoId), str(toDoId), str(appUserId)))
 						
 					cur.execute(query)
 					conn.commit()	
@@ -88,7 +88,7 @@ class MPData:
 		return toDoList
 	
 	
-	def getTicks(self, mpUserKey, mpUserEmail):
+	def getTicks(self, mpUserKey, mpUserEmail, appUserId):
 		
 		dbHost = os.environ['OPENSHIFT_POSTGRESQL_DB_HOST']
 		dbPort = os.environ['OPENSHIFT_POSTGRESQL_DB_PORT']
@@ -124,7 +124,7 @@ class MPData:
 			for tick in ticksResp["ticks"]:
 				if not self.tickExists(tick["routeId"]):
 					ticksArr.append(tick["routeId"])
-					query = cur.mogrify("INSERT INTO tick(id,routeid,climberid,notes,date) VALUES (%s, %s, %s, %s, %s)", (str(tick["routeId"]), str(tick["routeId"]), str(1), tick["notes"], str(tick["date"])))
+					query = cur.mogrify("INSERT INTO tick(id,routeid,climberid,notes,date) VALUES (%s, %s, %s, %s, %s)", (str(tick["routeId"]), str(tick["routeId"]), str(appUserId), tick["notes"], str(tick["date"])))
 						
 					cur.execute(query)
 					conn.commit()
@@ -419,10 +419,10 @@ if __name__ == '__main__':
 	
 	MPData = MPData()
 	MPData.init(appUserId)
-	toDoIdList = MPData.getToDos(mpUserKey, mpUserEmail)
+	toDoIdList = MPData.getToDos(mpUserKey, mpUserEmail, appUserId)
 	MPData.getRoutes(toDoIdList, 'todo', mpUserKey)
 	
-	tickIdList = MPData.getTicks(mpUserKey, mpUserEmail)
+	tickIdList = MPData.getTicks(mpUserKey, mpUserEmail, appUserId)
 	MPData.getRoutes(tickIdList, 'tick', mpUserKey)
 	
 	print("DONE")
