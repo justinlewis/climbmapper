@@ -405,12 +405,13 @@ if __name__ == '__main__':
 	
 	mpUserKey = sys.argv[1]
 	mpUserEmail = sys.argv[2]
+	appUserId = sys.argv[3]
 	
 	print mpUserKey
 	print mpUserEmail
 	
 	MPData = MPData()
-	MPData.init(1)
+	MPData.init(appUserId)
 	toDoIdList = MPData.getToDos(mpUserKey, mpUserEmail)
 	MPData.getRoutes(toDoIdList, 'todo', mpUserKey)
 	
