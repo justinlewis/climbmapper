@@ -203,7 +203,7 @@ exports.loadMissingAreas = function(req, res) {
     var client = new pg.Client(conString);
     client.connect();
 
-    var queryString = "SELECT r.name, r.mpurl FROM route r WHERE area = 999;";
+    var queryString = "SELECT r.name, r.mpurl FROM route r WHERE area = -1;";
     var query = client.query(queryString);
     
     query.on('row', function(row, result) {
