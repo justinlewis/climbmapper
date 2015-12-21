@@ -8,9 +8,10 @@ class MPData:
 		dbPort = os.environ['OPENSHIFT_POSTGRESQL_DB_PORT']
 		dbUser = os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME']
 		dbPass = os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD']
+		dbName = os.environ['OPENSHIFT_APP_NAME']
 
 		#DB connection properties
-		conn = psycopg2.connect(dbname = 'climbmapper', host= dbHost, port= dbPort, user = dbUser,password= dbPass)
+		conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
 		cur = conn.cursor()  ## open a cursor
 		
 		
@@ -55,9 +56,10 @@ class MPData:
 		dbPort = os.environ['OPENSHIFT_POSTGRESQL_DB_PORT']
 		dbUser = os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME']
 		dbPass = os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD']
+		dbName = os.environ['OPENSHIFT_APP_NAME']
 
 		#DB connection properties
-		conn = psycopg2.connect(dbname = 'climbmapper', host= dbHost, port= dbPort, user = dbUser,password= dbPass)
+		conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
 		cur = conn.cursor()  ## open a cursor
 		
 		urlRoot = "http://www.mountainproject.com/data?action=getToDos"
@@ -92,9 +94,10 @@ class MPData:
 		dbPort = os.environ['OPENSHIFT_POSTGRESQL_DB_PORT']
 		dbUser = os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME']
 		dbPass = os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD']
+		dbName = os.environ['OPENSHIFT_APP_NAME']
 
 		#DB connection properties
-		conn = psycopg2.connect(dbname = 'climbmapper', host= dbHost, port= dbPort, user = dbUser,password= dbPass)
+		conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
 		cur = conn.cursor()  ## open a cursor
 		
 		root = "http://www.mountainproject.com/data?action=getTicks"
@@ -137,9 +140,10 @@ class MPData:
 		dbPort = os.environ['OPENSHIFT_POSTGRESQL_DB_PORT']
 		dbUser = os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME']
 		dbPass = os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD']
+		dbName = os.environ['OPENSHIFT_APP_NAME']
 
 		#DB connection properties
-		conn = psycopg2.connect(dbname = 'climbmapper', host= dbHost, port= dbPort, user = dbUser,password= dbPass)
+		conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
 		cur = conn.cursor()  ## open a cursor
 		
 		root = "http://www.mountainproject.com/data?action=getRoutes&routeIds="
@@ -403,12 +407,15 @@ class MPData:
 
 if __name__ == '__main__':
 	
-	mpUserKey = sys.argv[1]
+	mpUserKey = sys.argv[1] 
 	mpUserEmail = sys.argv[2]
 	appUserId = sys.argv[3]
 	
+		
 	print mpUserKey
 	print mpUserEmail
+	print appUserId
+	print
 	
 	MPData = MPData()
 	MPData.init(appUserId)

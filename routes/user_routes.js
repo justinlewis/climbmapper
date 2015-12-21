@@ -60,7 +60,8 @@ module.exports = function(app, passport) {
 	
 	// MOUNTAN PROJECT UPDATE
 	app.post('/mpupdate', isLoggedIn, function(req, res) {	
-		var process = spawn('python',[ "./public/data/mp_data.py", req.user.mountainprojkey.replace(/ /g,''), req.user.emails[0] ]);
+	console.log(req.user)
+		var process = spawn('python',[ "./public/data/mp_data.py", req.user.mountainprojkey.replace(/ /g,''), req.user.emails[0], req.user.id ]);
 
 		process.stdout.setEncoding('utf8');
 		process.stdout.on('data', function (data){
