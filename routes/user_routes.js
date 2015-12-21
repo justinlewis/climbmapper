@@ -47,7 +47,7 @@ module.exports = function(app, passport) {
 	});
 	
 	app.post('/updateprofile', isLoggedIn, function(req, res) {
-		users.updateProfile(req.user, req.body.mpuserkey, req.body.email, req.body.password)
+		users.updateProfile(res, req.user, req.body.mpuserkey, req.body.email, req.body.password);
 	});
 	
 	
@@ -74,7 +74,7 @@ module.exports = function(app, passport) {
 
 	  			if(line === "DONE"){
 	  				console.log("Update complete")
-	  				res.redirect('/');
+	  				res.redirect('/profile');
 	  			}
 	  		}
 		});
