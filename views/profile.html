@@ -39,6 +39,7 @@
 			<form action="/mpupdate" method="post">
 				<button id="mp-update-btn" type="submit" class="btn btn-primary btn-lg">Update Your Mountain Project Data <i id="mp-update-btn-loading-spinner" class="fa fa-refresh fa-spin" style="display:none;"></i></button>
 			</form>
+			<p class="warning-message" style="display:none;">***Be patient. This can take a little while. The page will redirect to the map when done.</p>
 		</div>
 		<div class="col-sm-3 col-m-3"></div>
 
@@ -49,20 +50,9 @@
 </html>
 
 <script type="text/javascript" >
-/*	$('#mp-update-btn').click(function() {
-	
+	$('#mp-update-btn').click(function() {
 		$("#mp-update-btn-loading-spinner").show();
-		
-    	$.ajax({
-        type: 'POST',
-        url: '/mpupdate',
-        success: function(data){
-              alert('Success!')
-           }
-    	}).done(function (data) {
-    		console.log("ajax done ", data)
-//    		$("#mp-update-btn-loading-spinner").hide();
-    	});
-	});*/
+		$(".warning-message").show();
+	});
 	
 </script>
