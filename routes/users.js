@@ -29,14 +29,12 @@ exports.createUser = function(username, password) {
 }
 
 exports.updateProfile = function(user, mpuserkey, email, password) {
-	console.log(user, " - " ,mpuserkey, " - ", email, " - ", password)
 	
 	var client = new pg.Client(conString);
    client.connect();
    
    console.log("Updating user")
    if(mpuserkey.length > 0) {
-   	console.log("UPDATE appuser SET mountainprojkey='"+mpuserkey+ "' WHERE id ='"+user.id.toString()+"';")
    	client.query("UPDATE appuser SET mountainprojkey='"+mpuserkey+ "' WHERE id ='"+user.id.toString()+"';");
    }
    if(email.length > 0){

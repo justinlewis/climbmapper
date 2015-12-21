@@ -1,5 +1,6 @@
 	
 var spawn = require("child_process").spawn;
+var users = require('../routes/users');
 
 module.exports = function(app, passport) {	
 	// LOG-IN
@@ -60,7 +61,7 @@ module.exports = function(app, passport) {
 	
 	// MOUNTAN PROJECT UPDATE
 	app.post('/mpupdate', isLoggedIn, function(req, res) {	
-	console.log(req.user)
+
 		var process = spawn('python',[ "./public/data/mp_data.py", req.user.mountainprojkey.replace(/ /g,''), req.user.emails[0], req.user.id ]);
 
 		process.stdout.setEncoding('utf8');
