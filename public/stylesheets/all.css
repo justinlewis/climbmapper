@@ -267,6 +267,21 @@ body{
 		overflow-y: auto;
 	}
 	
+	#user-name-container{
+		 position: absolute;
+	    right: 50px;
+	    top: 14px;
+	    z-index: 9999;
+	    background: rgba(80, 80, 80, .5);
+	    padding: 10px;
+	    border-radius: 2px;
+	    font-weight: bold;
+	}
+	
+	#user-name-container h3{
+		margin: 0;	
+	}
+	
 	
 /*	CHART STYLES*/
 
