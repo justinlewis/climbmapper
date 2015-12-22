@@ -71,7 +71,7 @@ module.exports = function(app, passport) {
 			
 	  		for (var i=0; i<lines.length; i++) {
 	  			var line = lines[i].replace(/(\r\n|\n|\r)/gm,"").replace(/ /g,'');
-
+				console.log(line)
 	  			if(line === "DONE"){
 	  				console.log("Update complete")
 	  				res.redirect('/profile');

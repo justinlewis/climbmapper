@@ -9,11 +9,23 @@ class MPData:
 		dbUser = os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME']
 		dbPass = os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD']
 		dbName = os.environ['OPENSHIFT_APP_NAME']
+		
+		#dbHost = "localhost"
+		#dbPort = 5432
+		#dbUser = "app_user"
+		##dbPass = "?????"
+		#dbName = "climbmapper"
 
 		#DB connection properties
 		conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
 		cur = conn.cursor()  ## open a cursor
 		
+		
+		cur.execute("DELETE FROM tick WHERE climberid = '"+str(appuserid)+"';")
+		cur.execute("DELETE FROM todo WHERE climberid = '"+str(appuserid)+"';")
+		conn.commit()
+		#conn.close()	
+		print "cleaned db"
 		
 		cur.execute("SELECT routeid FROM tick WHERE climberid = "+str(appuserid)+";")
 		global existingUserTicks
@@ -42,14 +54,9 @@ class MPData:
 		cur.execute("SELECT id FROM route;")	
 		global routeLookup
 		routeLookup = cur.fetchall()
-
 		
-		#cur.execute("TRUNCATE route;")
-		#cur.execute("TRUNCATE tick;")
-		#cur.execute("TRUNCATE todo;")
-		#conn.commit()
-		#conn.close()	
-		#print "cleaned db"
+		conn.close()
+
 		
 	def getToDos(self, mpUserKey, mpUserEmail, appUserId):
 		dbHost = os.environ['OPENSHIFT_POSTGRESQL_DB_HOST']
@@ -57,6 +64,12 @@ class MPData:
 		dbUser = os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME']
 		dbPass = os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD']
 		dbName = os.environ['OPENSHIFT_APP_NAME']
+		
+		#dbHost = "localhost"
+		#dbPort = 5432
+		#dbUser = "app_user"
+		#dbPass = "?????"
+		#dbName = "climbmapper"
 
 		#DB connection properties
 		conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
@@ -95,6 +108,12 @@ class MPData:
 		dbUser = os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME']
 		dbPass = os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD']
 		dbName = os.environ['OPENSHIFT_APP_NAME']
+		
+		#dbHost = "localhost"
+		#dbPort = 5432
+		#dbUser = "app_user"
+		##dbPass = "?????"
+		#dbName = "climbmapper"
 
 		#DB connection properties
 		conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
@@ -141,6 +160,12 @@ class MPData:
 		dbUser = os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME']
 		dbPass = os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD']
 		dbName = os.environ['OPENSHIFT_APP_NAME']
+		
+		#dbHost = "localhost"
+		#dbPort = 5432
+		#dbUser = "app_user"
+		#dbPass = "?????"
+		#dbName = "climbmapper"
 
 		#DB connection properties
 		conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
@@ -369,40 +394,6 @@ class MPData:
 				return gradeId		
 		
 		return 999
-
-
-	def printRoutesInfo(self, routesJSON):
-		routeCt = 1
-		print routesJSON["routes"]
-		for route in routesJSON["routes"]:
-			print "Route # " , routeCt
-			print 
-			print route["id"]
-			print route["name"]
-			print route["type"]
-			print route["rating"]
-			print route["stars"]
-			print route["starVotes"]
-			print route["pitches"]
-			print route["location"]
-			locationList = route["location"]
-			print locationList[0]  # Root - State
-			
-			locationCt = 1
-			locationListLen = len(locationList)
-			for locationStep in locationList:	
-				if locationCt == 1:
-					print "Root = " + locationStep
-				elif locationCt > 1 and locationCt < locationListLen:
-					print "Area / Sub Area " + str(locationCt) + " = " + locationStep
-				elif locationCt == locationListLen:
-					print "Crag = " + locationStep	
-					
-				locationCt += 1
-			print route["url"]
-			
-			routeCt += 1
-		print "Route Count = " + str(routeCt)
 
 
 if __name__ == '__main__':
