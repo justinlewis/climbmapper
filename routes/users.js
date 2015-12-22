@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var pg = require('pg');
-pg.defaults.poolSize = 50;
 
 var config = require('../config.js');
 

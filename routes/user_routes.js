@@ -1,5 +1,6 @@
 	
 var spawn = require("child_process").spawn;
+var PythonShell = require('python-shell');
 var users = require('../routes/users');
 
 module.exports = function(app, passport) {	
@@ -62,21 +63,18 @@ module.exports = function(app, passport) {
 	// MOUNTAN PROJECT UPDATE
 	app.post('/mpupdate', isLoggedIn, function(req, res) {	
 
-		var process = spawn('python',[ "./public/data/mp_data.py", req.user.mountainprojkey.replace(/ /g,''), req.user.emails[0], req.user.id ]);
-
-		process.stdout.setEncoding('utf8');
-		process.stdout.on('data', function (data){
-			var str = data.toString();
-			var lines = str.split(/(\r?\n)/g);
-			
-	  		for (var i=0; i<lines.length; i++) {
-	  			var line = lines[i].replace(/(\r\n|\n|\r)/gm,"").replace(/ /g,'');
-				console.log(line)
-	  			if(line === "DONE"){
-	  				console.log("Update complete")
-	  				res.redirect('/profile');
-	  			}
-	  		}
+		var options = {
+		  args: [req.user.mountainprojkey.replace(/ /g,''), req.user.emails[0], req.user.id]
+		};
+		
+		PythonShell.run('./public/data/mp_data.py', options, function (err, results) {
+		  	if (err) throw err;
+		  
+		  	// results is an array consisting of messages collected during execution 
+		  	if(results.slice(-1)[0] === "DONE"){
+	  			console.log("Update complete")
+	  			res.redirect('/profile');
+	  	  	}
 		});
 	});
 }

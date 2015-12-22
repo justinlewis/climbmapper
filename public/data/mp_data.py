@@ -13,7 +13,7 @@ class MPData:
 		#dbHost = "localhost"
 		#dbPort = 5432
 		#dbUser = "app_user"
-		##dbPass = "?????"
+		#dbPass = "????"
 		#dbName = "climbmapper"
 
 		#DB connection properties
@@ -68,7 +68,7 @@ class MPData:
 		#dbHost = "localhost"
 		#dbPort = 5432
 		#dbUser = "app_user"
-		#dbPass = "?????"
+		#dbPass = "????"
 		#dbName = "climbmapper"
 
 		#DB connection properties
@@ -112,7 +112,7 @@ class MPData:
 		#dbHost = "localhost"
 		#dbPort = 5432
 		#dbUser = "app_user"
-		##dbPass = "?????"
+		#dbPass = "????"
 		#dbName = "climbmapper"
 
 		#DB connection properties
@@ -164,7 +164,7 @@ class MPData:
 		#dbHost = "localhost"
 		#dbPort = 5432
 		#dbUser = "app_user"
-		#dbPass = "?????"
+		#dbPass = "????"
 		#dbName = "climbmapper"
 
 		#DB connection properties
@@ -394,6 +394,7 @@ class MPData:
 				return gradeId		
 		
 		return 999
+
 
 
 if __name__ == '__main__':
