@@ -33,7 +33,7 @@ module.exports = function(passport) {
 	  	
 		  	users.verifyUser(username, function(err, user) {
 		      if(err){ 
-		      	return cb(err); 
+		      	return cb(err, req.flash('loginMessage', 'A system error has occurred. ')); 
 		      }
 		      
 		      if(user){ 
@@ -43,9 +43,7 @@ module.exports = function(passport) {
 		      	var isValidPass = users.verifyPassword(password);
 		      	
 		      	if(isValidPass){
-		      		var newUserObj = users.createUser(username, password);
-		      		
-		      		return cb(null, newUserObj);
+		      		users.createUser(username, password, cb, req);
 		      	}
 		      	else {
 		      		return cb(null, false, req.flash('loginMessage', 'Your password is too weak. Please try a new one.'));

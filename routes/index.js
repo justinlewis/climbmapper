@@ -10,7 +10,7 @@ router.get('/', function(req, res, next) {
 	else {
 		userName = "Example User";
 	}
-  res.render('index', { title: 'My Climb Mapper', username: userName });
+  res.render('index', { title: 'Climb Mapper', username: userName });
 });
 
 exports.users = require('./users');

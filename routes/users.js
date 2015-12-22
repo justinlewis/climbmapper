@@ -10,7 +10,7 @@ if(process.env.OPENSHIFT_POSTGRESQL_DB_URL){
 var conString = dbUrl || 'postgres://'+config.user_name+':'+config.password+'@localhost:5432/climbmapper';
 
 
-exports.createUser = function(username, password) {
+exports.createUser = function(username, password, cb, req) {
    
    pg.connect(conString, function(err, client, done) {
 	   console.log("creating user")
@@ -26,9 +26,9 @@ exports.createUser = function(username, password) {
 	 			"username": username, 
 	 			"displayname": username, 
 	 			"emails": ["email"] 
-	 			};
-	 			
-	    return newUserObj;
+	 	};
+	 	
+	 	return cb(null, newUserObj, req.flash('loginMessage', 'Now login with your new user. I know I should log you in automatically at this point but for now I need you to do it.'));
 	 })
 	 
 	 //pg.end();
