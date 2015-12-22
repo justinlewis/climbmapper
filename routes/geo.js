@@ -3,7 +3,6 @@ var router = express.Router();
 var config = require('../config.js');
 
 var pg = require('pg');
-pg.defaults.poolSize = 50;
 
 if(process.env.OPENSHIFT_POSTGRESQL_DB_URL){
 	var dbUrl = process.env.OPENSHIFT_POSTGRESQL_DB_URL + "/climbmapper";
