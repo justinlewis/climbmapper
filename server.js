@@ -44,7 +44,7 @@ app.listen(server_port, server_ip_address, function () {
   console.log( "Listening on " + server_ip_address + ", server_port " + server_port )
 });
 
-// TODO: move these routes to a separate file
+////////////// TODO: move these routes to a separate file
 app.get('/todoareas', geo.loadTodoAreas);
 app.get('/tickareas', geo.loadTickAreas);
 app.get('/crags', geo.loadCrags);
@@ -52,10 +52,14 @@ app.get('/todos', geo.loadToDos);
 app.get('/ticks', geo.loadTicks);
 app.get('/missingareas', geo.loadMissingAreas);
 
+app.post('/submitarea', function(req, res) {	
+	//console.log(req)
+	geo.persistarea(req.body.areaname, req.body.lat, req.body.lng, req.body.areatype, req.body.userid, res)
+});
+/////////////////
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-//app.set('view engine', 'hjs');
-
 app.engine('html', require('hogan-express'));
 app.set('view engine', 'html');
 

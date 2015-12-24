@@ -8,6 +8,9 @@
 			var todoAreaPts;
 			var tickAreaPts;
 			var cragPts;
+			
+			var isAuthenticated = $("#app-config-el").data("isauthenticated");
+			var userId = $("#app-config-el").data("authenticateduserid");
 	 				
 	 		var outdoors = new L.tileLayer.provider('Thunderforest.Outdoors');		
 	 		var mqosm = new L.tileLayer.provider('MapQuestOpen');		
@@ -745,6 +748,142 @@
 						if($("#info-container").is(':visible')){
 							$("#info-container").hide();
 						}				
+					}
+					
+					if(isAuthenticated){
+						// Initialise the FeatureGroup to store editable layers
+						var drawnItems = new L.FeatureGroup();
+						map.addLayer(drawnItems);
+						
+						var drawControl = new L.Control.Draw({
+							position: 'topright',
+						   draw: {
+						        polygon: false,
+						        polyline: false,
+						        rectangle: false,
+						        marker: true,
+						        circle: false
+						/*        circle: {
+						            shapeOptions: {
+						                color: 'red',
+						                weight: 2,
+						                opacity: 1
+						            }
+						        }*/
+						   },
+						   edit: {
+						        featureGroup: drawnItems, 
+						        remove: true,
+						        edit: true
+						   }
+						});
+						map.addControl(drawControl);
+						L.drawLocal.draw.toolbar.buttons.circle = 'Add a climbing area or crag';
+						
+						map.on('draw:created', function (e) {
+						    var type = e.layerType;
+						    var layer = e.layer;
+						    var randomId = Math.random().toString(36).substring(7);
+	
+						    // Do whatever else you need to. (save to db, add to map etc)
+						    //map.addLayer(layer);
+						    drawnItems.addLayer(layer)
+						    
+						    
+						    if (type === 'marker') {
+						    	var html = '<form class="new-area-form" action="/submitarea" method="post">' +
+				        			'<div class="form-group">' +
+				            	'<label>Area Name</label>' +
+				            	'<input id="name_'+randomId+'" type="text" class="form-control" name="areaname">' +
+				            	'<p><strong>NOTE:</strong> Area name should match the name of the area in Mountain Project if possible.</p>' +
+				        			'</div>'+
+				        			
+				        			'<div class="form-group">' +
+				            	'<label for="areatype">Area Type</label>' +
+				        			'<select class="form-control" name="areatype">' +
+	  									'<option value="AREA">General Area (ex: Yosemite Valley)</option>' +
+	  									'<option value="CRAG">Crag (ex: Half Dome)</option>' +
+									'</select>' +
+				        			'</div>'+
+	
+				        			
+				        			'<div class="form-group">' +
+				            	'<input id="lat_'+randomId+'" class="location-input" type="hidden" class="form-control" name="lat">' +
+				            	'<input id="lng_'+randomId+'" class="location-input" type="hidden" class="form-control" name="lng">' +
+				            	'<input id="userid_'+randomId+'" class="location-input" type="hidden" class="form-control" name="userid" value="'+userId+'">' +
+				        			'</div>'+
+				
+				        			'<button id="'+randomId+'_btn"  type="submit" class="btn btn-warning btn-sm">Submit</button>' +
+				    				'</form>';
+				    				
+						        layer.bindPopup(html);
+						        layer.openPopup();
+						    }
+						});
+						
+						map.on('popupopen', function (e) {
+							 var tempMarker = this;
+							 
+							 // To remove marker on click of delete
+	/*					    $(".leaflet-popup-close-button").click(function () {
+						        map.removeLayer(tempMarker);
+						    });*/
+							
+							// set coordinate fields on each popup form
+							var latLngObj = e.popup.getLatLng(); 
+							$.each($(".location-input"), function(index, val){
+								if($(this).prop("name") === "lat"){							
+									$(this).val(latLngObj.lat);
+								}
+								else if($(this).prop("name") === "lng"){
+									$(this).val(latLngObj.lng);
+								}
+							});
+							
+							// submit the form without a page refresh
+							var submitButton = $(e.target._popup._wrapper).find('button');
+							var $form = $(e.target._popup._wrapper).find('form');
+							submitButton.click(function() {
+							   $form.submit(function(){
+							      $.post($(this).attr('action'), $(this).serialize(), function(response){
+							            console.log("SUCCESS! ", response);
+							            
+							            var tempAreaTodoPtsDefaultStyle = {
+											    radius: 4,
+											    fillColor: "red",
+											    stroke: false,
+											    weight: 1,
+											    opacity: 1,
+											    fillOpacity: 0.8
+											};	
+							            var latlng = L.latLng(response.lat, response.lng);
+							            var tempNewArea = L.circleMarker(latlng, tempAreaTodoPtsDefaultStyle);
+							            tempNewArea.bindPopup('<h4>Thanks for contributing '+response.name+'!</h4>' + '<p>You will need to update your Mountain Project data from your <a href="/profile">profile</a> page to see your routes mapped against these new areas.</p>')
+							            
+							            map.addLayer(tempNewArea);
+							            
+							            tempNewArea.openPopup();
+							            
+							            drawnItems.eachLayer(function(layer){drawnItems.removeLayer(layer)});
+							             
+							      },'json');
+							      return false;
+							   });
+							 });
+						})
+						
+						map.on('popupclose', function (e) {
+							 var tempMarker = this;
+							 drawnItems.eachLayer(function(layer){drawnItems.removeLayer(layer)});
+						})
+						
+						map.on('draw:edited', function (e) {
+						    var layers = e.layers;
+						    layers.eachLayer(function (layer) {
+						    	console.log("test")
+						        //do whatever you want, most likely save back to db
+						    });
+						});
 					}
 					
 					// add overlays to the map object	

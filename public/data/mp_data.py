@@ -2,19 +2,13 @@ import json, requests, psycopg2, collections, sys, os
 
 class MPData:
 	
-	def init(self, appuserid):
+	def init(self, appuserid, dbConnectParams):
 		
-		dbHost = os.environ['OPENSHIFT_POSTGRESQL_DB_HOST']
-		dbPort = os.environ['OPENSHIFT_POSTGRESQL_DB_PORT']
-		dbUser = os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME']
-		dbPass = os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD']
-		dbName = os.environ['OPENSHIFT_APP_NAME']
-		
-		#dbHost = "localhost"
-		#dbPort = 5432
-		#dbUser = "app_user"
-		#dbPass = "????"
-		#dbName = "climbmapper"
+		dbHost = dbConnectParams['dbHost']
+		dbPort = dbConnectParams['dbPort']
+		dbUser = dbConnectParams['dbUser']
+		dbPass = dbConnectParams['dbPass']
+		dbName = dbConnectParams['dbName']
 
 		#DB connection properties
 		conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
@@ -25,7 +19,7 @@ class MPData:
 		cur.execute("DELETE FROM todo WHERE climberid = '"+str(appuserid)+"';")
 		conn.commit()
 		#conn.close()	
-		print "cleaned db"
+		print "Cleaned db of Todos and Ticks"
 		
 		cur.execute("SELECT routeid FROM tick WHERE climberid = "+str(appuserid)+";")
 		global existingUserTicks
@@ -51,25 +45,19 @@ class MPData:
 		global areaLookup
 		areaLookup = cur.fetchall()	
 		
-		cur.execute("SELECT id FROM route;")	
+		cur.execute("SELECT id, area FROM route;")	
 		global routeLookup
 		routeLookup = cur.fetchall()
 		
 		conn.close()
 
 		
-	def getToDos(self, mpUserKey, mpUserEmail, appUserId):
-		dbHost = os.environ['OPENSHIFT_POSTGRESQL_DB_HOST']
-		dbPort = os.environ['OPENSHIFT_POSTGRESQL_DB_PORT']
-		dbUser = os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME']
-		dbPass = os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD']
-		dbName = os.environ['OPENSHIFT_APP_NAME']
-		
-		#dbHost = "localhost"
-		#dbPort = 5432
-		#dbUser = "app_user"
-		#dbPass = "????"
-		#dbName = "climbmapper"
+	def getToDos(self, mpUserKey, mpUserEmail, appUserId, dbConnectParams):
+		dbHost = dbConnectParams['dbHost']
+		dbPort = dbConnectParams['dbPort']
+		dbUser = dbConnectParams['dbUser']
+		dbPass = dbConnectParams['dbPass']
+		dbName = dbConnectParams['dbName']
 
 		#DB connection properties
 		conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
@@ -101,19 +89,13 @@ class MPData:
 		return toDoList
 	
 	
-	def getTicks(self, mpUserKey, mpUserEmail, appUserId):
+	def getTicks(self, mpUserKey, mpUserEmail, appUserId, dbConnectParams):
 		
-		dbHost = os.environ['OPENSHIFT_POSTGRESQL_DB_HOST']
-		dbPort = os.environ['OPENSHIFT_POSTGRESQL_DB_PORT']
-		dbUser = os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME']
-		dbPass = os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD']
-		dbName = os.environ['OPENSHIFT_APP_NAME']
-		
-		#dbHost = "localhost"
-		#dbPort = 5432
-		#dbUser = "app_user"
-		#dbPass = "????"
-		#dbName = "climbmapper"
+		dbHost = dbConnectParams['dbHost']
+		dbPort = dbConnectParams['dbPort']
+		dbUser = dbConnectParams['dbUser']
+		dbPass = dbConnectParams['dbPass']
+		dbName = dbConnectParams['dbName']
 
 		#DB connection properties
 		conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
@@ -154,18 +136,12 @@ class MPData:
 		return ticksArr
 		
 	# @contentType can be 'todo' or 'tick'	
-	def getRoutes(self, idsList, contentType, mpUserKey):
-		dbHost = os.environ['OPENSHIFT_POSTGRESQL_DB_HOST']
-		dbPort = os.environ['OPENSHIFT_POSTGRESQL_DB_PORT']
-		dbUser = os.environ['OPENSHIFT_POSTGRESQL_DB_USERNAME']
-		dbPass = os.environ['OPENSHIFT_POSTGRESQL_DB_PASSWORD']
-		dbName = os.environ['OPENSHIFT_APP_NAME']
-		
-		#dbHost = "localhost"
-		#dbPort = 5432
-		#dbUser = "app_user"
-		#dbPass = "????"
-		#dbName = "climbmapper"
+	def getRoutes(self, idsList, contentType, mpUserKey, dbConnectParams, idTracking):
+		dbHost = dbConnectParams['dbHost']
+		dbPort = dbConnectParams['dbPort']
+		dbUser = dbConnectParams['dbUser']
+		dbPass = dbConnectParams['dbPass']
+		dbName = dbConnectParams['dbName']
 
 		#DB connection properties
 		conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
@@ -178,7 +154,6 @@ class MPData:
 		
 		idCt = 1
 		rows = []
-		idTracking = []
 	 	for id in idsList:
 			ids += str(id)
 			ids += ","
@@ -210,8 +185,8 @@ class MPData:
 							# Locations from MP are arrays of location names
 							thisLocArr = rt["location"]
 							thisAreaId = self.getAreaMatchId(reversed(thisLocArr))
-							if thisAreaId == 999:
-								print thisLocArr
+							if thisAreaId == -1:
+								print "Area not found: ", thisLocArr
 							thisCragId = self.getCragMatchId(reversed(thisLocArr))
 							rating = self.getCleanRating(str(rt["rating"]))
 							routeType = self.getRouteType(rt["type"])
@@ -226,26 +201,32 @@ class MPData:
 								pitches = rt["pitches"]
 							else:
 								pitches = 0 # a better default than n/a
-
+							
 							query = cur.mogrify("INSERT INTO route(id,routeid,name,area,type,grade,mpurl,mpimgmedurl,mpimgsmallurl,mpstars,mpstarvotes,pitches,crag) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (str(rt["id"]), str(rt["id"]), rt["name"], str(thisAreaId), str(routeType), str(grade), str(rt["url"]), str(rt["imgMed"]), str(rt["imgSmall"]), str(rt["stars"]), str(rt["starVotes"]), str(pitches), str(thisCragId)))
 
 							cur.execute(query)
 							conn.commit()
 							
 							# tracking to prevent duplicates which can occur with Ticks
-							idTracking.append(rt["id"])
+							idTracking.append(rt["id"])		
+											
+						else:
+							if self.existingRouteLocationExists(rt["id"]) is False:
+								# Locations from MP are arrays of location names
+								thisLocArr = rt["location"]
+								thisAreaId = self.getAreaMatchId(reversed(thisLocArr))
 							
-							# TODO: add additional info to db table		
-							#{u'rating': u'V2', u'name': u'Super Slab', u'url': u'http://www.mountainproject.com/v/super-slab/106042278', 
-							#u'imgMed': u'http://www.mountainproject.com/images/24/49/106042449_medium_7fd478.jpg',
-							#u'pitches': u'', u'starVotes': u'6', u'imgSmall': u'http://www.mountainproject.com/images/24/49/106042449_small_7fd478.jpg', 
-							#u'location': [u'Colorado', u'Morrison/Evergreen', u'Morrison Boulders', u'The Dark Side'], u'stars': u'3.8', 
-							#u'type': u'Boulder', u'id': u'106042278'}
+								if thisAreaId >= 0:
+									query = "UPDATE route SET area = " + str(thisAreaId) + " WHERE routeid = '"+ str(rt["id"]) +"';"
+									cur.execute(query)
+									conn.commit()
+							
+						
 				ids = ''
 			idCt += 1	
 		conn.close()		
 		
-		#self.printRoutesInfo(routes)
+		return idTracking
 	
 	
 	def getAreaMatchId(self, locationArr):
@@ -274,9 +255,17 @@ class MPData:
 		#no match found
 		return -1
 	
+	def existingRouteLocationExists(self, inRouteId):
+		for route in routeLookup:
+			if str(route[0]) == str(inRouteId):
+				if route[1] >= 0:
+					return True
+				
+		return False
+		
 	def routeExists(self, inRouteId):
-		for routeId in routeLookup:
-			if str(routeId[0]) == str(inRouteId):
+		for route in routeLookup:
+			if str(route[0]) == str(inRouteId):
 				return True
 				
 		return False
@@ -403,19 +392,24 @@ if __name__ == '__main__':
 	mpUserEmail = sys.argv[2]
 	appUserId = sys.argv[3]
 	
-		
-	print mpUserKey
-	print mpUserEmail
-	print appUserId
-	print
+	print "Getting Mountain Project Todo and Tick Routes..."
+	
+	dbHost = os.getenv('OPENSHIFT_POSTGRESQL_DB_HOST', 'localhost')
+	dbPort = os.getenv('OPENSHIFT_POSTGRESQL_DB_PORT', 5432)
+	dbUser = os.getenv('OPENSHIFT_POSTGRESQL_DB_USERNAME', "app_user")
+	dbPass = os.getenv('OPENSHIFT_POSTGRESQL_DB_PASSWORD', "reader")
+	dbName = os.getenv('OPENSHIFT_APP_NAME', 'climbmapper')
+	
+	dbConnectParams = { 'dbHost':dbHost, 'dbPort':dbPort, 'dbUser':dbUser, 'dbPass':dbPass, 'dbName':dbName }
+
 	
 	MPData = MPData()
-	MPData.init(appUserId)
-	toDoIdList = MPData.getToDos(mpUserKey, mpUserEmail, appUserId)
-	MPData.getRoutes(toDoIdList, 'todo', mpUserKey)
+	MPData.init(appUserId, dbConnectParams)
+	toDoIdList = MPData.getToDos(mpUserKey, mpUserEmail, appUserId, dbConnectParams)
+	idTracking = MPData.getRoutes(toDoIdList, 'todo', mpUserKey, dbConnectParams, [])
 	
-	tickIdList = MPData.getTicks(mpUserKey, mpUserEmail, appUserId)
-	MPData.getRoutes(tickIdList, 'tick', mpUserKey)
+	tickIdList = MPData.getTicks(mpUserKey, mpUserEmail, appUserId, dbConnectParams)
+	MPData.getRoutes(tickIdList, 'tick', mpUserKey, dbConnectParams, idTracking)
 	
 	print("DONE")
 	sys.stdout.flush()

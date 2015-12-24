@@ -2,6 +2,7 @@
 var spawn = require("child_process").spawn;
 var PythonShell = require('python-shell');
 var users = require('../routes/users');
+var geo = require('../routes/geo');
 
 module.exports = function(app, passport) {	
 	// LOG-IN
@@ -77,6 +78,7 @@ module.exports = function(app, passport) {
 	  	  	}
 		});
 	});
+	
 }
 
 

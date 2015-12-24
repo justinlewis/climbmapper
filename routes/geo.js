@@ -186,8 +186,6 @@ exports.loadToDos = function(req, res) {
 	 if(!userSessionId){
 		userSessionId = 1; // just for fun we'll set it to my data	 
 	 }
-/*    var client = new pg.Client(conString);
-    client.connect();*/
     
     pg.connect(conString, function(err, client, done) {
 	    var retval = "no data";
@@ -253,6 +251,33 @@ exports.loadMissingAreas = function(req, res) {
 	    })
 	    
 	    done();
+	 })
+	 
+	 //pg.end();
+};
+
+
+
+// TODO: db trigger to match todo/tick area attribute with the new area record when created. 
+// currently those attributes are only set on data upload
+exports.persistarea = function(name, lat, lng, areatype, userid, res) {
+    pg.connect(conString, function(err, client, done) {
+
+		 var queryString;
+		 if(areatype === "AREA"){
+	    	queryString = "INSERT INTO area(name, geo_point, createdby) VALUES ('"+name+"',ST_GeomFromText('POINT("+lng+" "+lat+")',4326), "+userid+");";
+	    }
+	    else if(areatype === "CRAG") {
+	    	// TODO: add area attribute
+	    	queryString = "INSERT INTO crag(name, geo_point) VALUES ('"+name+"',ST_GeomFromText('POINT("+lng+" "+lat+")',4326));";
+	    }
+	    
+	    
+	    console.log(queryString)
+	    var query = client.query(queryString);
+	    
+	    done();
+		 res.json({"name":name, "areatype":areatype, "lat":lat, "lng":lng, "persisted":true});
 	 })
 	 
 	 //pg.end();
