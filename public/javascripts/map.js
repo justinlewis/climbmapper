@@ -773,8 +773,8 @@
 						   },
 						   edit: {
 						        featureGroup: drawnItems, 
-						        remove: true,
-						        edit: true
+						        remove: false,
+						        edit: false
 						   }
 						});
 						map.addControl(drawControl);
