@@ -97,8 +97,6 @@ exports.loadTickAreas = function(req, res) {
 
 
 exports.loadCrags = function(req, res) {
-/*    var client = new pg.Client(conString);
-    client.connect();*/
     pg.connect(conString, function(err, client, done) {
 	    var retval = "no data";
 	    var idformat = "'" + req.params.id + "'";
@@ -111,7 +109,41 @@ exports.loadCrags = function(req, res) {
 	          return res.send('No data found');
 	        } 
 	        else {
-	        		rowJSON = { "type": "Feature", "properties": { "id": row.id, "name": row.name, "area": row.area }, "geometry": { "type": "Point", "coordinates": [ row.long, row.lat ] } };
+	        		rowJSON = { "type": "Feature", "properties": { "id": row.id, "area": row.name, "parentarea": row.area }, "geometry": { "type": "Point", "coordinates": [ row.long, row.lat ] } };
+	        		result.addRow(rowJSON);
+	        }
+	    })
+	    
+	    query.on("end", function (result) {
+	        		
+	          res.send( 
+	          	JSON.stringify(
+	          		{ "type": "FeatureCollection", "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },                                                                         
+						"features": result.rows 
+						}
+	          	) 
+	          );
+	          res.end();
+	    })
+	    
+	    done();
+	 })
+	 
+	 //pg.end();
+};
+
+
+exports.loadAreas = function(req, res) {
+    pg.connect(conString, function(err, client, done) {
+	     
+	    var query = client.query("SELECT id, name, createdby, ST_Y(geo_point) as lat, ST_X(geo_point) as long FROM area;");
+	   
+	    query.on('row', function(row, result) {
+	        if (!result) {
+	          return res.send('No data found');
+	        } 
+	        else {
+	        		rowJSON = { "type": "Feature", "properties": { "id": row.id, "area": row.name, "createdby": row.createdby }, "geometry": { "type": "Point", "coordinates": [ row.long, row.lat ] } };
 	        		result.addRow(rowJSON);
 	        }
 	    })
@@ -260,7 +292,7 @@ exports.loadMissingAreas = function(req, res) {
 
 // TODO: db trigger to match todo/tick area attribute with the new area record when created. 
 // currently those attributes are only set on data upload
-exports.persistarea = function(name, lat, lng, areatype, userid, res) {
+exports.persistarea = function(name, lat, lng, areatype, userid, parentArea, res) {
     pg.connect(conString, function(err, client, done) {
 
 		 var queryString;
@@ -269,7 +301,7 @@ exports.persistarea = function(name, lat, lng, areatype, userid, res) {
 	    }
 	    else if(areatype === "CRAG") {
 	    	// TODO: add area attribute
-	    	queryString = "INSERT INTO crag(name, geo_point) VALUES ('"+name+"',ST_GeomFromText('POINT("+lng+" "+lat+")',4326));";
+	    	queryString = "INSERT INTO crag(name, area, geo_point, createdby) VALUES ('"+name+"','"+parentArea+"',ST_GeomFromText('POINT("+lng+" "+lat+")',4326), "+userid+");";
 	    }
 	    
 	    

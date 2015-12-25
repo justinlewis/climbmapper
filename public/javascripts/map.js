@@ -8,6 +8,7 @@
 			var todoAreaPts;
 			var tickAreaPts;
 			var cragPts;
+			var areaPts;
 			
 			var isAuthenticated = $("#app-config-el").data("isauthenticated");
 			var userId = $("#app-config-el").data("authenticateduserid");
@@ -31,11 +32,13 @@
 	 				getTodoAreaPts(),
 	 				getTickAreaPts(),
 	 				getCragPts(),
+	 				getAreaPts(),
 	 				getMissingAreas()
-	 			).done(function (toDoResponse, tickResponse, areaTodoPtResponse, areaTickPtResponse, cragPtResponse, missingAreasResponse) {
+	 			).done(function (toDoResponse, tickResponse, areaTodoPtResponse, areaTickPtResponse, cragPtResponse, areaPtResponse, missingAreasResponse) {
 					todoAreaPts = areaTodoPtResponse[0];	
 					tickAreaPts = areaTickPtResponse[0];
 					cragPts = cragPtResponse[0];	
+					areaPts = areaPtResponse[0];	
 					processRoutes(tickResponse[0]["routes"], 'tick');				
 					processRoutes(toDoResponse[0]["routes"], 'todo');
 					reportMissingAreas(missingAreasResponse);
@@ -220,7 +223,7 @@
 	 		}
 	 		
 	 		////
-	 		// Area points are the climbing area locations
+	 		// Crag points are the climbing sub-area locations
 	 		////
 	 		function getCragPts() {	
 	 			return $.ajax({
@@ -231,6 +234,19 @@
 	  				dataType: "json"
 				})
 	 		}
+	 		
+	 		////
+	 		// Area points are the climbing area locations
+	 		////
+	 		function getAreaPts() {	
+	 			return $.ajax({
+	  				url: "areas",
+	  				context: document.body,
+	  				type: "GET",
+	  				crossDomain: false,
+	  				dataType: "json"
+				})
+			}
 	 		
 	 		////
 	 		// Ticks include routes that have been done
@@ -513,6 +529,29 @@
 			            });
 					}	
 					
+					function onEachBasicLocationFeature(feature, layer) {
+						layer.on({
+			            mouseover: basicLocationHoverAction,
+			            mouseout: resetBasicLocationHover
+			            });
+					}
+					
+					
+					function basicLocationHoverAction(e) {
+						var layer = e.target;
+						layer.setStyle({"fillColor":"#878787"});
+						
+						$("#left-sidebar-heading").text(layer.feature.properties.area);
+					}
+					
+					function resetBasicLocationHover(e) {
+						var feature = e.target;
+						feature.setStyle({"fillColor":"red"});
+						
+						$("#left-sidebar-heading").text("");
+					}
+					
+					
 					function tickHoverAction(e) {
       				var layer = e.target;
       				
@@ -520,41 +559,44 @@
       					$("#tick-time-chart").remove()
       				}
       				
+      				layer.setStyle({"fillColor":"#878787"});
+      				
+      				$("#left-sidebar-heading").text(layer.feature.properties.area);
+      				
       				//////
       				/// TODO: this is really boring. Make this rout info more interesting
       				/////
-      				var html = '<div class="tick-info-container">';
-						for(var i=0; i<layer.feature.properties.customTicksArr.length; i++){
-							var rt = layer.feature.properties.customTicksArr[i];
-							var date = new Date(rt.date);
-							var dateStr = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear();
-							
-							var newTickInfo = '<div class="info-content"><b>' + rt.name + '</b> : ' + rt.notes + ' ' + dateStr + '</div>'
-							html += newTickInfo;		
-						}
-						html += "</div>";
-
-					   layer.setStyle({"fillColor":"#878787"})
-
-					   $("#left-sidebar-heading").text(layer.feature.properties.area);
-					   $("#hover-text-info-container").html('<p class="info-content"><b>' + layer.feature.properties.customTicksCt + '</b> Ticks</p>')
-					   
-					   if(!$("#chart-row-1").is(':visible')){
-							$("#chart-row-1").show();
-						}
-						if(!$("#chart-row-2").is(':visible')){
-							$("#chart-row-2").show();
-						}
-							
-					   $("#chart-row-1").append('<div id="tick-grade-chart" ></div>');
-			   		var hoverBarChart = new BarChart(layer.feature.properties.customTicksArr, "#tick-grade-chart", $("#tick-grade-chart").parent().width());	
-			   		hoverBarChart.build();
-			   		
-			   		$("#chart-row-2").append('<div id="tick-type-chart" ></div> <div id="tick-height-chart" ></div>');
-			   		new PieChart(layer.feature, "#tick-type-chart", $("#tick-type-chart").parent().width()/2);
-			   		new RouteHeightPieChart(layer.feature, "#tick-height-chart", $("#tick-height-chart").parent().width()/2);
-			   							
-						// TODO: Add some more fun hover actions like a chart of all the comments from ticked routes	       					 
+      				if(layer.feature.properties.customTicksArr){
+	      				var html = '<div class="tick-info-container">';
+							for(var i=0; i<layer.feature.properties.customTicksArr.length; i++){
+								var rt = layer.feature.properties.customTicksArr[i];
+								var date = new Date(rt.date);
+								var dateStr = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear();
+								
+								var newTickInfo = '<div class="info-content"><b>' + rt.name + '</b> : ' + rt.notes + ' ' + dateStr + '</div>'
+								html += newTickInfo;		
+							}
+							html += "</div>";
+ 
+						   $("#hover-text-info-container").html('<p class="info-content"><b>' + layer.feature.properties.customTicksCt + '</b> Ticks</p>')
+						   
+						   if(!$("#chart-row-1").is(':visible')){
+								$("#chart-row-1").show();
+							}
+							if(!$("#chart-row-2").is(':visible')){
+								$("#chart-row-2").show();
+							}
+								
+						   $("#chart-row-1").append('<div id="tick-grade-chart" ></div>');
+				   		var hoverBarChart = new BarChart(layer.feature.properties.customTicksArr, "#tick-grade-chart", $("#tick-grade-chart").parent().width());	
+				   		hoverBarChart.build();
+				   		
+				   		$("#chart-row-2").append('<div id="tick-type-chart" ></div> <div id="tick-height-chart" ></div>');
+				   		new PieChart(layer.feature, "#tick-type-chart", $("#tick-type-chart").parent().width()/2);
+				   		new RouteHeightPieChart(layer.feature, "#tick-height-chart", $("#tick-height-chart").parent().width()/2);
+				   							
+							// TODO: Add some more fun hover actions like a chart of all the comments from ticked routes	  
+						} 					 
 					}
 					
 					// action to perform when mousing over a feature
@@ -568,22 +610,25 @@
 					    	layer.setStyle({"fillColor":"#138DA9"})
    
 						   $("#left-sidebar-heading").text(layer.feature.properties.area);
-					   	$("#hover-text-info-container").html('<p class="info-content"><b>' + layer.feature.properties.customRouteCt + '</b> ToDos</p>');
+						   
+						   if(layer.feature.properties.customRouteCt){
+						   	$("#hover-text-info-container").html('<p class="info-content"><b>' + layer.feature.properties.customRouteCt + '</b> ToDos</p>');
+								
+								if(!$("#chart-row-1").is(':visible')){
+									$("#chart-row-1").show();
+								}
+								if(!$("#chart-row-2").is(':visible')){
+									$("#chart-row-2").show();
+								}
 							
-							if(!$("#chart-row-1").is(':visible')){
-								$("#chart-row-1").show();
-							}
-							if(!$("#chart-row-2").is(':visible')){
-								$("#chart-row-2").show();
-							}
-						
-							$("#chart-row-1").append('<div id="todo-grade-chart" ></div>');
-					   	var todoBarChart = new BarChart(layer.feature.properties.customRouteArr, "#todo-grade-chart", $("#todo-grade-chart").parent().width());	
-					   	todoBarChart.build();	
-					   	
-					   	$("#chart-row-2").append('<div id="todo-type-chart" ></div> <div id="todo-height-chart" ></div>');
-							new PieChart(layer.feature, "#todo-type-chart", $("#todo-type-chart").parent().width()/2);   
-							new RouteHeightPieChart(layer.feature, "#todo-height-chart", $("#todo-height-chart").parent().width()/2);			   
+								$("#chart-row-1").append('<div id="todo-grade-chart" ></div>');
+						   	var todoBarChart = new BarChart(layer.feature.properties.customRouteArr, "#todo-grade-chart", $("#todo-grade-chart").parent().width());	
+						   	todoBarChart.build();	
+						   	
+						   	$("#chart-row-2").append('<div id="todo-type-chart" ></div> <div id="todo-height-chart" ></div>');
+								new PieChart(layer.feature, "#todo-type-chart", $("#todo-type-chart").parent().width()/2);   
+								new RouteHeightPieChart(layer.feature, "#todo-height-chart", $("#todo-height-chart").parent().width()/2);	
+							}		   
 						
 					}
 					
@@ -706,6 +751,24 @@
 			    		opacity: 1,
 			    		fillOpacity: 0.8,
 					}			
+					
+					var allAreaPtsDefaultStyle = {
+					    radius: 4,
+					    fillColor: "red",
+					    stroke: false,
+					    weight: 1,
+					    opacity: 1,
+					    fillOpacity: 0.8
+					};	
+					
+					var allCragPtsDefaultStyle = {
+					    radius: 4,
+					    fillColor: "orange",
+					    stroke: false,
+					    weight: 1,
+					    opacity: 1,
+					    fillOpacity: 0.8
+					};	
 				
 					// add todo pts to map
 					var areaTodoPtsObj = new L.GeoJSON(todoAreaPts, {
@@ -722,6 +785,20 @@
 		   				},
 							onEachFeature: onEachTickFeature		
 					});	
+					
+					var areaPtsObj = new L.GeoJSON(areaPts, {
+							pointToLayer: function (feature, latlng) {
+		        				return L.circleMarker(latlng, allAreaPtsDefaultStyle);
+		   				},
+							onEachFeature: onEachBasicLocationFeature		
+					});	
+					
+					var cragPtsObj = new L.GeoJSON(cragPts, {
+							pointToLayer: function (feature, latlng) {
+		        				return L.circleMarker(latlng, allCragPtsDefaultStyle);
+		   				},
+							onEachFeature: onEachBasicLocationFeature	
+					});
 					
 					
 					// initialize the Leaflet map object
@@ -800,7 +877,7 @@
 				        			
 				        			'<div class="form-group">' +
 				            	'<label for="areatype">Area Type</label>' +
-				        			'<select class="form-control" name="areatype">' +
+				        			'<select id="area-type-select" class="form-control" name="areatype">' +
 	  									'<option value="AREA">General Area (ex: Yosemite Valley)</option>' +
 	  									'<option value="CRAG">Crag (ex: Half Dome)</option>' +
 									'</select>' +
@@ -870,6 +947,27 @@
 							      return false;
 							   });
 							 });
+							 
+							 var areaTypeSelEl = $(e.target._popup._wrapper).find('#area-type-select');
+							 areaTypeSelEl.change(function () {
+							 	
+							 	if($("#parent-area-select").parent()){
+							 		$("#parent-area-select").parent().remove();
+							 	}
+							    var optSelected = $( "select option:selected").val();
+							    if(optSelected === "CRAG"){
+							   	var parentAreaSelEl = '<div class="form-group">' +
+				            	'<label for="areatype">Parent Area</label>' +
+				            	'<select id="parent-area-select" class="form-control" name="parentarea">';			
+	  								for(var i=0; i<areaPts.features.length; i++){
+	  									var area = areaPts.features[i];
+	  									parentAreaSelEl += '<option value="'+ area.properties.id +'">'+ area.properties.area +'</option>';
+	  								}
+									parentAreaSelEl += '</select></div>';	
+									
+									$("#area-type-select").parent().after(parentAreaSelEl)					
+							    }
+							  })
 						})
 						
 						map.on('popupclose', function (e) {
@@ -918,11 +1016,13 @@
 					// define the overlay layer switcher
 					var overlays = {
 						"ToDos": areaTodoPtsObj,
-						"Ticks": areaTickPtsObj
+						"Ticks": areaTickPtsObj,
+						"All Areas": areaPtsObj,
+						"All Crags": cragPtsObj
 						}; 
 						
 					// adds the layer switcher control
-					map.addControl(new L.control.layers(baseMaps,overlays, {"collapsed":true}));
+					map.addControl(new L.control.layers(baseMaps,overlays, {"collapsed":false}));
 			}
 
 			var that = this;

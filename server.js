@@ -48,13 +48,18 @@ app.listen(server_port, server_ip_address, function () {
 app.get('/todoareas', geo.loadTodoAreas);
 app.get('/tickareas', geo.loadTickAreas);
 app.get('/crags', geo.loadCrags);
+app.get('/areas', geo.loadAreas);
 app.get('/todos', geo.loadToDos);
 app.get('/ticks', geo.loadTicks);
 app.get('/missingareas', geo.loadMissingAreas);
 
 app.post('/submitarea', function(req, res) {	
 	//console.log(req)
-	geo.persistarea(req.body.areaname, req.body.lat, req.body.lng, req.body.areatype, req.body.userid, res)
+	var parentArea;
+	if(req.body.parentarea){
+	 	parentArea = req.body.parentarea;
+	}
+	geo.persistarea(req.body.areaname, req.body.lat, req.body.lng, req.body.areatype, req.body.userid, parentArea, res)
 });
 /////////////////
 
