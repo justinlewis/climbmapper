@@ -61,6 +61,15 @@ app.post('/submitarea', function(req, res) {
 	}
 	geo.persistarea(req.body.areaname, req.body.lat, req.body.lng, req.body.areatype, req.body.userid, parentArea, res)
 });
+
+app.post('/updatearea', function(req, res) {	
+	//console.log(req)
+	var parentArea;
+	if(req.body.parentarea){
+	 	parentArea = req.body.parentarea;
+	}
+	geo.updatearea(req.body.areaid, req.body.areaname, req.body.lat, req.body.lng, req.body.areatype, req.body.userid, parentArea, res)
+});
 /////////////////
 
 // view engine setup

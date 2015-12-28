@@ -183,6 +183,7 @@ class MPData:
 							area = ','.join(rt["location"])
 							
 							# Locations from MP are arrays of location names
+							# will search from crag to area (more discrete location to less discrete)
 							thisLocArr = rt["location"]
 							thisAreaId = self.getAreaMatchId(reversed(thisLocArr))
 							if thisAreaId == -1:
@@ -202,7 +203,7 @@ class MPData:
 							else:
 								pitches = 0 # a better default than n/a
 							
-							query = cur.mogrify("INSERT INTO route(id,routeid,name,area,type,grade,mpurl,mpimgmedurl,mpimgsmallurl,mpstars,mpstarvotes,pitches,crag) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (str(rt["id"]), str(rt["id"]), rt["name"], str(thisAreaId), str(routeType), str(grade), str(rt["url"]), str(rt["imgMed"]), str(rt["imgSmall"]), str(rt["stars"]), str(rt["starVotes"]), str(pitches), str(thisCragId)))
+							query = cur.mogrify("INSERT INTO route(id,routeid,name,area,type,grade,mpurl,mpimgmedurl,mpimgsmallurl,mpstars,mpstarvotes,pitches,crag,locationstr) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (str(rt["id"]), str(rt["id"]), rt["name"], str(thisAreaId), str(routeType), str(grade), str(rt["url"]), str(rt["imgMed"]), str(rt["imgSmall"]), str(rt["stars"]), str(rt["starVotes"]), str(pitches), str(thisCragId), str(rt["location"]) ))
 
 							cur.execute(query)
 							conn.commit()
@@ -213,6 +214,7 @@ class MPData:
 						else:
 							if self.existingRouteLocationExists(rt["id"]) is False:
 								# Locations from MP are arrays of location names
+								# will search from crag to area (more discrete location to less discrete)
 								thisLocArr = rt["location"]
 								thisAreaId = self.getAreaMatchId(reversed(thisLocArr))
 							

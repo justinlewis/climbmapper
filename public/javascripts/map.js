@@ -31,13 +31,13 @@
 	 				getMPTicksData(),
 	 				getTodoAreaPts(),
 	 				getTickAreaPts(),
-	 				getCragPts(),
+	 				//getCragPts(),
 	 				getAreaPts(),
 	 				getMissingAreas()
-	 			).done(function (toDoResponse, tickResponse, areaTodoPtResponse, areaTickPtResponse, cragPtResponse, areaPtResponse, missingAreasResponse) {
+	 			).done(function (toDoResponse, tickResponse, areaTodoPtResponse, areaTickPtResponse, areaPtResponse, missingAreasResponse) {
 					todoAreaPts = areaTodoPtResponse[0];	
 					tickAreaPts = areaTickPtResponse[0];
-					cragPts = cragPtResponse[0];	
+					//cragPts = cragPtResponse[0];	// Dont forgetto add cragPtResponse back to done function
 					areaPts = areaPtResponse[0];	
 					processRoutes(tickResponse[0]["routes"], 'tick');				
 					processRoutes(toDoResponse[0]["routes"], 'todo');
@@ -529,24 +529,47 @@
 			            });
 					}	
 					
-					function onEachBasicLocationFeature(feature, layer) {
+					function onEachBasicAreaFeature(feature, layer) {
 						layer.on({
-			            mouseover: basicLocationHoverAction,
-			            mouseout: resetBasicLocationHover
+			            mouseover: basicAreaHoverAction,
+			            mouseout: resetBasicAreaHover,
+			            click: basicLocationFeatureClickEvent 
+			            });
+					}
+					
+					function onEachBasicCragFeature(feature, layer) {
+						layer.on({
+			            mouseover: basicCragHoverAction,
+			            mouseout: resetBasicCragHover,
+			            click: basicLocationFeatureClickEvent 
 			            });
 					}
 					
 					
-					function basicLocationHoverAction(e) {
+					function basicAreaHoverAction(e) {
 						var layer = e.target;
 						layer.setStyle({"fillColor":"#878787"});
 						
 						$("#left-sidebar-heading").text(layer.feature.properties.area);
 					}
 					
-					function resetBasicLocationHover(e) {
+					function resetBasicAreaHover(e) {
 						var feature = e.target;
 						feature.setStyle({"fillColor":"red"});
+						
+						$("#left-sidebar-heading").text("");
+					}
+					
+					function basicCragHoverAction(e) {
+						var layer = e.target;
+						layer.setStyle({"fillColor":"#878787"});
+						
+						$("#left-sidebar-heading").text(layer.feature.properties.area);
+					}
+					
+					function resetBasicCragHover(e) {
+						var feature = e.target;
+						feature.setStyle({"fillColor":"orange"});
 						
 						$("#left-sidebar-heading").text("");
 					}
@@ -657,6 +680,69 @@
 					   $("#chart-row-2").hide();
 					}		
 					
+					function basicLocationFeatureClickEvent(e) {
+						var layer = e.target;
+						if(isAuthenticated){
+							var geojsonLayer = L.geoJson(layer.toGeoJSON());
+							geojsonLayer.eachLayer(
+							    function(l){
+							    	
+							    	  var layerName = l.feature.properties.area;
+									  var layerId = l.feature.properties.id;
+									  var layerCreatedby = l.feature.properties.createdby;
+								     var layerAreaType = l.feature.properties.areatype;
+										
+							        drawnItems.addLayer(l);
+							        
+							        var html = '<form class="new-area-form" action="/updatearea" method="post">' +
+					        			'<div class="form-group">' +
+					            	'<label>Name</label>' +
+										'<input id="areaid_" type="hidden" class="form-control" name="areaid" value="'+layerId+'">' +
+					            	'<input id="name_" type="text" class="form-control" name="areaname" value="'+layerName+'">' +
+					            	'<p><strong>NOTE:</strong> This name should match the name of the area in Mountain Project if possible. Ex: If the location heading looks like this: "Locations > Colorado > Boulder > Eldorado Canyon SP > Redgarden Wall > Redgarden - Lumpe to the top" a good name would be "Eldorado Canyon SP".</p>' +
+					        			'</div>'+
+					        			
+					        			'<div class="form-group">' +
+					            	'<label for="areatype">Area Type</label>' +
+					        			'<select id="area-type-select" class="form-control" name="areatype">' +
+		  									'<option value="AREA">General Area (ex: Yosemite Valley)</option>' +
+//		  									'<option value="CRAG">Crag (ex: Half Dome)</option>' +
+										'</select>' +
+					        			'</div>'+
+		
+					        			
+					        			'<div class="form-group">' +
+					            	'<input id="lat" class="location-input" type="hidden" class="form-control" name="lat">' +
+					            	'<input id="lng" class="location-input" type="hidden" class="form-control" name="lng">' +
+					            	'<input id="userid" class="location-input" type="hidden" class="form-control" name="userid" value="'+userId+'">' +
+					        			'</div>'+
+					
+					        			'<button id="submit-btn"  type="submit" class="btn btn-success btn-sm">Submit</button>' +
+					    				'</form>';
+					    				
+
+							        l.bindPopup(html);
+							        l.openPopup();
+							        
+							        l.on('dragend', function(e) { 
+									    l.openPopup();
+									  });
+							        
+							        $("#area-type-select").val(layerAreaType);
+							        if(layerAreaType === "CRAG"){
+							        		// call change event to show parent area options
+											$("#area-type-select").change();	
+											
+											var parentArea = l.feature.properties.parentarea;	
+											$("#parent-area-select").val(parentArea);				        
+							        }
+							     }
+							);
+							
+							enableEditModeInToolbar();
+						}
+					}
+					
 					////
 					// click event for areas
 					function featureClickEvent(e) {	
@@ -713,7 +799,7 @@
 							routeHTMLStr += "<li class='info-text'><i>Stars:  </i>" +  stars + " out of "+ starVotes + " votes</li>";
 							routeHTMLStr += "<li class='info-text'><i>Crag:  </i>" +  crag + "</li>";
 							routeHTMLStr += "<li class='info-text'><a class='info-link' target='_blank' href='"+  url + "'>See it on Mountain Project</a></li>";	
-							routeHTMLStr += "<li class='info-link'> <img class='info-image' src="+ imgMed +" alt='Climbing Img'> </li>";						
+							routeHTMLStr += "<li class='info-link'> <img class='info-image' src=http://mountainproject.com"+ imgMed +" alt='Climbing Img'> </li>";						
 							routeHTMLStr += "</ul>";
 							
 							$("#info-box").append(routeHTMLStr);
@@ -790,14 +876,14 @@
 							pointToLayer: function (feature, latlng) {
 		        				return L.circleMarker(latlng, allAreaPtsDefaultStyle);
 		   				},
-							onEachFeature: onEachBasicLocationFeature		
+							onEachFeature: onEachBasicAreaFeature		
 					});	
 					
 					var cragPtsObj = new L.GeoJSON(cragPts, {
 							pointToLayer: function (feature, latlng) {
 		        				return L.circleMarker(latlng, allCragPtsDefaultStyle);
 		   				},
-							onEachFeature: onEachBasicLocationFeature	
+							onEachFeature: onEachBasicCragFeature	
 					});
 					
 					
@@ -824,7 +910,13 @@
 						}
 						if($("#info-container").is(':visible')){
 							$("#info-container").hide();
-						}				
+						}	
+						
+						if(drawnItems){
+							drawnItems.eachLayer(function(layer){drawnItems.removeLayer(layer)});
+							
+							disableEditModeInToolbar();
+						}			
 					}
 					
 					if(isAuthenticated){
@@ -840,46 +932,41 @@
 						        rectangle: false,
 						        marker: true,
 						        circle: false
-						/*        circle: {
-						            shapeOptions: {
-						                color: 'red',
-						                weight: 2,
-						                opacity: 1
-						            }
-						        }*/
 						   },
 						   edit: {
 						        featureGroup: drawnItems, 
 						        remove: false,
-						        edit: false
+						        edit: true  // only show when actually a possible option
 						   }
 						});
 						map.addControl(drawControl);
-						L.drawLocal.draw.toolbar.buttons.circle = 'Add a climbing area or crag';
+						L.drawLocal.draw.toolbar.buttons.marker = 'Add a climbing area or crag';
+						L.drawLocal.draw.handlers.marker.tooltip.start = 'Place pin then fill out and submit the form.';
+						L.drawLocal.edit.handlers.edit.tooltip.text = 'Drag the pin to change location and/or fill out and submit the form.';
+						L.drawLocal.edit.handlers.edit.tooltip.subtext = '';
 						
 						map.on('draw:created', function (e) {
 						    var type = e.layerType;
 						    var layer = e.layer;
 						    var randomId = Math.random().toString(36).substring(7);
 	
-						    // Do whatever else you need to. (save to db, add to map etc)
-						    //map.addLayer(layer);
+							 // add the feature to the edit feature group
 						    drawnItems.addLayer(layer)
 						    
 						    
 						    if (type === 'marker') {
 						    	var html = '<form class="new-area-form" action="/submitarea" method="post">' +
 				        			'<div class="form-group">' +
-				            	'<label>Area Name</label>' +
+				            	'<label>Name</label>' +
 				            	'<input id="name_'+randomId+'" type="text" class="form-control" name="areaname">' +
-				            	'<p><strong>NOTE:</strong> Area name should match the name of the area in Mountain Project if possible.</p>' +
+				            	'<p><strong>NOTE:</strong> This name should match the name of the area in Mountain Project if possible. Ex: If the location heading looks like this: "Locations > Colorado > Boulder > Eldorado Canyon SP > Redgarden Wall > Redgarden - Lumpe to the top" you could set the name as "Eldorado Canyon SP" or "Redgarden Wall" or "Redgarden - Lumpe to the top".</p>' +
 				        			'</div>'+
 				        			
 				        			'<div class="form-group">' +
 				            	'<label for="areatype">Area Type</label>' +
 				        			'<select id="area-type-select" class="form-control" name="areatype">' +
 	  									'<option value="AREA">General Area (ex: Yosemite Valley)</option>' +
-	  									'<option value="CRAG">Crag (ex: Half Dome)</option>' +
+//	  									'<option value="CRAG">Crag (ex: Half Dome)</option>' +
 									'</select>' +
 				        			'</div>'+
 	
@@ -890,21 +977,72 @@
 				            	'<input id="userid_'+randomId+'" class="location-input" type="hidden" class="form-control" name="userid" value="'+userId+'">' +
 				        			'</div>'+
 				
-				        			'<button id="'+randomId+'_btn"  type="submit" class="btn btn-warning btn-sm">Submit</button>' +
+				        			'<button id="'+randomId+'_btn"  type="submit" class="btn btn-success btn-sm">Submit</button>' +
 				    				'</form>';
+				    				
 				    				
 						        layer.bindPopup(html);
 						        layer.openPopup();
 						    }
 						});
 						
+						
+						function createNewBasicLocation(geojson) {
+							return new L.GeoJSON(geojson, {
+														pointToLayer: function (response, latlng) {
+									        				return L.circleMarker(latlng, allAreaPtsDefaultStyle );
+									   				},
+														onEachFeature: onEachBasicAreaFeature
+												});
+						}
+						
+						function addFeatureToAreaPts(newFeature) {
+							areaPtsObj.addLayer(newFeature);
+						}
+						
+						
+						function disableEditModeInToolbar() {
+							// manually disable edit mode
+							var toolbar;
+							for (var toolbarId in drawControl._toolbars) {
+							    toolbar = drawControl._toolbars[toolbarId];
+							    if (toolbar instanceof L.EditToolbar) {
+							        toolbar._modes.edit.handler.disable();
+							    }
+							}
+						}
+						
+						function enableEditModeInToolbar() {
+							// manually enabling edit mode
+							var toolbar;
+							for (var toolbarId in drawControl._toolbars) {
+							    toolbar = drawControl._toolbars[toolbarId];
+							    if (toolbar instanceof L.EditToolbar) {
+							        toolbar._modes.edit.handler.enable();
+							    }
+							}
+						}
+						
+						function removeExistingEditMarkers() {
+							 var editLayers = drawnItems.getLayers();
+							 for(var i=0; i<editLayers.length; i++){
+							 		var layer = editLayers[i];
+							 	
+							 		if(!layer.editing.enabled()){
+							 			drawnItems.eachLayer(function(layer){
+							 				drawnItems.removeLayer(layer)
+							 			});
+							 		}
+							 }
+						}
+						
+						map.on('draw:editstop', function (e) {
+							$("#submit-btn").click()
+						});
+						
+						
 						map.on('popupopen', function (e) {
 							 var tempMarker = this;
-							 
-							 // To remove marker on click of delete
-	/*					    $(".leaflet-popup-close-button").click(function () {
-						        map.removeLayer(tempMarker);
-						    });*/
 							
 							// set coordinate fields on each popup form
 							var latLngObj = e.popup.getLatLng(); 
@@ -925,23 +1063,55 @@
 							      $.post($(this).attr('action'), $(this).serialize(), function(response){
 							            console.log("SUCCESS! ", response);
 							            
-							            var tempAreaTodoPtsDefaultStyle = {
+							           	var tempAreaTodoPtsDefaultStyle = {
 											    radius: 4,
 											    fillColor: "red",
 											    stroke: false,
 											    weight: 1,
 											    opacity: 1,
 											    fillOpacity: 0.8
-											};	
-							            var latlng = L.latLng(response.lat, response.lng);
-							            var tempNewArea = L.circleMarker(latlng, tempAreaTodoPtsDefaultStyle);
-							            tempNewArea.bindPopup('<h4>Thanks for contributing '+response.name+'!</h4>' + '<p>You will need to update your Mountain Project data from your <a href="/profile">profile</a> page to see your routes mapped against these new areas.</p>')
+											};
+												
+							            if(response.actiontype === "NEW"){
+								            var latlng = L.latLng(response.lat, response.lng);
+								            var tempNewArea = L.circleMarker(latlng, tempAreaTodoPtsDefaultStyle);
+								            tempNewArea.bindPopup('<h4>Thanks for contributing '+response.name+'!</h4>' + '<p>You will need to update your Mountain Project data from your <a href="/profile">profile</a> page to see your routes mapped against these new areas.</p>')
+								            
+								            map.addLayer(tempNewArea);
+								            
+								            tempNewArea.openPopup();
+								         }
+								         else if(response.actiontype === "UPDATE"){
+								            
+								            var oldLayer;
+								            map.eachLayer(function(layer){
+								            	if(layer.feature){
+								            		var thisId = layer.feature.properties.id;
+								            		if(parseInt(thisId) === parseInt(response.properties.id) && !(layer instanceof L.Marker)){
+								            			oldLayer = layer;
+								            		}
+								            	}
+								            });
+								            
+								            map.removeLayer(oldLayer);
+								            
+								            // updating the cache (which is really never used beyond initial layer setup)
+								            for(var a=0; a<areaPts.features.length; a++){
+								            	var area = areaPts.features[a]
+								            	if(parseInt(area.properties.id) === parseInt(response.properties.id)){
+								            			area = response;
+								            	}
+								            }
+								            
+								            var newLayer = createNewBasicLocation(response);
+								            addFeatureToAreaPts(newLayer);						     
+								            
+												disableEditModeInToolbar();
+								         }
 							            
-							            map.addLayer(tempNewArea);
-							            
-							            tempNewArea.openPopup();
-							            
-							            drawnItems.eachLayer(function(layer){drawnItems.removeLayer(layer)});
+							            drawnItems.eachLayer(function(layer){
+							            	drawnItems.removeLayer(layer);
+							            });
 							             
 							      },'json');
 							      return false;
@@ -954,6 +1124,7 @@
 							 	if($("#parent-area-select").parent()){
 							 		$("#parent-area-select").parent().remove();
 							 	}
+							 	
 							    var optSelected = $( "select option:selected").val();
 							    if(optSelected === "CRAG"){
 							   	var parentAreaSelEl = '<div class="form-group">' +
@@ -972,14 +1143,25 @@
 						
 						map.on('popupclose', function (e) {
 							 var tempMarker = this;
-							 drawnItems.eachLayer(function(layer){drawnItems.removeLayer(layer)});
+							 
+							 //removeExistingEditMarkers();
 						})
+						
+						
+						map.on("draw:drawstop", function (e) {
+							console.log("stop")
+						})
+						
+						map.on("draw:drawstart", function (e) {
+							removeExistingEditMarkers();
+						})
+						
 						
 						map.on('draw:edited', function (e) {
 						    var layers = e.layers;
 						    layers.eachLayer(function (layer) {
 						    	console.log("test")
-						        //do whatever you want, most likely save back to db
+
 						    });
 						});
 					}
@@ -1017,8 +1199,8 @@
 					var overlays = {
 						"ToDos": areaTodoPtsObj,
 						"Ticks": areaTickPtsObj,
-						"All Areas": areaPtsObj,
-						"All Crags": cragPtsObj
+						"All Areas": areaPtsObj
+						//"All Crags": cragPtsObj
 						}; 
 						
 					// adds the layer switcher control

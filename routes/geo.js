@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var config = require('../config.js');
+var PythonShell = require('python-shell');
 
 var pg = require('pg');
 
@@ -109,7 +110,7 @@ exports.loadCrags = function(req, res) {
 	          return res.send('No data found');
 	        } 
 	        else {
-	        		rowJSON = { "type": "Feature", "properties": { "id": row.id, "area": row.name, "parentarea": row.area }, "geometry": { "type": "Point", "coordinates": [ row.long, row.lat ] } };
+	        		rowJSON = { "type": "Feature", "properties": { "id": row.id, "area": row.name, "parentarea": row.area, "areatype": "CRAG" }, "geometry": { "type": "Point", "coordinates": [ row.long, row.lat ] } };
 	        		result.addRow(rowJSON);
 	        }
 	    })
@@ -143,7 +144,7 @@ exports.loadAreas = function(req, res) {
 	          return res.send('No data found');
 	        } 
 	        else {
-	        		rowJSON = { "type": "Feature", "properties": { "id": row.id, "area": row.name, "createdby": row.createdby }, "geometry": { "type": "Point", "coordinates": [ row.long, row.lat ] } };
+	        		rowJSON = { "type": "Feature", "properties": { "id": row.id, "area": row.name, "createdby": row.createdby, "areatype": "AREA" }, "geometry": { "type": "Point", "coordinates": [ row.long, row.lat ] } };
 	        		result.addRow(rowJSON);
 	        }
 	    })
@@ -255,9 +256,6 @@ exports.loadToDos = function(req, res) {
 };
 
 exports.loadMissingAreas = function(req, res) {
-/*    var client = new pg.Client(conString);
-    client.connect();*/
-
 	pg.connect(conString, function(err, client, done) {
 	    var queryString = "SELECT r.name, r.mpurl FROM route r WHERE area = -1;";
 	    var query = client.query(queryString);
@@ -294,23 +292,39 @@ exports.loadMissingAreas = function(req, res) {
 // currently those attributes are only set on data upload
 exports.persistarea = function(name, lat, lng, areatype, userid, parentArea, res) {
     pg.connect(conString, function(err, client, done) {
-
 		 var queryString;
 		 if(areatype === "AREA"){
 	    	queryString = "INSERT INTO area(name, geo_point, createdby) VALUES ('"+name+"',ST_GeomFromText('POINT("+lng+" "+lat+")',4326), "+userid+");";
 	    }
 	    else if(areatype === "CRAG") {
-	    	// TODO: add area attribute
 	    	queryString = "INSERT INTO crag(name, area, geo_point, createdby) VALUES ('"+name+"','"+parentArea+"',ST_GeomFromText('POINT("+lng+" "+lat+")',4326), "+userid+");";
 	    }
 	    
-	    
-	    console.log(queryString)
-	    var query = client.query(queryString);
-	    
+	    var query = client.query(queryString);    
 	    done();
-		 res.json({"name":name, "areatype":areatype, "lat":lat, "lng":lng, "persisted":true});
+		 
+		 res.json({"name":name, "actiontype": "NEW", "areatype":areatype, "lat":lat, "lng":lng, "persisted":true});
 	 })
 	 
 	 //pg.end();
 };
+
+exports.updatearea = function(id, name, lat, lng, areatype, userid, parentArea, res) {
+    pg.connect(conString, function(err, client, done) {
+		 var queryString;
+		 if(areatype === "AREA"){
+	    	queryString = "UPDATE area SET name = '"+name+"', geo_point = ST_GeomFromText('POINT("+lng+" "+lat+")',4326), createdby = "+userid+" WHERE id = "+id+";";
+	    }
+	    else if(areatype === "CRAG") {
+	    	queryString = "UPDATE crag SET name = '"+name+"', area = '"+parentArea+"', geo_point = ST_GeomFromText('POINT("+lng+" "+lat+")',4326), createdby = "+userid+" WHERE id = "+id+";";
+	    }
+	    
+	    var query = client.query(queryString);  
+	    done();
+
+		 res.json( {"type": "Feature", "persisted":true, "actiontype": "UPDATE", "properties": { "id": id, "area": name, "createdby": userid, "areatype": areatype }, "geometry": { "type": "Point", "coordinates": [ lng, lat ] } } );
+	 })
+	  
+	 //pg.end();
+};
+

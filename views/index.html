@@ -50,22 +50,21 @@
 	    <div class="navbar navbar-custom navbar-fixed-top">
 			 <div class="navbar-header"></div>
 		    <div class="navbar-collapse collapse">
-<!--		      <ul class="nav navbar-nav">
-		        <li class="active"><a href="#">Home</a></li>
-		        <li>&nbsp;</li>
-		      </ul>-->
 		      <ul class="nav navbar-nav">
 		        <li class="active" data-toggle="modal" data-target="#about-modal"><a href="#">About</a></li>
 		        <li>&nbsp;</li>
-		        <li class="active"><a href="/signup">Sign Up</a></li>
-		        <li>&nbsp;</li>
-		        <li class="active"><a href="/login">Login</a></li>
-		        <li>&nbsp;</li>
+				  {{#isNOTAuthenticated}}
+		        		<li class="active"><a href="/signup">Sign Up</a></li>
+		        		<li>&nbsp;</li>
+		        		<li class="active"><a href="/login">Login</a></li>
+		        		<li>&nbsp;</li>
+		        {{/isNOTAuthenticated}}
+		        
 		        {{#isAuthenticated}}
-		        	<li class="active"><a href="/profile">Your Profile</a></li>
-		        	<li>&nbsp;</li>
-		        {{/isAuthenticated}}
-		        <li class="active" data-toggle="modal" data-target="#issues-modal"><a href="#">Data Issues</a></li>
+		        		<li class="active"><a href="/profile">Your Profile</a></li>
+		        		<li>&nbsp;</li>
+		        		<li class="active" data-toggle="modal" data-target="#issues-modal"><a href="#">Your Data Issues</a></li>
+		        {{/isAuthenticated}}	        
 		      </ul>
  
 		      <form class="navbar-form">
@@ -128,42 +127,50 @@
 		        </div>
 		        <div class="modal-body">
 		          <div>  
-			    			<p>This application is an experiment to visualize a climbers climbing past and future from a geographic perspective. 
-			    				Specifically, it displays climbing areas sized by number of Ticks and ToDos for each area. 
-			    				Charts are used throughout to display the breakdown of climb rating (using YDS) or type (ex: boulder, sport, traditionsl) by area.
+			    			<p>Climb Mapper seeks to provide planning and analysis for users of Mountain Project. 
+			    				After signing up and uploading your Mounatin Project data the application displays climbing areas sized by the number of your Mountain Project Ticks and ToDos. 
+			    				Charts are used throughout to display the breakdown of climb rating (using YDS), type (ex: boulder, sport, traditional) by area, and height (in pitches).
+			    				In addition to visualizing your existing data, logged-in users have the ability to add and edit climbing areas in the system to help better map Mountain Project Tick/ToDo data against Climb Mapper climbing areas.
+			    				This is an experiment and side project and so any collaboration is welcome. 
 			    				All the scrapy code is available on <a href="https://github.com/justinlewis/climbmapper" target="_blank">one of my GitHub repos</a>.		
 			    			</p>
 			    		</div>
 			    		<div>
 			    			<h4>About The Data</h4>	 
 			    			<p>All route data (Ticks and ToDos) are imported from <a href="http://www.mountainproject.com/" target="_blank">Mountain Project</a>. 
-			    			All climbing area data is created by me independent of Mountain Project.  I will soon add functionality for other users to add climbing areas from this app.</p>
+			    			All climbing area data is created by Climb Mapper users independent of Mountain Project. 
+			    			All user submitted data will be open sourced for other applications to use in hopes that a common data source openly shared will benefit other future applications that help engage in this sport we love so much.
+			    			</p>
+			    		</div>
+			    		<div>
+			    			<h4>An Important Caveat</h4>	 
+			    			<ul>
+			    				<li>Mountain Project data is NOT available with geometrically based location data. 
+			    					Instead the application attempts to assign routes to climbing areas based on name matching.
+			    					This is problematic because it means that climbing areas in Climb Mapper must grammatically match a name in the location hierarchy of a route on Mountain Project.
+			    					For example, if a route on Mountain Project has a location hierarchy (found at top of page) like this "All Locations > California > Yosemite National Park > Tuolumne Meadows > Cathedral Range > Cathedral Peak" then an area in Climb Mapper must exist that has one of those names between the ">" symbols (i.e. Yosemite National Park).
+			    					If there these location names do not match up the route will not be matched to an area in Climb Mapper. 
+			    				</li>
+			    			</ul>
 			    		</div>
 			    		<div>
 			    			<h4>About The Technology Used</h4>	 
 			    			<p>
 			    				The application is built on PostgreSQL/PostGIS, Node.js, Leaflet.js, D3.js, Bootstrap, and JQuery. 
-			    				Needless to say there is a lot of Javascript used for presentation and a little Pyhon for data extraction/processing.
+			    				Needless to say there is a lot of JavaScript used for presentation and a little Python for data extraction/processing.
 			    			</p>
 			    		</div>
 			    		<div>
 			    			<h4>Future Plans</h4>	  
 			    			<p>
 			    				Because this is an experiment you can expect the visualizations to get better and more interesting. 
-			    				Specifically I want to add:
-			    				<ol>
-			    					<li>ability for others to add area points (that data would be shared back to the community)</li>
-			    					<li>different map layer point symbol types</li>
-			    					<li>better charts</li>
-			    					<li>a better time slider design</li>
-			    					<li>better layout and behavior when clicking on area points</li>
-			    					<li>generally better page design and layout</li>
-			    				</ol> 
+								More details and implementation specifics can be found at the <a href="https://github.com/justinlewis/climbmapper" target="_blank">public GitHub repo</a> where anyone can submit issue or request tickets.
 			    			</p> 
 			    		</div>
 			    		<div>
 							<h4>About Me</h4>	  
-							<p>I am a software developer with a perticular interest in geography and web visualization. Ohh ya, I climb too. 
+							<p>I am a software developer with a particular interest in geography and web visualization. 
+								I have been climbing for a long time and this application serves as a junction between the real and the digital. 
 								You can find me on <a href="https://twitter.com/jmapping" target="_blank">Twitter @jmapping</a>
 							</p>  
 						</div>
