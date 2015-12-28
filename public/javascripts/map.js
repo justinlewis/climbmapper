@@ -548,7 +548,7 @@
 					
 					function basicAreaHoverAction(e) {
 						var layer = e.target;
-						layer.setStyle({"fillColor":"#878787"});
+						layer.setStyle({"fillColor":"#ff4d4d"});
 						
 						$("#left-sidebar-heading").text(layer.feature.properties.area);
 					}
@@ -1206,7 +1206,7 @@
 						}; 
 						
 					// adds the layer switcher control
-					map.addControl(new L.control.layers(baseMaps,overlays, {"collapsed":false}));
+					map.addControl(new L.control.layers(baseMaps,overlays, {"collapsed":true}));
 			}
 
 			var that = this;
