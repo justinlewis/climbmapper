@@ -302,6 +302,8 @@ exports.persistarea = function(name, lat, lng, areatype, userid, parentArea, res
 	    
 	    var query = client.query(queryString);    
 	    done();
+	    
+		 updateRoutes(-1)
 		 
 		 res.json({"name":name, "actiontype": "NEW", "areatype":areatype, "lat":lat, "lng":lng, "persisted":true});
 	 })
@@ -320,11 +322,32 @@ exports.updatearea = function(id, name, lat, lng, areatype, userid, parentArea, 
 	    }
 	    
 	    var query = client.query(queryString);  
+	        
 	    done();
 
+	  	 updateRoutes(id)
 		 res.json( {"type": "Feature", "persisted":true, "actiontype": "UPDATE", "properties": { "id": id, "area": name, "createdby": userid, "areatype": areatype }, "geometry": { "type": "Point", "coordinates": [ lng, lat ] } } );
 	 })
 	  
+//		 res.json( {"type": "Feature", "persisted":true, "actiontype": "UPDATE", "properties": { "id": id, "area": name, "createdby": userid, "areatype": areatype }, "geometry": { "type": "Point", "coordinates": [ lng, lat ] } } );
 	 //pg.end();
 };
 
+
+function updateRoutes(changedAreaId) {
+	 
+	 var options = {
+		  args: [changedAreaId]
+	 };
+	 PythonShell.run('./public/data/update_routes.py', options, function (err, results) {
+	  	if (err){
+	  		console.log(err)
+	  		throw err
+	  	}
+	  	
+	  	// results is an array consisting of messages collected during execution 
+	  	if(results.slice(-1)[0] === "DONE"){
+  			console.log("Update complete")
+  	  	}
+	 });
+}

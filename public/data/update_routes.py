@@ -27,7 +27,7 @@ class MPData:
 
 		
 	# @contentType can be 'todo' or 'tick'	
-	def updateRoutes(self, dbConnectParams):
+	def updateRoutes(self, dbConnectParams, changedAreaId):
 		dbHost = dbConnectParams['dbHost']
 		dbPort = dbConnectParams['dbPort']
 		dbUser = dbConnectParams['dbUser']
@@ -48,12 +48,13 @@ class MPData:
 			for l in locationStrArr:
 				formattedLocArr.append(l.strip().lstrip("u'").rstrip("'").lstrip('u"').rstrip('"'))
 			
-			#print formattedLocArr
-			
 			matchedAreaId = self.getAreaMatchId(reversed(formattedLocArr))
-			
+
+			if str(assignedAreaId) == str(changedAreaId):
+				query = "UPDATE route SET area = -1 WHERE routeid = '"+ str(routeId) +"';"
+				cur.execute(query)
+				conn.commit()	
 			if matchedAreaId >= 0 and str(matchedAreaId) != str(assignedAreaId):
-				print "updateing ", routeId, " with: ", matchedAreaId, " - ", formattedLocArr
 				query = "UPDATE route SET area = " + str(matchedAreaId) + " WHERE routeid = '"+ str(routeId) +"';"
 				cur.execute(query)
 				conn.commit()	
@@ -105,6 +106,7 @@ class MPData:
 
 if __name__ == '__main__':
 	
+	changedAreaId = sys.argv[1] 
 
 	dbHost = os.getenv('OPENSHIFT_POSTGRESQL_DB_HOST', 'localhost')
 	dbPort = os.getenv('OPENSHIFT_POSTGRESQL_DB_PORT', 5432)
@@ -117,7 +119,7 @@ if __name__ == '__main__':
 	
 	MPData = MPData()
 	MPData.init(dbConnectParams)
-	MPData.updateRoutes(dbConnectParams)
+	MPData.updateRoutes(dbConnectParams, changedAreaId)
 	
 	print("DONE")
 	sys.stdout.flush()

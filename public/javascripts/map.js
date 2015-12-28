@@ -1037,7 +1037,9 @@
 						}
 						
 						map.on('draw:editstop', function (e) {
-							$("#submit-btn").click()
+							
+							///// cant call this because it posts the form a 2nd time
+							//$("#submit-btn").click()
 						});
 						
 						
@@ -1058,8 +1060,8 @@
 							// submit the form without a page refresh
 							var submitButton = $(e.target._popup._wrapper).find('button');
 							var $form = $(e.target._popup._wrapper).find('form');
-							submitButton.click(function() {
-							   $form.submit(function(){
+							submitButton.unbind('click').bind('click',function() {
+							   $form.unbind('submit').bind('submit',function() {
 							      $.post($(this).attr('action'), $(this).serialize(), function(response){
 							            console.log("SUCCESS! ", response);
 							            

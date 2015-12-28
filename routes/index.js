@@ -5,6 +5,7 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
 	var userName = "";
 	var userId = 1;
+	var isNOTAuthenticated = true;
 	if (req.isAuthenticated()){
 		userName = req.user.username;
 		userId = req.user.id;
@@ -12,7 +13,12 @@ router.get('/', function(req, res, next) {
 	else {
 		userName = "Example User";
 	}
-  res.render('index', { title: 'Climb Mapper', username: userName, isAuthenticated: req.isAuthenticated(), authenticatedUserId: userId });
+	
+	if (req.isAuthenticated()) {
+		isNOTAuthenticated = false;
+	}
+
+  res.render('index', { title: 'Climb Mapper', username: userName, isAuthenticated: req.isAuthenticated(), isNOTAuthenticated:isNOTAuthenticated, authenticatedUserId: userId });
 });
 
 exports.users = require('./users');
