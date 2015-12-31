@@ -5,7 +5,10 @@
 	<title>Node Authentication</title>
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/modal.css" />
+	
 	 <script type="text/javascript" src="javascripts/jquery-2.1.3.min.js"></script>
+	 
 	<style>
 		body 		{ padding-top:80px; word-wrap:break-word; }
 	</style>
@@ -15,14 +18,17 @@
 
 	<div class="page-header text-center">
 		<h1><span class="fa fa-asterisk"></span> Profile Page</h1>
-		<a href="/" class="btn btn-default btn-sm">Back To The Map</a>
+		<a href="/" class="btn btn-primary btn-sm"> <i class="fa fa-globe"></i> Back To Your Map</a>
 		<a href="/logout" class="btn btn-default btn-sm">Logout</a>
 	</div>
 
 	<div class="row">
-
+	
 		<div class="col-sm-3 col-m-3"></div>
 		<div class="col-sm-6 col-m-6">
+		
+			<h3 class="error-message">{{message}}</h3>
+		
 			<div class="well">
 				<span><a href="/updateprofile" id="edit-profile-btn" class="fa fa-pencil fa-2x pull-right" title="Edit your profile"></a></span>
 				<h3><span class="fa fa-user"></span> {{user.username}}</h3>
@@ -30,14 +36,16 @@
 				<p>
 					<strong>ID</strong>: {{user.id}}<br>
 					<strong>User Name</strong>: {{user.username}}<br>
-					<strong>Password</strong>: {{user.password}}<br>
 					<strong>Email</strong>: {{user.emails}}<br>
 					<strong>Mountain Project User Key</strong>: {{user.mountainprojkey}}
 				</p>
 
 			</div>
-			<form action="/mpupdate" method="post">
-				<button id="mp-update-btn" type="submit" class="btn btn-primary btn-lg">Update Your Mountain Project Data <i id="mp-update-btn-loading-spinner" class="fa fa-refresh fa-spin" style="display:none;"></i></button>
+			<form action="/mpupdate" method="post" class="text-center">
+				<button id="mp-update-btn" type="submit" class="btn btn-primary btn-lg">
+					Update Your Mountain Project Data 
+					<i id="mp-update-btn-loading-spinner" class="fa fa-refresh fa-spin" style="display:none;"></i>
+				</button>
 			</form>
 			<p class="warning-message" style="display:none;">*** Be patient. This can take a little while. The page will reload when the update process is complete.</p>
 		</div>
@@ -52,7 +60,6 @@
 <script type="text/javascript" >
 	$('#mp-update-btn').click(function() {
 		$("#mp-update-btn-loading-spinner").show();
-//		$('#mp-update-btn').prop("disabled",true);
 		$(".warning-message").show();
 	});
 	

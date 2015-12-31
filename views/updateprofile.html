@@ -29,7 +29,6 @@
 				<p>
 					<strong>id</strong>: {{user.id}}<br>
 					<strong>email</strong>: {{user.emails}}<br>
-					<strong>password</strong>: {{user.password}}
 				</p>
 				
 				    
@@ -44,16 +43,19 @@
 			        </div>
 			        <div class="form-group">
 			            <label>Email</label>
-			            <input type="text" placeholder="Leave blank if no update is needed" class="form-control" name="email">
+			            <input type="text" placeholder="Leave blank if no update is needed" class="form-control" name="email" value="{{user.emails}}">
 			            <p><strong>NOTE:</strong>This MUST be the email you use for your <a target="_blank" href="http://www.mountainproject.com">MountainProject.com</a> account in order to download your Mountain Project data into this application.</p>
 			        </div>
 			        <div class="form-group">
 			            <label>Mountain Project User Key</label>
-			            <input type="text" placeholder="Leave blank if no update is needed" class="form-control" name="mpuserkey">
+			            <input type="text" placeholder="Leave blank if no update is needed" class="form-control" name="mpuserkey" value="{{user.mountainprojkey}}">
 			            <p><strong>NOTE:</strong> Get your key by logging into <a target="_blank" href="http://www.mountainproject.com">MountainProject.com</a> and then going to <a target="_blank" href="http://www.mountainproject.com/data">MountainProject.com/data</a>. Your 43 character key should be at the top of the page. </p>
 			        </div>
 			
-			        <button type="submit" class="btn btn-warning btn-lg">Submit</button>
+			        <button type="submit" class="btn btn-success btn-lg">Submit</button>
+			        <a href="/profile">
+			        	<button type="" class="btn btn-default btn-lg">Cancel</button>
+			        </a>
 			    </form>
 
 			</div>

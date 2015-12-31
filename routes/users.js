@@ -37,22 +37,20 @@ exports.createUser = function(username, password, cb, req) {
 exports.updateProfile = function(res, user, mpuserkey, email, password) {
    
    pg.connect(conString, function(err, client, done) {
-	   var updateCallback = function(err, result) {
-	   	done()
 
-	      res.redirect('/profile');
-	    }
-	   
-	   console.log("Updating user")
 	   if(mpuserkey.length > 0) {
-	   	client.query("UPDATE appuser SET mountainprojkey='"+mpuserkey+ "' WHERE id ='"+user.id.toString()+"';", updateCallback);
+	   	client.query("UPDATE appuser SET mountainprojkey='"+mpuserkey+ "' WHERE id ='"+user.id.toString()+"';");
 	   }
 	   if(email.length > 0){
-	   	client.query("UPDATE appuser SET email='"+email+"' WHERE id ='"+user.id.toString()+"';", updateCallback);
+	   	client.query("UPDATE appuser SET email='"+email+"' WHERE id ='"+user.id.toString()+"';");
 	   }
 	   if(password.length > 0){
-	   	client.query("UPDATE appuser SET password='"+password+"' WHERE id ='"+user.id.toString()+"';", updateCallback);
+	   	client.query("UPDATE appuser SET password='"+password+"' WHERE id ='"+user.id.toString()+"';");
 	   }
+	   
+	   done()
+
+	   res.redirect('/profile');
 	})
    
    //pg.end();

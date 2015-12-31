@@ -64,18 +64,27 @@ module.exports = function(app, passport) {
 	app.post('/mpupdate', isLoggedIn, function(req, res) {	
 
 		var options = {
-		  args: [req.user.mountainprojkey.replace(/ /g,''), req.user.emails[0], req.user.id]
+		  args: [req.user.mountainprojkey.replace(/ /g,''), req.user.emails[0].replace(/ /g,''), req.user.id]
 		};
-		
-		PythonShell.run('./public/data/mp_data.py', options, function (err, results) {
-		  	if (err) throw err;
-		  
-		  	// results is an array consisting of messages collected during execution 
-		  	if(results.slice(-1)[0] === "DONE"){
-	  			console.log("Update complete")
-	  			res.redirect('/profile');
-	  	  	}
-		});
+		console.log(options.args)
+		if(options.args[0].length < 1 || options.args[1].length < 1){
+			console.log("improper profile settings")
+			res.render('profile.html', {
+				user : req.user, 
+				message : "To pull data from Mountain Project you must include the email used for your Mountain Project account as well as the Mountain Project API key. Please try adding them to your profile and attempting an update again." 
+			});
+		}
+		else{
+			PythonShell.run('./public/data/mp_data.py', options, function (err, results) {
+			  	if (err) throw err;
+			  
+			  	// results is an array consisting of messages collected during execution 
+			  	if(results.slice(-1)[0] === "DONE"){
+		  			console.log("Update complete")
+		  			res.redirect('/profile');
+		  	  	}
+			});
+		}
 	});
 	
 }
