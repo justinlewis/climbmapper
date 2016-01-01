@@ -294,13 +294,13 @@ exports.persistarea = function(name, lat, lng, areatype, userid, parentArea, res
     pg.connect(conString, function(err, client, done) {
 		 var queryString;
 		 if(areatype === "AREA"){
-	    	queryString = "INSERT INTO area(name, geo_point, createdby) VALUES ('"+name+"',ST_GeomFromText('POINT("+lng+" "+lat+")',4326), "+userid+");";
+	    	queryString = "INSERT INTO area(name, geo_point, createdby) VALUES ($1, ST_GeomFromText('POINT("+lng+" "+lat+")',4326), "+userid+");";
 	    }
 	    else if(areatype === "CRAG") {
-	    	queryString = "INSERT INTO crag(name, area, geo_point, createdby) VALUES ('"+name+"','"+parentArea+"',ST_GeomFromText('POINT("+lng+" "+lat+")',4326), "+userid+");";
+	    	queryString = "INSERT INTO crag(name, area, geo_point, createdby) VALUES ($1,'"+parentArea+"',ST_GeomFromText('POINT("+lng+" "+lat+")',4326), "+userid+");";
 	    }
 	    
-	    var query = client.query(queryString);    
+	    var query = client.query(queryString, [name]);    
 	    done();
 	    
 		 updateRoutes(-1)
@@ -315,13 +315,13 @@ exports.updatearea = function(id, name, lat, lng, areatype, userid, parentArea, 
     pg.connect(conString, function(err, client, done) {
 		 var queryString;
 		 if(areatype === "AREA"){
-	    	queryString = "UPDATE area SET name = '"+name+"', geo_point = ST_GeomFromText('POINT("+lng+" "+lat+")',4326), createdby = "+userid+" WHERE id = "+id+";";
+	    	queryString = "UPDATE area SET name = $1, geo_point = ST_GeomFromText('POINT("+lng+" "+lat+")',4326), createdby = "+userid+" WHERE id = "+id+";";
 	    }
 	    else if(areatype === "CRAG") {
-	    	queryString = "UPDATE crag SET name = '"+name+"', area = '"+parentArea+"', geo_point = ST_GeomFromText('POINT("+lng+" "+lat+")',4326), createdby = "+userid+" WHERE id = "+id+";";
+	    	queryString = "UPDATE crag SET name = $1, area = '"+parentArea+"', geo_point = ST_GeomFromText('POINT("+lng+" "+lat+")',4326), createdby = "+userid+" WHERE id = "+id+";";
 	    }
 	    
-	    var query = client.query(queryString);  
+	    var query = client.query(queryString, [name]);  
 	        
 	    done();
 
@@ -329,7 +329,6 @@ exports.updatearea = function(id, name, lat, lng, areatype, userid, parentArea, 
 		 res.json( {"type": "Feature", "persisted":true, "actiontype": "UPDATE", "properties": { "id": id, "area": name, "createdby": userid, "areatype": areatype }, "geometry": { "type": "Point", "coordinates": [ lng, lat ] } } );
 	 })
 	  
-//		 res.json( {"type": "Feature", "persisted":true, "actiontype": "UPDATE", "properties": { "id": id, "area": name, "createdby": userid, "areatype": areatype }, "geometry": { "type": "Point", "coordinates": [ lng, lat ] } } );
 	 //pg.end();
 };
 

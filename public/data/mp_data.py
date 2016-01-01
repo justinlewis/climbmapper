@@ -41,7 +41,11 @@ class MPData:
 		global cragLookup
 		cragLookup = cur.fetchall()	
 		
-		cur.execute("SELECT a.id as areaId, a.name as areaName FROM area a;")	
+		#cur.execute("SELECT a.id as areaId, a.name as areaName FROM area a;")	
+		cur.execute("""SELECT a.id as areaId, a.name as areaName, c.name AS country, s.name AS state FROM area a
+		INNER JOIN countries c ON st_within(a.geo_point, c.geo_poly)
+		LEFT JOIN usa_states s ON st_within(a.geo_point, s.geo_poly)
+		ORDER BY a.id;""")
 		global areaLookup
 		areaLookup = cur.fetchall()	
 		
@@ -179,16 +183,13 @@ class MPData:
 							routeExists = True
 
 						if routeExists is False:
-							#routes["routes"].append(rt)	
 							area = ','.join(rt["location"])
 							
 							# Locations from MP are arrays of location names
 							# will search from crag to area (more discrete location to less discrete)
 							thisLocArr = rt["location"]
-							thisAreaId = self.getAreaMatchId(reversed(thisLocArr))
-							if thisAreaId == -1:
-								print "Area not found: ", thisLocArr
-							thisCragId = self.getCragMatchId(reversed(thisLocArr))
+							thisAreaId = self.getAreaMatchId(thisLocArr)
+							thisCragId = self.getCragMatchId(thisLocArr)
 							rating = self.getCleanRating(str(rt["rating"]))
 							routeType = self.getRouteType(rt["type"])
 							
@@ -216,7 +217,7 @@ class MPData:
 								# Locations from MP are arrays of location names
 								# will search from crag to area (more discrete location to less discrete)
 								thisLocArr = rt["location"]
-								thisAreaId = self.getAreaMatchId(reversed(thisLocArr))
+								thisAreaId = self.getAreaMatchId(thisLocArr)
 							
 								if thisAreaId >= 0:
 									query = "UPDATE route SET area = " + str(thisAreaId) + " WHERE routeid = '"+ str(rt["id"]) +"';"
@@ -232,17 +233,66 @@ class MPData:
 	
 	
 	def getAreaMatchId(self, locationArr):
-		for loc in locationArr:		
+		
+		containingGeog = self.getContainingGeographyForArea(locationArr)
+		
+		print "Containing Geog: ", containingGeog
+		
+		## iterate from smallest geography to biggest	
+		for loc in reversed(locationArr):		
+			thisLoc = loc.lower().lstrip("*").replace(" ", "")
+			
 			for a in areaLookup:
 				aId = a[0]
-				aName = a[1]
+				aName = a[1].lower().lstrip("*").replace(" ", "")
+				country = a[2].lower().replace(" ", "")
+				if a[3] is not None:
+					region = a[3].lower().replace(" ", "") #state for USA
+				else:
+					region = ""
 				
-				if aName.lower().lstrip("*").replace(" ", "") == loc.lower().lstrip("*").replace(" ", ""):
-					return aId
+				# Trying to only match areas within more specific containing geographies (like USA states)
+				# This is to account for non-unique area name matching. We are hoping that there would only
+				# be 1 area with a specific name in a single containing geography (i.e. state)
+				if aName == thisLoc:
+					if region == containingGeog:
+						print "match"
+						return aId
+					elif country == containingGeog:
+						print "match"
+						return aId
 		
 		# no match found
 		return -1
 	
+	
+	def getContainingGeographyForArea(self, locationArr):
+		## iterate from smallest geography to biggest	
+		for loc in reversed(locationArr):		
+			thisLoc = loc.lower().lstrip("*").replace(" ", "")
+			for a in areaLookup:
+				aId = a[0]
+				aName = a[1].lower().lstrip("*").replace(" ", "")
+				
+				if a[2] is not None:
+					country = a[2].lower().replace(" ", "")
+				else:
+					country = ""
+				
+				if a[3] is not None:
+					region = a[3].lower().replace(" ", "") #state for USA
+				else:
+					region = ""
+				
+				if region == thisLoc:
+					return region
+				elif country == thisLoc:
+					return country
+		
+		# no match found
+		print "NO Match: ", locationArr
+		return -1
+				
 	
 	# currently only matching crags with known areas (check sql query for cragLookup)
 	def getCragMatchId(self, locationArr):
@@ -393,6 +443,10 @@ if __name__ == '__main__':
 	mpUserKey = sys.argv[1] 
 	mpUserEmail = sys.argv[2]
 	appUserId = sys.argv[3]
+	
+	#mpUserKey = "106251374-a0e6d43518505bec412a547956f25216"
+	#mpUserEmail = "j.mapping@gmail.com"
+	#appUserId = 1
 	
 	print "Getting Mountain Project Todo and Tick Routes..."
 	
