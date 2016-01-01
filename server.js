@@ -54,7 +54,6 @@ app.get('/ticks', geo.loadTicks);
 app.get('/missingareas', geo.loadMissingAreas);
 
 app.post('/submitarea', function(req, res) {	
-	//console.log(req)
 	var parentArea;
 	if(req.body.parentarea){
 	 	parentArea = req.body.parentarea;
@@ -63,7 +62,6 @@ app.post('/submitarea', function(req, res) {
 });
 
 app.post('/updatearea', function(req, res) {	
-	console.log(req.body)
 	var parentArea;
 	if(req.body.parentarea){
 	 	parentArea = req.body.parentarea;

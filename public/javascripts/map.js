@@ -1077,7 +1077,7 @@
 							            if(response.actiontype === "NEW"){
 								            var latlng = L.latLng(response.lat, response.lng);
 								            var tempNewArea = L.circleMarker(latlng, tempAreaTodoPtsDefaultStyle);
-								            tempNewArea.bindPopup('<h4>Thanks for contributing '+response.name+'!</h4>' + '<p>You will need to refresh the page to see your routes mapped against this new area. We will soon make this automatic but for now please just refresh the page.</p>')
+								            tempNewArea.bindPopup('<h4>Thanks for contributing '+response.name+'!</h4>' + '<p>You will need to update your Mountain Project data from your <a href="/profile">profile</a> page to see your routes mapped against these new areas.</p>')
 								            
 								            map.addLayer(tempNewArea);
 								            

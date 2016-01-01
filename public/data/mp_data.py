@@ -70,7 +70,7 @@ class MPData:
 		urlRoot = "http://www.mountainproject.com/data?action=getToDos"
 		urlPropId = "&email="+mpUserEmail
 		urlPropStartPos = "&startPos="
-		urlPropStartPosList = [0, 200, 400]
+		urlPropStartPosList = [0, 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000]
 		mpKey = "&key="+mpUserKey
 		toDoList = []
 		
@@ -114,7 +114,7 @@ class MPData:
 		reqChunks = 0
 		ticks = {}
 		ticksArr = []
-		while reqChunks < 600:
+		while reqChunks < 10000:
 			reqStartPos = "&startPos=" + str(reqChunks)
 			url = root + uid + key + reqStartPos
 
@@ -166,63 +166,59 @@ class MPData:
 				ids = ids.rstrip(",")	
 				url = root + ids + key			
 					
-				if idCt == 100:
-					resp = requests.get(url=url)
-					routes = json.loads(resp.text)
-				else:
-					resp = requests.get(url=url)
-					for rt in json.loads(resp.text)["routes"]:
-						
-						# Check if the route exists in the db
-						routeExists = self.routeExists(rt["id"])
-						
-						# Check if this is a duplicate route
-						# Could be caused by duplicate Ticks
-						# We want to avoid adding duplicate routes to the DB		
-						if rt["id"] in idTracking:
-							routeExists = True
+				resp = requests.get(url=url)
+				for rt in json.loads(resp.text)["routes"]:
+					
+					# Check if the route exists in the db
+					routeExists = self.routeExists(rt["id"])
+					
+					# Check if this is a duplicate route
+					# Could be caused by duplicate Ticks
+					# We want to avoid adding duplicate routes to the DB		
+					if rt["id"] in idTracking:
+						routeExists = True
 
-						if routeExists is False:
-							area = ','.join(rt["location"])
-							
+					if routeExists is False:
+						area = ','.join(rt["location"])
+						
+						# Locations from MP are arrays of location names
+						# will search from crag to area (more discrete location to less discrete)
+						thisLocArr = rt["location"]
+						thisAreaId = self.getAreaMatchId(thisLocArr)
+						thisCragId = self.getCragMatchId(thisLocArr)
+						rating = self.getCleanRating(str(rt["rating"]))
+						routeType = self.getRouteType(rt["type"])
+						
+						# Get the grade
+						if "boulder" in rt["type"].lower():
+							grade = self.getBoulderGrade(rating)
+						else:
+							grade = self.getYDSGrade(rating)							
+						
+						if len(str(rt["pitches"])) > 0:
+							pitches = rt["pitches"]
+						else:
+							pitches = 0 # a better default than n/a
+						
+						query = cur.mogrify("INSERT INTO route(id,routeid,name,area,type,grade,mpurl,mpimgmedurl,mpimgsmallurl,mpstars,mpstarvotes,pitches,crag,locationstr) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (str(rt["id"]), str(rt["id"]), rt["name"], str(thisAreaId), str(routeType), str(grade), str(rt["url"]), str(rt["imgMed"]), str(rt["imgSmall"]), str(rt["stars"]), str(rt["starVotes"]), str(pitches), str(thisCragId), str(rt["location"]) ))
+
+						cur.execute(query)
+						conn.commit()
+						
+						# tracking to prevent duplicates which can occur with Ticks
+						idTracking.append(rt["id"])		
+										
+					else:
+						if self.existingRouteLocationExists(rt["id"]) is False:
 							# Locations from MP are arrays of location names
 							# will search from crag to area (more discrete location to less discrete)
 							thisLocArr = rt["location"]
 							thisAreaId = self.getAreaMatchId(thisLocArr)
-							thisCragId = self.getCragMatchId(thisLocArr)
-							rating = self.getCleanRating(str(rt["rating"]))
-							routeType = self.getRouteType(rt["type"])
-							
-							# Get the grade
-							if "boulder" in rt["type"].lower():
-								grade = self.getBoulderGrade(rating)
-							else:
-								grade = self.getYDSGrade(rating)							
-							
-							if len(str(rt["pitches"])) > 0:
-								pitches = rt["pitches"]
-							else:
-								pitches = 0 # a better default than n/a
-							
-							query = cur.mogrify("INSERT INTO route(id,routeid,name,area,type,grade,mpurl,mpimgmedurl,mpimgsmallurl,mpstars,mpstarvotes,pitches,crag,locationstr) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (str(rt["id"]), str(rt["id"]), rt["name"], str(thisAreaId), str(routeType), str(grade), str(rt["url"]), str(rt["imgMed"]), str(rt["imgSmall"]), str(rt["stars"]), str(rt["starVotes"]), str(pitches), str(thisCragId), str(rt["location"]) ))
-
-							cur.execute(query)
-							conn.commit()
-							
-							# tracking to prevent duplicates which can occur with Ticks
-							idTracking.append(rt["id"])		
-											
-						else:
-							if self.existingRouteLocationExists(rt["id"]) is False:
-								# Locations from MP are arrays of location names
-								# will search from crag to area (more discrete location to less discrete)
-								thisLocArr = rt["location"]
-								thisAreaId = self.getAreaMatchId(thisLocArr)
-							
-								if thisAreaId >= 0:
-									query = "UPDATE route SET area = " + str(thisAreaId) + " WHERE routeid = '"+ str(rt["id"]) +"';"
-									cur.execute(query)
-									conn.commit()
+						
+							if thisAreaId >= 0:
+								query = "UPDATE route SET area = " + str(thisAreaId) + " WHERE routeid = '"+ str(rt["id"]) +"';"
+								cur.execute(query)
+								conn.commit()
 							
 						
 				ids = ''
@@ -236,7 +232,7 @@ class MPData:
 		
 		containingGeog = self.getContainingGeographyForArea(locationArr)
 		
-		print "Containing Geog: ", containingGeog
+		#print "Containing Geog: ", containingGeog
 		
 		## iterate from smallest geography to biggest	
 		for loc in reversed(locationArr):		
@@ -245,7 +241,12 @@ class MPData:
 			for a in areaLookup:
 				aId = a[0]
 				aName = a[1].lower().lstrip("*").replace(" ", "")
-				country = a[2].lower().replace(" ", "")
+				
+				if a[2] is not None:
+					country = a[2].lower().replace(" ", "")
+				else:
+					country = ""
+					
 				if a[3] is not None:
 					region = a[3].lower().replace(" ", "") #state for USA
 				else:
@@ -256,13 +257,12 @@ class MPData:
 				# be 1 area with a specific name in a single containing geography (i.e. state)
 				if aName == thisLoc:
 					if region == containingGeog:
-						print "match"
 						return aId
 					elif country == containingGeog:
-						print "match"
 						return aId
 		
 		# no match found
+		print "No loc match: ", locationArr
 		return -1
 	
 	
@@ -290,7 +290,7 @@ class MPData:
 					return country
 		
 		# no match found
-		print "NO Match: ", locationArr
+		print "NO containing geog Match: ", locationArr
 		return -1
 				
 	

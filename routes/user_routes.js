@@ -66,7 +66,7 @@ module.exports = function(app, passport) {
 		var options = {
 		  args: [req.user.mountainprojkey.replace(/ /g,''), req.user.emails[0].replace(/ /g,''), req.user.id]
 		};
-		console.log(options.args)
+
 		if(options.args[0].length < 1 || options.args[1].length < 1){
 			console.log("improper profile settings")
 			res.render('profile.html', {
@@ -77,6 +77,8 @@ module.exports = function(app, passport) {
 		else{
 			PythonShell.run('./public/data/mp_data.py', options, function (err, results) {
 			  	if (err) throw err;
+			  	
+			  	console.log(results)
 			  
 			  	// results is an array consisting of messages collected during execution 
 			  	if(results.slice(-1)[0] === "DONE"){

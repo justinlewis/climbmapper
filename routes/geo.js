@@ -293,14 +293,17 @@ exports.loadMissingAreas = function(req, res) {
 exports.persistarea = function(name, lat, lng, areatype, userid, parentArea, res) {
     pg.connect(conString, function(err, client, done) {
 		 var queryString;
+		 var geom = "ST_GeomFromText('POINT("+lng+" "+lat+")',4326)"
+		 
 		 if(areatype === "AREA"){
-	    	queryString = "INSERT INTO area(name, geo_point, createdby) VALUES ($1, ST_GeomFromText('POINT("+lng+" "+lat+")',4326), "+userid+");";
+	    	queryString = "INSERT INTO area(name, geo_point, createdby) VALUES ($1, "+ geom +", $2);";
+	    	client.query(queryString, [name, userid]); 
 	    }
 	    else if(areatype === "CRAG") {
-	    	queryString = "INSERT INTO crag(name, area, geo_point, createdby) VALUES ($1,'"+parentArea+"',ST_GeomFromText('POINT("+lng+" "+lat+")',4326), "+userid+");";
+	    	queryString = "INSERT INTO crag(name, area, geo_point, createdby) VALUES ($1, $2,"+ geom +", $3);";
+	    	client.query(queryString, [name, parentArea, userid]); 
 	    }
-	    
-	    var query = client.query(queryString, [name]);    
+	      
 	    done();
 	    
 		 updateRoutes(-1)
@@ -314,15 +317,17 @@ exports.persistarea = function(name, lat, lng, areatype, userid, parentArea, res
 exports.updatearea = function(id, name, lat, lng, areatype, userid, parentArea, res) {
     pg.connect(conString, function(err, client, done) {
 		 var queryString;
+		 var geom = "ST_GeomFromText('POINT("+lng+" "+lat+")',4326)"
+
 		 if(areatype === "AREA"){
-	    	queryString = "UPDATE area SET name = $1, geo_point = ST_GeomFromText('POINT("+lng+" "+lat+")',4326), createdby = "+userid+" WHERE id = "+id+";";
+	    	queryString = "UPDATE area SET name = $1, geo_point = "+ geom +", createdby = $2 WHERE id = $3;";
+	    	client.query(queryString, [name, userid, id]);  
 	    }
 	    else if(areatype === "CRAG") {
-	    	queryString = "UPDATE crag SET name = $1, area = '"+parentArea+"', geo_point = ST_GeomFromText('POINT("+lng+" "+lat+")',4326), createdby = "+userid+" WHERE id = "+id+";";
+	    	queryString = "UPDATE crag SET name = $1, area = $2, geo_point = "+ geom +", createdby = $3 WHERE id = $4;";
+	    	client.query(queryString, [name, parentArea, userid, id]);  
 	    }
-	    
-	    var query = client.query(queryString, [name]);  
-	        
+  
 	    done();
 
 	  	 updateRoutes(id)
