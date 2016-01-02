@@ -46,8 +46,8 @@
 					setSearchBar(todoAreaPts.features.concat(tickAreaPts.features));
 					
 					renderMap();
-					resizeLocations("tick");
-					resizeLocations("todo");
+					resizeLocations();
+					resizeLocations();
 					setTimeSlider();			
 	 			});	
 	 		} 		
@@ -297,15 +297,16 @@
 						// a better approach is to parse the location string in a better way. 
 						if(contentType === 'todo'){
 							route.routeCategory = "TODO";
-							setToDoLocationRouteFrequency();
 							setToDoLocationRouteAttributes(route);
 						}
 						else if(contentType === 'tick'){
 							route.routeCategory = "TICK";
-							setTickLocationRouteFrequency();
 							setTickLocationRouteAttributes(route);
 						}
-				}
+					}
+					
+					setToDoLocationRouteFrequency();
+					setTickLocationRouteFrequency();
 			}
 			
 			function reportMissingAreas(data) {
@@ -331,9 +332,7 @@
 				for(var n=0; n<tickAreaPts.features.length; n++){
 					var currAreaId = tickAreaPts.features[n].properties.id;
 
-					if(!tickAreaPts.features[n].properties.customTicksCt){
-						tickAreaPts.features[n].properties.customTicksCt = 0;
-					}			
+					tickAreaPts.features[n].properties.customTicksCt = 0;
 					
 					tickAreaPts.features[n].properties.customTicksCt = tickAreaPts.features[n].properties.count;
 				}
@@ -349,11 +348,10 @@
 				// @todoAreaPts - globally imported in HTML head imports
 				for(var n=0; n<todoAreaPts.features.length; n++){
 					var currAreaId = todoAreaPts.features[n].properties.id;
-
-					if(!todoAreaPts.features[n].properties.customRouteCt){
-						todoAreaPts.features[n].properties.customRouteCt = 0;
-					}
 					
+					// create or reset var to ensure a clean ct
+					todoAreaPts.features[n].properties.customRouteCt = 0;
+
 					todoAreaPts.features[n].properties.customRouteCt = todoAreaPts.features[n].properties.count;
 				}								
 			}
@@ -493,7 +491,7 @@
 			// Sets the size of the location points respective to the amount of climbs in that area
 			// TODO: better check for ticks vs. todos
 			////
-			function resizeLocations(contentType) {	
+			function resizeLocations() {	
 					map.eachLayer(function(layer){
 						if(layer.feature){
 							// customRouteCt is currently ToDo frequency and will take priority over existing area points
@@ -746,6 +744,7 @@
 					////
 					// click event for areas
 					function featureClickEvent(e) {	
+					
 					 	var layer = e.target;
 						
 						if(!$("#info-container").is(':visible')){
@@ -1082,6 +1081,9 @@
 								            map.addLayer(tempNewArea);
 								            
 								            tempNewArea.openPopup();
+								            
+								            // updating the areaPts cache. 
+								            areaPts.features.push(response)
 								         }
 								         else if(response.actiontype === "UPDATE"){
 								            
@@ -1097,7 +1099,7 @@
 								            
 								            map.removeLayer(oldLayer);
 								            
-								            // updating the cache (which is really never used beyond initial layer setup)
+								            // updating the areaPts cache. 
 								            for(var a=0; a<areaPts.features.length; a++){
 								            	var area = areaPts.features[a]
 								            	if(parseInt(area.properties.id) === parseInt(response.properties.id)){
