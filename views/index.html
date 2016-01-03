@@ -66,6 +66,10 @@
 		        		<li class="active" data-toggle="modal" data-target="#issues-modal"><a href="#">Your Data Issues</a></li>
 		        {{/isAuthenticated}}	        
 		      </ul>
+		      
+		      <div id="user-name-container">
+					<h3>{{username}}</h3>		    		
+		    	</div>
  
 		      <form class="navbar-form">
 		        <div class="form-group" style="display:inline;">
@@ -81,11 +85,12 @@
 	   <div class="container" id="main">
 		  <div class="row" style="">
 		  	<div class="col-xs-6 col-lg-4" id="left-sidebar" style="">
-		    
-		      <h2 id="left-sidebar-heading" class="text-center"></h2>
-		      <!--<hr> --> 
+		    	<div id="left-sidebar-heading-info-container">
+		      	<h2 id="left-sidebar-heading" class="text-center"></h2>
+		      	<!--<hr> --> 
 		      
-		      <div id="hover-text-info-container"></div>
+		      	<div id="hover-text-info-container"></div>
+		      </div>
 				
 				<div id="chart-row-2" class="row chart-row" style="display:none;"></div>
 				<div id="chart-row-1" class="row chart-row" style="display:none;"></div>
@@ -100,9 +105,9 @@
 		    </div>
 		    <div class="col-xs-12 col-sm-6 col-lg-8 right-main-panel">
 		    	<div class="row">
-		    		<div id="user-name-container">
+<!--		    		<div id="user-name-container">
 						<h3>{{username}}</h3>		    		
-		    		</div>
+		    		</div>-->
 			    	<div id="info-container" style="display:none;" >
 				   	<h4 id='info-area-title'></h4>
 				   	<div id="info-box">

@@ -99,6 +99,17 @@ body{
 		font-weight: bolder;
 	}
 	
+	#left-sidebar-heading-info-container{
+		background-color: rgba(255,255,255,0.5);
+    	margin: 0;
+    	padding: 5px;
+    	width: 100%;
+    	position: absolute;
+    	left: 0;
+    	top: 0;
+    	display: none;
+	}
+	
 	.row{
 		height: 100%;	
 	}
@@ -184,7 +195,11 @@ body{
 		margin-top: 5px;
 		font-size: 13px;
 		text-align: center;
-		font-size: 16px;
+		font-size: 20px;
+	}
+	
+	.info-content b{
+		font-size: 25px;
 	}
 	
 	.info-ul{
@@ -269,17 +284,20 @@ body{
 	
 	#user-name-container{
 		 position: absolute;
-	    right: 50px;
-	    top: 14px;
+	    right: 284px;
 	    z-index: 9999;
-	    background: rgba(80, 80, 80, .5);
-	    padding: 10px;
-	    border-radius: 2px;
 	    font-weight: bold;
+	    font-style: italic;
+	    color: white;
+	    height: 100%;
 	}
 	
 	#user-name-container h3{
 		margin: 0;	
+		position: relative;
+  		top: 50%;
+  		transform: translateY(-50%);
+  		
 	}
 	
 	

@@ -548,6 +548,7 @@
 						var layer = e.target;
 						layer.setStyle({"fillColor":"#ff4d4d"});
 						
+						$("#left-sidebar-heading-info-container").show();
 						$("#left-sidebar-heading").text(layer.feature.properties.area);
 					}
 					
@@ -555,6 +556,7 @@
 						var feature = e.target;
 						feature.setStyle({"fillColor":"red"});
 						
+						$("#left-sidebar-heading-info-container").hide();
 						$("#left-sidebar-heading").text("");
 					}
 					
@@ -562,6 +564,7 @@
 						var layer = e.target;
 						layer.setStyle({"fillColor":"#878787"});
 						
+						$("#left-sidebar-heading-info-container").show();
 						$("#left-sidebar-heading").text(layer.feature.properties.area);
 					}
 					
@@ -569,6 +572,7 @@
 						var feature = e.target;
 						feature.setStyle({"fillColor":"orange"});
 						
+						$("#left-sidebar-heading-info-container").hide();
 						$("#left-sidebar-heading").text("");
 					}
 					
@@ -582,6 +586,7 @@
       				
       				layer.setStyle({"fillColor":"#878787"});
       				
+      				$("#left-sidebar-heading-info-container").show();
       				$("#left-sidebar-heading").text(layer.feature.properties.area);
       				
       				//////
@@ -628,8 +633,9 @@
       						$("#tick-time-chart").remove()
       					}
       				
-					    	layer.setStyle({"fillColor":"#138DA9"})
-   
+					    	layer.setStyle({"fillColor":"#138DA9"});
+					    	
+   						$("#left-sidebar-heading-info-container").show();
 						   $("#left-sidebar-heading").text(layer.feature.properties.area);
 						   
 						   if(layer.feature.properties.customRouteCt){
@@ -659,6 +665,7 @@
 						$("#tick-grade-chart").remove();
 						$("#tick-type-chart").remove();
 						$("#tick-height-chart").remove();
+						$("#left-sidebar-heading-info-container").hide();
 						$("#left-sidebar-heading").text("");
 					   $("#hover-text-info-container").html("");
 						$("#chart-row-1").hide();
@@ -672,6 +679,7 @@
 						$("#todo-grade-chart").remove();
 						$("#todo-type-chart").remove();
 						$("#todo-height-chart").remove();
+						$("#left-sidebar-heading-info-container").hide();
 						$("#left-sidebar-heading").text("");
 					   $("#hover-text-info-container").html("");
 					   $("#chart-row-1").hide();
@@ -1206,6 +1214,20 @@
 						"All Areas": areaPtsObj
 						//"All Crags": cragPtsObj
 						}; 
+						
+						
+					map.on('layeradd', function(event) {
+					     if(event.layer == areaTickPtsObj) {
+					         $(".slider-row").show();
+					     }
+					});
+					
+					map.on('layerremove', function(event) {
+					     if(event.layer == areaTickPtsObj) {
+					         $(".slider-row").hide();
+					     }
+					});
+
 						
 					// adds the layer switcher control
 					map.addControl(new L.control.layers(baseMaps,overlays, {"collapsed":true}));
