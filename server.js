@@ -44,31 +44,7 @@ app.listen(server_port, server_ip_address, function () {
   console.log( "Listening on " + server_ip_address + ", server_port " + server_port )
 });
 
-////////////// TODO: move these routes to a separate file
-app.get('/todoareas', geo.loadTodoAreas);
-app.get('/tickareas', geo.loadTickAreas);
-app.get('/crags', geo.loadCrags);
-app.get('/areas', geo.loadAreas);
-app.get('/todos', geo.loadToDos);
-app.get('/ticks', geo.loadTicks);
-app.get('/missingareas', geo.loadMissingAreas);
 
-app.post('/submitarea', function(req, res) {	
-	var parentArea;
-	if(req.body.parentarea){
-	 	parentArea = req.body.parentarea;
-	}
-	geo.persistarea(req.body.areaname, req.body.lat, req.body.lng, req.body.areatype, req.body.userid, parentArea, res)
-});
-
-app.post('/updatearea', function(req, res) {	
-	var parentArea;
-	if(req.body.parentarea){
-	 	parentArea = req.body.parentarea;
-	}
-	geo.updatearea(req.body.areaid, req.body.areaname, req.body.lat, req.body.lng, req.body.areatype, req.body.userid, parentArea, res)
-});
-/////////////////
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

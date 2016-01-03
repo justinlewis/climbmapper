@@ -4,7 +4,8 @@
   "private": true,
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "./node_modules/.bin/jasmine-node tests/spec"
   },
   "dependencies": {
     "body-parser": "~1.13.2",
@@ -17,11 +18,13 @@
     "express-session": "^1.12.1",
     "hjs": "~0.0.6",
     "hogan-express": "^0.5.2",
+    "jasmine-node": "^1.14.5",
     "morgan": "~1.6.1",
     "passport": "^0.2.2",
     "passport-http": "^0.3.0",
     "passport-local": "^1.0.0",
     "python-shell": "^0.3.0",
+    "request": "^2.67.0",
     "serve-favicon": "~2.3.0"
   }
 }
