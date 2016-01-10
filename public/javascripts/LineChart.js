@@ -1,5 +1,5 @@
-function LineChart(dataArr, targetEl, width) {
-	
+function LineChart(dataArr, selectedDate, targetEl, width) {
+
 	this.width = width || 200;
 	this.height = 200;
 	this.data = [];
@@ -8,7 +8,7 @@ function LineChart(dataArr, targetEl, width) {
 	this.totalSportCt = 0;
 	this.totalBoulderCt = 0;
 	this.totalAlpineCt = 0;
-	
+
 	
 	this.sortDatesAscending = function (date1, date2) {
 	  // This is a comparison function that will result in dates being sorted in
@@ -37,7 +37,9 @@ function LineChart(dataArr, targetEl, width) {
 			for (var a=0; a<area.properties.customTicksArr.length; a++) {
 				var feature = area.properties.customTicksArr[a];
 				
-				routes.push({"date":new Date(feature.date), "type":feature.type});
+				if(new Date(feature.date) <= selectedDate){
+					routes.push({"date":new Date(feature.date), "type":feature.type});
+				}
 			}
 		}
 		
@@ -119,8 +121,7 @@ function LineChart(dataArr, targetEl, width) {
 		
 		this.buildData()
 		
-	/*	var color = d3.scale.ordinal()
-		    .range(["#193441", "#3E606F", "#91AA9D", "#D1DBBD"]);*/
+		var color = d3.scale.ordinal().range(["#193441", "#3E606F", "#91AA9D", "#D1DBBD"]);
 		
 		var margin = {top: 20, right: 80, bottom: 30, left: 50}
 	
@@ -128,7 +129,6 @@ function LineChart(dataArr, targetEl, width) {
 		
 		var x = d3.time.scale().range([0, this.width - margin.right - margin.left]);	
 		var y = d3.scale.linear().range([this.height - margin.top - margin.bottom, 0]);
-		var color = d3.scale.category10();
 		
 		var xAxis = d3.svg.axis()
 		    .scale(x)
@@ -140,8 +140,12 @@ function LineChart(dataArr, targetEl, width) {
 		
 		var line = d3.svg.line()
 		    .interpolate("basis")
-		    .x(function(d) { return x(d.date); })
-		    .y(function(d) { return y(d.total); });
+		    .x(function(d) { 
+		    		return x(d.date); 
+		    })
+		    .y(function(d) { 
+		    		return y(d.total); 
+		    });
 		
 		var svg = d3.select(targetEl).append("svg")
 		    .attr("width", this.width)
@@ -196,6 +200,6 @@ function LineChart(dataArr, targetEl, width) {
 	      .attr("transform", function(d) { return "translate(" + x(d.value.date) + "," + y(d.value.total) + ")"; })
 	      .attr("x", 3)
 	      .attr("dy", ".35em")
-	      .text(function(d) { return d.name; });	      
+	      .text(function(d) { return d.name; });	     
 	}
 }

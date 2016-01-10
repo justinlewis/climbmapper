@@ -78,7 +78,7 @@ function RouteHeightPieChart(feature, targetEl, width) {
 	
 	var arc = d3.svg.arc()
 	    .outerRadius(radius - 40)
-	    .innerRadius(25);
+	    .innerRadius(0);
 	
 	var pie = d3.layout.pie()
 	    .sort(null)

@@ -36,7 +36,7 @@ function PieChart(feature, targetEl, width) {
 	
 	var arc = d3.svg.arc()
 	    .outerRadius(radius - 40)
-	    .innerRadius(25);
+	    .innerRadius(0);
 	
 	var pie = d3.layout.pie()
 	    .sort(null)
@@ -79,23 +79,23 @@ function PieChart(feature, targetEl, width) {
 	      //.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
 	      //.style("text-anchor", "middle")
 	      .attr("transform", function(d) {
-			    var c = arc.centroid(d),
-			        x = c[0],
-			        y = c[1],
-			        // pythagorean theorem for hypotenuse
-			        h = Math.sqrt(x*x + y*y);
-			    return "translate(" + (x/h * labelr) +  ',' +
-			       (y/h * labelr) +  ")"; 
+			    var c = arc.centroid(d);
+			    var x = c[0];
+			    var y = c[1];
+			        
+			    // pythagorean theorem for hypotenuse
+			    h = Math.sqrt(x*x + y*y);
+			    
+			    return "translate(" + (x/h * labelr) +  ',' + (y/h * labelr) +  ")"; 
 			})					      
 	      .attr("text-anchor", function(d) {
-			    return (d.endAngle + d.startAngle)/2 > Math.PI ?
-			        "end" : "start";
+			    return (d.endAngle + d.startAngle)/2 > Math.PI ? "end" : "start";
 			})
 			.style("font-size","14px")
 	      .text(function(d) { 
 	      	return d.data.type; 
 	      });
-	      
+	           
 	
 	return svg;
 }

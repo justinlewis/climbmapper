@@ -129,8 +129,8 @@
 				$("#tick-slider").slider({
 			      range: "min",
 			      value: allTickArr.length,
-			      min: 0,
-			      max: allTickArr.length,
+			      min: 1,
+			      max: allTickArr.length-1,
 			      create: function( event, ui ) {
 			      		// A silly hack because the slider is appending a ghostly empty <p> element to my label. No time to look deeper now.
 			      		if($("#time-slider-label").next("p").text().trim().length === 0){
@@ -145,14 +145,16 @@
       					$("#tick-time-chart").remove()
       				}
       				
-			      	if(!$("#chart-row-1").is(':visible')){
-							$("#chart-row-1").show();
-						}
-					   $("#chart-row-1").append('<div id="tick-time-chart" ></div>');
-					   var lineChart = new LineChart(tickAreaPts.features, "#tick-time-chart", $("#tick-time-chart").parent().width());
-					   lineChart.build();	
+      				if(selectedDate){
+      				
+				      	if(!$("#chart-row-1").is(':visible')){
+								$("#chart-row-1").show();
+							}
+						
+					   	$("#chart-row-1").append('<div id="tick-time-chart" ></div>');
+					   	var lineChart = new LineChart(tickAreaPts.features, selectedDate, "#tick-time-chart", $("#tick-time-chart").parent().width());
+					   	lineChart.build();	
 			     		
-			     		if(selectedDate){
 				     		var tickLocs = tickAreaPts.features;
 				     		var rtsCt = 0;
 				     		for(var t=0; t<tickLocs.length; t++){
@@ -1165,7 +1167,7 @@
 						
 						
 						map.on("draw:drawstop", function (e) {
-							console.log("stop")
+							//console.log("stop")
 						})
 						
 						map.on("draw:drawstart", function (e) {
@@ -1176,7 +1178,7 @@
 						map.on('draw:edited', function (e) {
 						    var layers = e.layers;
 						    layers.eachLayer(function (layer) {
-						    	console.log("test")
+						    	//console.log("test")
 
 						    });
 						});
