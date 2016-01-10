@@ -23,6 +23,10 @@
 	 		// Initialize 
 	 		this.init = function () { 			
 	 			
+	 			if(!isAuthenticated){
+	 				$('#welcome-modal').modal('show');
+	 			}
+	 			
 	 			////
 	 			// Make all data requests and execute a single callback when they all finish... It's amazing
 	 			////
@@ -43,7 +47,7 @@
 					processRoutes(toDoResponse[0]["routes"], 'todo');
 					reportMissingAreas(missingAreasResponse);
 					
-					setSearchBar(todoAreaPts.features.concat(tickAreaPts.features));
+					setSearchBar(areaPts.features);
 					
 					renderMap();
 					resizeLocations();
