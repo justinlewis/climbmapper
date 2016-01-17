@@ -321,9 +321,11 @@
 					$("#issues-content").append("<h5 class='info-content'><b>There are no known issues.</b></h5>");								
 				}
 				else{
+					$("#issue-content-container").show();
+					
 					for(var i=0; i<areas.length; i++){
 						var area = areas[i];
-						$("#issues-content").append("<h5 class='info-content'><b>Missing location for the route: "+ area.name +" - </b><a class='error-link' href="+ area.mpurl+" target='_blank'>See it on Mountain Project!</a></h5>");				
+						$("#issues-content").append("<tr> <td>"+ area.name +"</td> <td>Missing climbing area</td> <td>Add the missing climbing area using the tools on the right side of the map.</td> <td><a class='error-link' href="+ area.mpurl+" target='_blank'>See it on Mountain Project!</a> </td></tr>");				
 					}
 				}
 			}
@@ -948,13 +950,13 @@
 						   },
 						   edit: {
 						        featureGroup: drawnItems, 
-						        remove: false,
-						        edit: true  // only show when actually a possible option
+						        remove: false, // delete button/functionality
+						        edit: true  // edit button/functionality
 						   }
 						});
 						map.addControl(drawControl);
 						L.drawLocal.draw.toolbar.buttons.marker = 'Add a climbing area or crag';
-						L.drawLocal.draw.handlers.marker.tooltip.start = 'Place pin then fill out and submit the form.';
+						L.drawLocal.draw.handlers.marker.tooltip.start = 'Place pin then fill out and submit to save this new area.';
 						L.drawLocal.edit.handlers.edit.tooltip.text = 'Drag the pin to change location and/or fill out and submit the form.';
 						L.drawLocal.edit.handlers.edit.tooltip.subtext = '';
 						
@@ -1058,6 +1060,8 @@
 						
 						map.on('popupopen', function (e) {
 							 var tempMarker = this;
+							 
+							 enableEditModeInToolbar()
 							
 							// set coordinate fields on each popup form
 							var latLngObj = e.popup.getLatLng(); 

@@ -73,7 +73,7 @@ exports.verifyUser = function (username, cb) {
 	   
 	    query.on('row', function(row, result) {
 	    	if (row) {
-	    	  rowJSON = { "id": row.id, "username": row.username, "password": row.password, "displayname": row.displayname, "emails": [row.email], "mountainprojkey": row.mountainprojkey };
+	    	  rowJSON = { "id": row.id, "username": row.username, "displayname": row.displayname, "emails": [row.email], "mountainprojkey": row.mountainprojkey };
 	        result.addRow(rowJSON);
 	      }
 	    })

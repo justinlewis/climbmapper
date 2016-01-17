@@ -147,7 +147,7 @@ body{
 		margin-bottom: -10px;
 	}	
 
-	table {
+/*	table {
 		width: 100%;
 		border-collapse: collapse;
 		}
@@ -163,15 +163,15 @@ body{
 		border: 1px solid #666666;
 		text-align: center;
 		padding: 3px;
-		}
+		}*/
 		
 	.leaflet-popup-content {
 		overflow: none;
-/*		width: auto !important;*/
 	}
 	
-	.leaflet-top{
-/*			top: 50px;*/
+	
+	.leaflet-draw-actions {
+		display: none !important;	
 	}
 		
 	#info-area-title{
@@ -280,6 +280,10 @@ body{
 		color: red;
 		z-index: 9999;
 		overflow-y: auto;
+	}
+	
+	#issues-modal .modal-dialog{
+	    width: 800px;
 	}
 	
 	#user-name-container{
