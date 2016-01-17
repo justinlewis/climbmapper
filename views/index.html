@@ -63,7 +63,7 @@
 		        {{#isAuthenticated}}
 		        		<li class="active"><a href="/profile">Your Profile</a></li>
 		        		<li>&nbsp;</li>
-		        		<li class="active" data-toggle="modal" data-target="#issues-modal"><a href="#">Your Data Issues</a></li>
+		        		<li class="active" data-toggle="modal" data-target="#issues-modal"><a href="#">Data Issues</a></li>
 		        {{/isAuthenticated}}	        
 		      </ul>
 		      
@@ -214,10 +214,10 @@
 		          <h2 class="modal-title">Known Issues</h2>
 		        </div>
 		        <div class="modal-body">
-
-<!--						<div id="issues-content"></div>	-->
+		        
+		        		<div id="issues-content-msg"></div>	
 						
-						<div id="issue-content-container" style="display:none;">
+						<div id="issue-content-container" style="display:none;">							
 							<table class="table table-striped table-bordered">	
 							    <thead class="thead-inverse">
 							      <tr>

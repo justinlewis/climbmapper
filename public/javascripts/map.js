@@ -318,7 +318,7 @@
 			function reportMissingAreas(data) {
 				var areas = data[0].missingAreas;
 				if(areas.length === 0){
-					$("#issues-content").append("<h5 class='info-content'><b>There are no known issues.</b></h5>");								
+					$("#issues-content-msg").append("<h5 class='info-content'><b>There are no known issues.</b></h5>");								
 				}
 				else{
 					$("#issue-content-container").show();
@@ -1228,13 +1228,13 @@
 						
 					map.on('layeradd', function(event) {
 					     if(event.layer == areaTickPtsObj) {
-					         $(".slider-row").show();
+					         $("#tick-slider").show();
 					     }
 					});
 					
 					map.on('layerremove', function(event) {
 					     if(event.layer == areaTickPtsObj) {
-					         $(".slider-row").hide();
+					         $("#tick-slider").hide();
 					     }
 					});
 

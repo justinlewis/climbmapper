@@ -255,6 +255,10 @@ exports.loadToDos = function(req, res) {
 	 //pg.end();
 };
 
+/////
+//	TODO: Determine best approach for exposing location issues
+// CURRENTLY RETURNING MISSING AREAS FOR EVERYONE
+/////
 exports.loadMissingAreas = function(req, res) {
 	pg.connect(conString, function(err, client, done) {
 	    var queryString = "SELECT r.name, r.mpurl FROM route r WHERE area = -1;";
