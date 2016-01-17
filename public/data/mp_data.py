@@ -15,12 +15,6 @@ class MPData:
 		cur = conn.cursor()  ## open a cursor
 		
 		
-		cur.execute("DELETE FROM tick WHERE climberid = '"+str(appuserid)+"';")
-		cur.execute("DELETE FROM todo WHERE climberid = '"+str(appuserid)+"';")
-		conn.commit()
-		#conn.close()	
-		print "Cleaned db of Todos and Ticks"
-		
 		cur.execute("SELECT routeid FROM tick WHERE climberid = "+str(appuserid)+";")
 		global existingUserTicks
 		existingUserTicks = cur.fetchall()
@@ -74,21 +68,31 @@ class MPData:
 		mpKey = "&key="+mpUserKey
 		toDoList = []
 		
-		
+						
 		toDoCt = 1
 		for pos in urlPropStartPosList:
 			url = urlRoot + urlPropId + urlPropStartPos + str(pos) + mpKey
 			resp = requests.get(url=url)
-			toDos = json.loads(resp.text)								
 			
-			for toDoId in toDos["toDos"]:
-				if not self.todoExists(toDoId):
-					toDoList.append(toDoId)
-					query = cur.mogrify("INSERT INTO todo(id,routeid,climberid) VALUES (%s, %s, %s)", (str(toDoId), str(toDoId), str(appUserId)))
+			if resp.status_code == 200:
+				toDos = json.loads(resp.text)	
+				
+				if pos == 0:
+					cur.execute("DELETE FROM todo WHERE climberid = '"+str(appuserid)+"';")
+					conn.commit()
+
+				print "Cleaned db of Todos"							
+			
+				for toDoId in toDos["toDos"]:
+					if not self.todoExists(toDoId):
+						toDoList.append(toDoId)
+						query = cur.mogrify("INSERT INTO todo(id,routeid,climberid) VALUES (%s, %s, %s)", (str(toDoId), str(toDoId), str(appUserId)))
 						
-					cur.execute(query)
-					conn.commit()	
-		
+						cur.execute(query)
+						conn.commit()	
+			else:
+				print "BAD REQUEST"
+					
 		conn.close()
 		return toDoList
 	
@@ -119,22 +123,34 @@ class MPData:
 			url = root + uid + key + reqStartPos
 
 			resp = requests.get(url=url)
-			ticksResp = json.loads(resp.text)
 			
-			if reqChunks == 0:
-				hardestTick = ticksResp["hardest"]
-				#print hardestTick
-			
-			# {"date": "2015-10-16", "notes": "pretty ok", "routeId": 106360348}
-			for tick in ticksResp["ticks"]:
-				if not self.tickExists(tick["routeId"]):
-					ticksArr.append(tick["routeId"])
-					query = cur.mogrify("INSERT INTO tick(id,routeid,climberid,notes,date) VALUES (%s, %s, %s, %s, %s)", (str(tick["routeId"]), str(tick["routeId"]), str(appUserId), tick["notes"], str(tick["date"])))
-						
-					cur.execute(query)
+			if resp.status_code == 200:
+				
+				if reqChunks == 0:
+					cur.execute("DELETE FROM tick WHERE climberid = '"+str(appUserId)+"';")
 					conn.commit()
+					print "Cleaned db of Ticks"
+			
+				ticksResp = json.loads(resp.text)
+				ticksRespStatus = ticksResp["success"]
+				#print ticksRespStatus
+			
+				if reqChunks == 0:
+					hardestTick = ticksResp["hardest"]
+					#print hardestTick
+			
+				# {"date": "2015-10-16", "notes": "pretty ok", "routeId": 106360348}
+				for tick in ticksResp["ticks"]:
+					if not self.tickExists(tick["routeId"]):
+						ticksArr.append(tick["routeId"])
+						query = cur.mogrify("INSERT INTO tick(id,routeid,climberid,notes,date) VALUES (%s, %s, %s, %s, %s)", (str(tick["routeId"]), str(tick["routeId"]), str(appUserId), tick["notes"], str(tick["date"])))
+						
+						cur.execute(query)
+						conn.commit()
 
-			reqChunks = reqChunks + 200
+				reqChunks = reqChunks + 200
+			else:
+				print "BAD REQUEST"
 			
 		conn.close()	
 		return ticksArr
