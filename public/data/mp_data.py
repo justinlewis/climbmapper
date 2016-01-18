@@ -168,8 +168,6 @@ class MPData:
 		root = "http://www.mountainproject.com/data?action=getRoutes&routeIds="
 		ids = ''
 	 	key = "&key="+mpUserKey
-			
-		print "getting routes"
 		
 		idCt = 1
 		rows = []
@@ -240,6 +238,7 @@ class MPData:
 			idCt += 1	
 		conn.close()		
 		
+		print len(idTracking), " imported routes"
 		return idTracking
 	
 	
@@ -427,7 +426,7 @@ class MPData:
 		
 		# If we got this far there was no match for rope YDS grades. 
 		# Lets check if its a boulder grade
-		grade = self.getBoulderGrade(inGrade, gradesLookup)
+		grade = self.getBoulderGrade(inGrade)
 		
 		if grade == 999:
 			print "Missing YDS and boulder grade -> ", inGrade
@@ -455,13 +454,13 @@ class MPData:
 
 if __name__ == '__main__':
 	
-	mpUserKey = sys.argv[1] 
-	mpUserEmail = sys.argv[2]
-	appUserId = sys.argv[3]
+	#mpUserKey = sys.argv[1] 
+	#mpUserEmail = sys.argv[2]
+	#appUserId = sys.argv[3]
 	
-	#mpUserKey = "106251374-a0e6d43518505bec412a547956f25216"
-	#mpUserEmail = "j.mapping@gmail.com"
-	#appUserId = 1
+	mpUserKey = "106251374-a0e6d43518505bec412a547956f25216"
+	mpUserEmail = "j.mapping@gmail.com"
+	appUserId = 1
 	
 	print "Getting Mountain Project Todo and Tick Routes..."
 	
