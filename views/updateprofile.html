@@ -24,13 +24,7 @@
 		<div class="col-sm-3 col-m-3"></div>
 		<div class="col-sm-6 col-m-6">
 			<div class="well">
-				<h3><span class="fa fa-user"></span> Local</h3>
-
-				<p>
-					<strong>id</strong>: {{user.id}}<br>
-					<strong>email</strong>: {{user.emails}}<br>
-				</p>
-				
+				<h3><span class="fa fa-user"></span> Your Profile</h3>		
 				    
 			    <form action="/updateprofile" method="post">
 <!--			        <div class="form-group">
@@ -50,6 +44,11 @@
 			            <label>Mountain Project User Key</label>
 			            <input type="text" placeholder="Leave blank if no update is needed" class="form-control" name="mpuserkey" value="{{user.mountainprojkey}}">
 			            <p><strong>NOTE:</strong> Get your key by logging into <a target="_blank" href="http://www.mountainproject.com">MountainProject.com</a> and then going to <a target="_blank" href="http://www.mountainproject.com/data">MountainProject.com/data</a>. Your 43 character key should be at the top of the page. </p>
+			        </div>
+			        <div class="form-group checkbox">
+			            <label><strong>Get updates and notifications via Email</strong></label>
+			            <input type="checkbox" name="getnotifications" {{#user.getnotifications}}checked{{/user.getnotifications}}>
+			            <p><strong>NOTE:</strong> Getting notifications is optional but allows us to let you know if there are major changes that might affect you (like adding major features or data improvements). Email communications will be rare but this helps us to know if we should exclude you when they are used.</p>
 			        </div>
 			
 			        <button type="submit" class="btn btn-success btn-lg">Submit</button>

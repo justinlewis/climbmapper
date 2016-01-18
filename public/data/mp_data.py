@@ -78,10 +78,10 @@ class MPData:
 				toDos = json.loads(resp.text)	
 				
 				if pos == 0:
-					cur.execute("DELETE FROM todo WHERE climberid = '"+str(appuserid)+"';")
+					cur.execute("DELETE FROM todo WHERE climberid = '"+str(appUserId)+"';")
 					conn.commit()
 
-				print "Cleaned db of Todos"							
+					print "Cleaned db of Todos"							
 			
 				for toDoId in toDos["toDos"]:
 					if not self.todoExists(toDoId):

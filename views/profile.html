@@ -34,19 +34,21 @@
 				<h3><span class="fa fa-user"></span> {{user.username}}</h3>
 
 				<p>
-					<strong>ID</strong>: {{user.id}}<br>
 					<strong>User Name</strong>: {{user.username}}<br>
 					<strong>Email</strong>: {{user.emails}}<br>
 					<strong>Mountain Project User Key</strong>: {{user.mountainprojkey}}
+					<div class="form-group checkbox disabled">
+		            <label><strong>Get updates and notifications via Email</strong></label>
+		            <input type="checkbox" name="getnotifications" {{#user.getnotifications}}checked{{/user.getnotifications}} disabled="true">
+		         </div>
 				</p>
 
 			</div>
 			<form action="/mpupdate" method="post" class="text-center">
-				<button id="mp-update-btn" type="submit" class="btn btn-primary btn-lg" disabled="true">
+				<button id="mp-update-btn" type="submit" class="btn btn-primary btn-lg" >
 					Update Your Mountain Project Data 
 					<i id="mp-update-btn-loading-spinner" class="fa fa-refresh fa-spin" style="display:none;"></i>
 				</button>
-				<h3>We are sorry.  Mountain Project's API is broken at the moment so we can't pull your data into ClimbMapper.</h3>
 			</form>
 			<p class="warning-message" style="display:none;">*** Be patient. This can take a little while. The page will reload when the update process is complete.</p>
 		</div>

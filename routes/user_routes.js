@@ -48,7 +48,11 @@ module.exports = function(app, passport) {
 	});
 	
 	app.post('/updateprofile', isLoggedIn, function(req, res) {
-		users.updateProfile(res, req.user, req.body.mpuserkey, req.body.email, req.body.password);
+		var getNotes = false;
+		if(req.body.getnotifications){
+			getNotes = true
+		}
+		users.updateProfile(res, req.user, req.body.mpuserkey, req.body.email, req.body.password, getNotes);
 	});
 	
 	
@@ -77,8 +81,6 @@ module.exports = function(app, passport) {
 		else{
 			PythonShell.run('./public/data/mp_data.py', options, function (err, results) {
 			  	if (err) throw err;
-			  	
-			  	console.log(results)
 			  
 			  	// results is an array consisting of messages collected during execution 
 			  	if(results.slice(-1)[0] === "DONE"){

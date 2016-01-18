@@ -34,7 +34,7 @@ exports.createUser = function(username, password, cb, req) {
 	 //pg.end();
 }
 
-exports.updateProfile = function(res, user, mpuserkey, email, password) {
+exports.updateProfile = function(res, user, mpuserkey, email, password, getnotifications) {
    
    pg.connect(conString, function(err, client, done) {
 
@@ -46,6 +46,9 @@ exports.updateProfile = function(res, user, mpuserkey, email, password) {
 	   }
 	   if(password.length > 0){
 	   	client.query("UPDATE appuser SET password='"+password+"' WHERE id ='"+user.id.toString()+"';");
+	   }
+	   if(getnotifications !== user.getnotifications){
+	   	client.query("UPDATE appuser SET getnotifications='"+getnotifications+"' WHERE id ='"+user.id.toString()+"';");
 	   }
 	   
 	   done()
@@ -69,11 +72,11 @@ exports.verifyPassword = function (password) {
 exports.verifyUser = function (username, cb) {
    
    pg.connect(conString, function(err, client, done) {
-		var query = client.query("SELECT id, username, password, displayname, email, mountainprojkey FROM appuser;");
+		var query = client.query("SELECT id, username, password, displayname, email, mountainprojkey, getnotifications FROM appuser;");
 	   
 	    query.on('row', function(row, result) {
 	    	if (row) {
-	    	  rowJSON = { "id": row.id, "username": row.username, "password": row.password, "displayname": row.displayname, "emails": [row.email], "mountainprojkey": row.mountainprojkey };
+	    	  rowJSON = { "id": row.id, "username": row.username, "password": row.password, "displayname": row.displayname, "emails": [row.email], "mountainprojkey": row.mountainprojkey, "getnotifications": row.getnotifications };
 	        result.addRow(rowJSON);
 	      }
 	    })
@@ -102,12 +105,12 @@ exports.verifyUser = function (username, cb) {
 exports.findByUsername = function(username, cb) {
   process.nextTick(function() { 	  
     pg.connect(conString, function(err, client, done) {
-	    var query = client.query("SELECT id, username, password, displayname, email, mountainprojkey FROM appuser;");
+	    var query = client.query("SELECT id, username, password, displayname, email, mountainprojkey, getnotifications FROM appuser;");
 	   
 	    query.on('row', function(row, result) {
 	    	  
 	        if (row) {
-	        		rowJSON = { "id": row.id, "username": row.username, "password": row.password, "displayname": row.displayname, "emails": [row.email], "mountainprojkey": row.mountainprojkey };
+	        		rowJSON = { "id": row.id, "username": row.username, "password": row.password, "displayname": row.displayname, "emails": [row.email], "mountainprojkey": row.mountainprojkey, "getnotifications": row.getnotifications };
 	        		result.addRow(rowJSON);
 	        }
 	    })
@@ -174,11 +177,11 @@ exports.findByUsername = function(username, cb) {
 exports.findById = function(id, cb) {
   process.nextTick(function() {  
     pg.connect(conString, function(err, client, done) {
-	    var query = client.query("SELECT id, username, password, displayname, email, mountainprojkey FROM appuser;");
+	    var query = client.query("SELECT id, username, password, displayname, email, mountainprojkey, getnotifications FROM appuser;");
 	   
 	    query.on('row', function(row, result) {
 	        if (row) {
-	        		rowJSON = { "id": row.id, "username": row.username, "password": row.password, "displayname": row.displayname, "emails": [row.email], "mountainprojkey": row.mountainprojkey };
+	        		rowJSON = { "id": row.id, "username": row.username, "password": row.password, "displayname": row.displayname, "emails": [row.email], "mountainprojkey": row.mountainprojkey, "getnotifications": row.getnotifications };
 	        		result.addRow(rowJSON);
 	        }
 	    })
