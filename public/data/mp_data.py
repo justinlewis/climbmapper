@@ -139,7 +139,17 @@ class MPData:
 				for tick in ticksResp["ticks"]:
 					if not self.tickExists(tick["routeId"]):
 						ticksArr.append(tick["routeId"])
-						query = cur.mogrify("INSERT INTO tick(id,routeid,climberid,notes,date) VALUES (%s, %s, %s, %s, %s)", (str(tick["routeId"]), str(tick["routeId"]), str(appUserId), tick["notes"], str(tick["date"])))
+						
+						##
+						## This is really dumb. MP has bad dates in their system so I have to set a invalid one to something. 
+						## Postgres does not like '0000-00-00'
+						##
+						if str(tick["date"]) == '0000-00-00':
+							thisDate = '2016-01-01'
+						else:
+							thisDate = str(tick["date"])
+						
+						query = cur.mogrify("INSERT INTO tick(id,routeid,climberid,notes,date) VALUES (%s, %s, %s, %s, %s)", (str(tick["routeId"]), str(tick["routeId"]), str(appUserId), tick["notes"], thisDate))
 						
 						cur.execute(query)
 						conn.commit()
@@ -454,14 +464,15 @@ class MPData:
 
 if __name__ == '__main__':
 	
-	#mpUserKey = sys.argv[1] 
-	#mpUserEmail = sys.argv[2]
-	#appUserId = sys.argv[3]
+	mpUserKey = sys.argv[1] 
+	mpUserEmail = sys.argv[2]
+	appUserId = sys.argv[3]
 	
-	mpUserKey = "106251374-a0e6d43518505bec412a547956f25216"
-	mpUserEmail = "j.mapping@gmail.com"
-	appUserId = 1
+	#mpUserKey = "106251374-a0e6d43518505bec412a547956f25216"
+	#mpUserEmail = "j.mapping@gmail.com"
+	#appUserId = 1
 	
+
 	print "Getting Mountain Project Todo and Tick Routes..."
 	
 	dbHost = os.getenv('OPENSHIFT_POSTGRESQL_DB_HOST', 'localhost')

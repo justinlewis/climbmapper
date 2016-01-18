@@ -1,95 +1,52 @@
 var express = require('express');
+var geo = require('../routes/geo');
 var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'My Climb Mapper' });
+	var userName = "";
+	var userId = 1;
+	var isNOTAuthenticated = true;
+	if (req.isAuthenticated()){
+		userName = req.user.username;
+		userId = req.user.id;
+	}
+	else {
+		userName = "Example User";
+	}
+	
+	if (req.isAuthenticated()) {
+		isNOTAuthenticated = false;
+	}
+
+  res.render('index', { title: 'Climb Mapper', username: userName, isAuthenticated: req.isAuthenticated(), isNOTAuthenticated:isNOTAuthenticated, authenticatedUserId: userId });
+});
+
+router.get('/todoareas', geo.loadTodoAreas);
+router.get('/tickareas', geo.loadTickAreas);
+router.get('/crags', geo.loadCrags);
+router.get('/areas', geo.loadAreas);
+router.get('/todos', geo.loadToDos);
+router.get('/ticks', geo.loadTicks);
+router.get('/missingareas', geo.loadMissingAreas);
+
+router.post('/submitarea', function(req, res) {	
+	var parentArea;
+	if(req.body.parentarea){
+	 	parentArea = req.body.parentarea;
+	}
+	geo.persistarea(req.body.areaname, req.body.lat, req.body.lng, req.body.areatype, req.body.userid, parentArea, res)
+});
+
+router.post('/updatearea', function(req, res) {	
+	var parentArea;
+	if(req.body.parentarea){
+	 	parentArea = req.body.parentarea;
+	}
+	geo.updatearea(req.body.areaid, req.body.areaname, req.body.lat, req.body.lng, req.body.areatype, req.body.userid, parentArea, res)
 });
 
 exports.users = require('./users');
-
-module.exports = function(app, passport) {
-	
-	// LOG-IN
-	app.get('/login', function(req, res) {
-		res.render('login.html',  { message : req.flash("loginMessage") }); 
-	});
-	 
-	
-	app.post('/login',
-	  passport.authenticate('local', { successRedirect: '/',
-	                                   failureRedirect: '/login',
-	                                   failureFlash : true
-	                                   })
-	);
-	
-	// SIGN-UP
-	app.get('/signup', function(req, res) {
-	
-	   // render the page and pass in any flash data 
-		res.render('signup.html', { message : req.flash("loginMessage") }); 
-	});
-	
-	app.post('/signup', 
-		passport.authenticate('local-signup', {
-	     													successRedirect : '/profile', 
-	     													failureRedirect : '/signup',
-	     													failureFlash : true
-															})
-	);
-	
-	
-	// PROFILE
-	app.get('/profile', isLoggedIn, function(req, res) {
-		res.render('profile.html', {
-			user : req.user 
-		});
-	});
-	
-	
-	app.get('/updateprofile', isLoggedIn, function(req, res, cb) {
-		res.render('updateprofile.html', {
-			user : req.user 
-		});
-	});
-	
-	app.post('/updateprofile', isLoggedIn, function(req, res) {
-		users.updateProfile(req.user, req.body.mpuserkey, req.body.email, req.body.password)
-	});
-		
-	
-	// MOUNTAN PROJECT UPDATE
-	app.post('/mpupdate', isLoggedIn, function(req, res) {	
-		
-		var process = spawn('python',["public/data/mp_data.py", req.user.mountainprojkey, req.user.email]);
-		
-		process.stdout.setEncoding('utf8');
-		process.stdout.on('data', function (data){
-			var str = data.toString();
-			var lines = str.split(/(\r?\n)/g);
-			
-	  		for (var i=0; i<lines.length; i++) {
-	  			var line = lines[i].replace(/(\r\n|\n|\r)/gm,"").replace(/ /g,'');
-	  			if(line === "DONE"){
-	  				console.log("Update complete")
-	  			}
-	  		}
-		});
-	
-	});
-	
-		
-	// Route middleware to check for authentication status
-	function isLoggedIn(req, res, next) {
-		
-		// if user is authenticated in the session, carry on
-		if (req.isAuthenticated())
-			return next();
-	
-		// if they aren't redirect them to the home page
-		res.redirect('/login');
-	}
-}
 
 
 module.exports = router;
