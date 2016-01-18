@@ -15,6 +15,12 @@ class MPData:
 		cur = conn.cursor()  ## open a cursor
 		
 		
+		cur.execute("DELETE FROM tick WHERE climberid = '"+str(appuserid)+"';")
+		cur.execute("DELETE FROM todo WHERE climberid = '"+str(appuserid)+"';")
+		conn.commit()
+		#conn.close()	
+		print "Cleaned db of Todos and Ticks"
+		
 		cur.execute("SELECT routeid FROM tick WHERE climberid = "+str(appuserid)+";")
 		global existingUserTicks
 		existingUserTicks = cur.fetchall()
@@ -75,13 +81,7 @@ class MPData:
 			resp = requests.get(url=url)
 			
 			if resp.status_code == 200:
-				toDos = json.loads(resp.text)	
-				
-				if pos == 0:
-					cur.execute("DELETE FROM todo WHERE climberid = '"+str(appUserId)+"';")
-					conn.commit()
-
-					print "Cleaned db of Todos"							
+				toDos = json.loads(resp.text)						
 			
 				for toDoId in toDos["toDos"]:
 					if not self.todoExists(toDoId):
@@ -94,6 +94,7 @@ class MPData:
 				print "BAD REQUEST"
 					
 		conn.close()
+		print len(toDoList), " ToDos"
 		return toDoList
 	
 	
@@ -125,11 +126,6 @@ class MPData:
 			resp = requests.get(url=url)
 			
 			if resp.status_code == 200:
-				
-				if reqChunks == 0:
-					cur.execute("DELETE FROM tick WHERE climberid = '"+str(appUserId)+"';")
-					conn.commit()
-					print "Cleaned db of Ticks"
 			
 				ticksResp = json.loads(resp.text)
 				ticksRespStatus = ticksResp["success"]
@@ -153,6 +149,8 @@ class MPData:
 				print "BAD REQUEST"
 			
 		conn.close()	
+		
+		print len(ticksArr), " Ticks"
 		return ticksArr
 		
 	# @contentType can be 'todo' or 'tick'	
@@ -171,6 +169,7 @@ class MPData:
 		ids = ''
 	 	key = "&key="+mpUserKey
 			
+		print "getting routes"
 		
 		idCt = 1
 		rows = []
