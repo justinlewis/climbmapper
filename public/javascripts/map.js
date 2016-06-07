@@ -26,7 +26,7 @@
 	 		this.init = function () { 			
 	 			
 	 			if(!isAuthenticated){
-	 				// $('#welcome-modal').modal('show');
+	 				$('#welcome-modal').modal('show');
 	 			}
 	 			
 	 			////
