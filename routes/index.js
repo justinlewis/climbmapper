@@ -23,6 +23,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/todoareas', geo.loadTodoAreas);
+router.get('/todocrags', geo.loadTodoCrags);
 router.get('/tickareas', geo.loadTickAreas);
 router.get('/crags', geo.loadCrags);
 router.get('/areas', geo.loadAreas);

@@ -1,13 +1,6 @@
-function RouteHeightPieChart(feature, targetEl, width) {
+function RouteHeightPieChart(featureArr, targetEl, width) {
 	var data = [];
 	var pitchDict = {};
-	var featureArr = []
-	if(feature.properties.customTicksArr){
-		featureArr = feature.properties.customTicksArr;
-	}
-	else if(feature.properties.customRouteArr){
-		featureArr = feature.properties.customRouteArr;
-	}
 	
 	for(var i=0; i<featureArr.length; i++){
 		var rtPitches = featureArr[i].pitches;

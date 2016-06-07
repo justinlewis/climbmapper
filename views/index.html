@@ -15,6 +15,7 @@
     <script src="javascripts/leaflet-providers-master/leaflet-providers.js"></script>
     <script src="javascripts/leaflet-omnivore-master/leaflet-omnivore.min.js"></script>
     <script type="text/javascript" src="javascripts/leaflet_draw_0_2_4/dist/leaflet.draw.js"></script>
+    <!-- <script src="javascripts/turf/turf.min.js" charset="utf-8"></script> -->
 
     <script type="text/javascript" src="javascripts/jquery-2.1.3.min.js"></script>
     <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
@@ -67,18 +68,42 @@
 		        {{/isAuthenticated}}	        
 		      </ul>
 		      
-		      <div id="user-name-container">
+<!-- 		      <div id="user-name-container">
 					<h3>{{username}}</h3>		    		
-		    	</div>
- 
-		      <form class="navbar-form">
-		        <div class="form-group" style="display:inline;">
-		          <div id="area-search" class="input-group pull-right">
-		            <input type="text" class="typeahead form-control" placeholder="Search for a crag/area">
-		            <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span> </span>
-		          </div>
-		        </div>
-		      </form>
+		      </div> -->
+
+		      <ul class="nav navbar-nav pull-right">
+		      		<li>
+		      			<div id="user-name-container">
+							<p class="navbar-text">{{username}}</p>		    		
+		      			</div>
+		      		</li>
+
+					<li class="dropdown">
+					    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">All Route Types 
+					    	<span class="caret"></span>
+					    </a>
+					  <ul class="dropdown-menu">
+					    <li><a id="trad-btn" href="#" data-type="TRAD">Trad </a></li>
+					    <li><a id="sport-btn" href="#" data-type="SPORT">Sport</a></li>
+					    <li><a id="boulder-btn" href="#" data-type="BOULDER">Boulder</a></li>
+					    <li><a id="alpine-btn" href="#" data-type="ALPINE">Alpine</a></li>
+					    <li role="separator" class="divider"></li>
+					    <li><a id="all-btn" href="#" data-type="ALL">All Types</a></li>
+					  </ul>
+					</li>
+					<li>
+				  	<form class="navbar-form" role="search">
+				  		<div id="area-search" class="input-group pull-right">
+				        	<div class="form-group" style="display:inline;">
+				        		<input type="text" class="typeahead form-control" placeholder="Search for a crag/area">
+				        	</div>
+				        
+				        	<span class="input-group-addon"><span class="glyphicon glyphicon-search"></span> </span>
+				        </div>
+			      	</form>
+			      	</li>
+			  </ul>
 		    </div>
 		</div>
 	
@@ -105,6 +130,9 @@
 		    </div>
 		    <div class="col-xs-12 col-sm-6 col-lg-8 right-main-panel">
 		    	<div class="row">
+
+
+
 			    	<div id="info-container" style="display:none;" >
 				   	<h4 id='info-area-title'></h4>
 				   	<div id="info-box">
@@ -112,7 +140,7 @@
 				   	</div>
 				   </div>
 				 </div>
-		    </div>		 
+		    </div>	 
 		  </div>
 		  <div id="map"></div>  
 		  

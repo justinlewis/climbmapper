@@ -1,9 +1,28 @@
-function PieChart(feature, targetEl, width) {
+function PieChart(feature, targetEl, width, routeTypeFilter) {
 	var data = [];
-	var trad = feature.properties.customTradCt;
-	var sport = feature.properties.customSportCt;
-	var boulder = feature.properties.customBoulderCt;
-	var alpine = feature.properties.customAlpineCt;
+	var trad = 0;
+	var sport = 0;
+	var boulder = 0;
+	var alpine = 0;
+
+	if(routeTypeFilter === "ALL"){
+		trad = feature.properties.customTradCt;
+		sport = feature.properties.customSportCt;
+		boulder = feature.properties.customBoulderCt;
+		alpine = feature.properties.customAlpineCt;
+	}
+    else if(routeTypeFilter === "TRAD"){
+    	trad = feature.properties.customTradCt;
+    }
+    else if(routeTypeFilter === "SPORT"){
+    	sport = feature.properties.customSportCt;
+    }
+    else if(routeTypeFilter === "BOULDER"){
+    	boulder = feature.properties.customBoulderCt;
+    }
+    else if(routeTypeFilter === "ALPINE"){
+    	alpine = feature.properties.customAlpineCt;
+    }
 	
 	function getAvg(targetCt, allCt) {
 		var percent = (targetCt/allCt) * 100;

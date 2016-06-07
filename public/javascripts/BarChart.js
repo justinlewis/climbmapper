@@ -91,10 +91,11 @@ function BarChart(routeArr, targetEl, width){
 			$(targetEl).html("Sorry, there are no routes for this location.");
 		}
 		else{
-			var routeGradeObj = function (rating, frequency, sportFrequency, tradFrequency, boulderFrequency, orderIndex) { 
+			var routeGradeObj = function (type, rating, frequency, sportFrequency, tradFrequency, boulderFrequency, difficultyindex) { 
+				this.type = type,
 				this.rating = rating, 
 				this.frequency = frequency,
-				this.orderIndex = orderIndex,
+				this.difficultyindex = difficultyindex,
 				this.sportFrequency = sportFrequency;
 				this.tradFrequency = tradFrequency;
 				this.boulderFrequency = boulderFrequency;
@@ -118,40 +119,43 @@ function BarChart(routeArr, targetEl, width){
 				var stars = String(route.stars ? route.stars : 'n/a');
 					
 				var type = String(route.type ? String(route.type) : 'n/a').trim();		
-				var gradeExists = checkGradeExists(rating, gradeArr);		
+				// var gradeExists = checkGradeExists(rating, gradeArr);		
+
+
+				var gradeExists = checkGradeExists(rating, gradeArr);
 				if( gradeExists ){	
-					//
-					//Iterate over existing grade (rating) objects to increment frequency properties		
-					//
-					for(var rg=0; rg<gradeArr.length; rg++){
-						if( rating == String(gradeArr[rg].rating).trim() ){
-							
-							gradeArr[rg].frequency = gradeArr[rg].frequency + 1;
-							
-							switch(type.toLowerCase()){
-								case 'sport':
-								gradeArr[rg].sportFrequency = gradeArr[rg].sportFrequency + 1;
-								break;
-							case 'trad':
-								gradeArr[rg].tradFrequency = gradeArr[rg].tradFrequency + 1;
-								break;
-							case 'boulder':
-								gradeArr[rg].boulderFrequency = gradeArr[rg].boulderFrequency + 1;
-								break;
-							}
-						}			
-					}								
+					
+						//
+						//Iterate over existing grade (rating) objects to increment frequency properties		
+						//
+						for(var rg=0; rg<gradeArr.length; rg++){
+							var areaGraded = gradeArr[rg];
+							if( rating == String(areaGraded.rating).trim() ){
+								
+								areaGraded.frequency = areaGraded.frequency + 1;
+								
+								switch(areaGraded.type.toLowerCase()){
+									case 'sport':
+										areaGraded.sportFrequency = areaGraded.sportFrequency + 1;
+										break;
+									case 'trad':
+										areaGraded.tradFrequency = areaGraded.tradFrequency + 1;
+										break;
+									case 'boulder':
+										areaGraded.boulderFrequency = areaGraded.boulderFrequency + 1;
+										break;
+								}
+							}			
+						}						
 				}
 				else{
-					var ratingIndex = this.ratingLookup.ratings[rating];
-					if(!ratingIndex){
-						ratingIndex = 999;
-					}
-				
+					if(!route.difficultyindex){
+						difficultyindex = 999;	
+					}	
 					var initialSportFrequency = 0;
 					var initialTradFrequency = 0;
 					var initialBoulderFrequency = 0;
-					switch(type.toLowerCase()){
+					switch(route.type.toLowerCase()){
 						case 'sport':
 								initialSportFrequency = 1;
 								break;
@@ -161,17 +165,16 @@ function BarChart(routeArr, targetEl, width){
 						case 'boulder':
 								initialBoulderFrequency = 1;
 								break;
-					}
-												
-					gradeArr.push( new routeGradeObj( rating, 1, initialSportFrequency, initialTradFrequency, initialBoulderFrequency, ratingIndex ));
+					}					
+					gradeArr.push( new routeGradeObj(route.type, rating, 1, initialSportFrequency, initialTradFrequency, initialBoulderFrequency, route.difficultyindex ));
 				}												
 			}
 			
-			// Sort the array by the orderIndex property
+			// Sort the array by the difficultyindex property
 			function compare(a,b) {
-			  if (a.orderIndex < b.orderIndex)
+			  if (a.difficultyindex < b.difficultyindex)
 			     return -1;
-			  if (a.orderIndex > b.orderIndex)
+			  if (a.difficultyindex > b.difficultyindex)
 			    return 1;
 			  return 0;
 			}					

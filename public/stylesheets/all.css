@@ -287,9 +287,6 @@ body{
 	}
 	
 	#user-name-container{
-		 position: absolute;
-	    right: 284px;
-	    z-index: 9999;
 	    font-weight: bold;
 	    font-style: italic;
 	    color: white;
@@ -297,10 +294,10 @@ body{
 	}
 	
 	#user-name-container h3{
-		margin: 0;	
+	/*	margin: 0;	
 		position: relative;
   		top: 50%;
-  		transform: translateY(-50%);
+  		transform: translateY(-50%);*/
   		
 	}
 	
@@ -473,6 +470,18 @@ body{
 
 #welcome-modal .modal-dialog {
 	width: 70%;
+}
+
+.btn.btn-primary{
+	z-index: 999999;
+    position: relative;
+    float: left;
+}
+
+#route-type-btn-group{
+	z-index: 999999;
+    position: relative;
+    float: left;
 }
 
 

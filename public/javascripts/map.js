@@ -2,13 +2,15 @@
 (function(){
 
 	$(document).ready(function () { 
-			var map;	
+			map;	
 			var popup;
 			var orphanRouteArr = [];
 			var todoAreaPts;
 			var tickAreaPts;
+			var todoCragPts;
 			var cragPts;
 			var areaPts;
+			var routeTypeFilter = 'ALL'
 			
 			var isAuthenticated = $("#app-config-el").data("isauthenticated");
 			var userId = $("#app-config-el").data("authenticateduserid");
@@ -24,7 +26,7 @@
 	 		this.init = function () { 			
 	 			
 	 			if(!isAuthenticated){
-	 				$('#welcome-modal').modal('show');
+	 				// $('#welcome-modal').modal('show');
 	 			}
 	 			
 	 			////
@@ -35,13 +37,15 @@
 	 				getMPTicksData(),
 	 				getTodoAreaPts(),
 	 				getTickAreaPts(),
-	 				//getCragPts(),
+	 				getTodoCragPts(),
+	 				getCragPts(),
 	 				getAreaPts(),
 	 				getMissingAreas()
-	 			).done(function (toDoResponse, tickResponse, areaTodoPtResponse, areaTickPtResponse, areaPtResponse, missingAreasResponse) {
+	 			).done(function (toDoResponse, tickResponse, areaTodoPtResponse, areaTickPtResponse,todoCragPtResponse, cragPtResponse, areaPtResponse, missingAreasResponse) {
 					todoAreaPts = areaTodoPtResponse[0];	
 					tickAreaPts = areaTickPtResponse[0];
-					//cragPts = cragPtResponse[0];	// Dont forgetto add cragPtResponse back to done function
+					todoCragPts = todoCragPtResponse[0];
+					cragPts = cragPtResponse[0];	
 					areaPts = areaPtResponse[0];	
 					processRoutes(tickResponse[0]["routes"], 'tick');				
 					processRoutes(toDoResponse[0]["routes"], 'todo');
@@ -50,10 +54,46 @@
 					setSearchBar(areaPts.features);
 					
 					renderMap();
-					resizeLocations();
-					resizeLocations();
-					setTimeSlider();			
+					setTimeSlider();	
+
+					resizeLocations("ALL")		
 	 			});	
+
+ 				$("#trad-btn").click(function(e){
+ 					resizeLocations('TRAD');
+ 					changeBtnText(this, "Trad");
+ 					routeTypeFilter = "TRAD";
+ 				})
+ 				$("#sport-btn").click(function(e){
+ 					resizeLocations('SPORT');
+ 					changeBtnText(this, "Sport");
+ 					routeTypeFilter = "SPORT";
+ 				})
+ 				$("#boulder-btn").click(function(e){
+ 					resizeLocations('BOULDER');
+ 					changeBtnText(this, "Boulder");
+ 					routeTypeFilter = "BOULDER";
+ 				})
+ 				$("#all-btn").click(function(e){
+ 					resizeLocations('ALL');
+ 					changeBtnText(this, "All Route Types");
+ 					routeTypeFilter = "ALL";
+ 				})
+ 				$("#alpine-btn").click(function(e){
+ 					resizeLocations('ALPINE');
+ 					changeBtnText(this, "Alpine");
+ 					routeTypeFilter = "ALPINE";
+ 				})
+
+
+ 				function changeBtnText(element, newTypeLabel){
+ 					var btnContainer = $(element).parent().parent().parent().children()[0];
+ 					var oldText = $(btnContainer).text()
+ 					var newText = oldText.replace(oldText, newTypeLabel);
+					newText = newText + '  <span class="caret"></span>';
+					$(btnContainer).html(newText);
+					$.parseHTML($(btnContainer))
+ 				}
 	 		} 		
 	 		
 	 		function setSearchBar(areas) {
@@ -148,46 +188,46 @@
       				if(selectedDate){
       				
 				      	if(!$("#chart-row-1").is(':visible')){
-								$("#chart-row-1").show();
-							}
+							$("#chart-row-1").show();
+						}
 						
 					   	$("#chart-row-1").append('<div id="tick-time-chart" ></div>');
 					   	var lineChart = new LineChart(tickAreaPts.features, selectedDate, "#tick-time-chart", $("#tick-time-chart").parent().width());
 					   	lineChart.build();	
 			     		
-				     		var tickLocs = tickAreaPts.features;
-				     		var rtsCt = 0;
-				     		for(var t=0; t<tickLocs.length; t++){
-				     			var thisLoc = tickLocs[t];
-				     			var thisLocTicks = thisLoc.properties.customTicksArr;
-				     			var laterThanTicksCt = 0;
-				     			
-				     			for(var i=0; i<thisLocTicks.length; i++){
-				     				if(new Date(thisLocTicks[i].date) > selectedDate){
-				     					laterThanTicksCt = laterThanTicksCt + 1;
-				     				}
-				     				else{
-				     					rtsCt = rtsCt + 1;
-				     				}
-				     			}
-				     			
-				     			var newRadius = getLocationSizeBucket(thisLocTicks.length - laterThanTicksCt);
-				     			
-				     			map.eachLayer(function (layer) {
-				     				if(layer.feature && layer.feature.properties.customTicksCt){
-									    var mapLayerId = layer.feature.properties.id;
-									    if(thisLoc.properties.id === mapLayerId){
-									    	 layer.setRadius(newRadius);	
-									    }
-									 }
-								});	
-				     		}
-
-				     		if( ! $("#time-slider-label").is(":visible")){
-				     			$("#time-slider-label").show();
-				     		}
-				     		$("#time-slider-label").text( selectedDate.getMonth() + " / " + selectedDate.getDay() + " / " + selectedDate.getFullYear()  + " | " + rtsCt + " Ticks");
+			     		var tickLocs = tickAreaPts.features;
+			     		var rtsCt = 0;
+			     		for(var t=0; t<tickLocs.length; t++){
+			     			var thisLoc = tickLocs[t];
+			     			var thisLocTicks = thisLoc.properties.customTicksArr;
+			     			var laterThanTicksCt = 0;
+			     			
+			     			for(var i=0; i<thisLocTicks.length; i++){
+			     				if(new Date(thisLocTicks[i].date) > selectedDate){
+			     					laterThanTicksCt = laterThanTicksCt + 1;
+			     				}
+			     				else{
+			     					rtsCt = rtsCt + 1;
+			     				}
+			     			}
+			     			
+			     			var newRadius = getLocationSizeBucket(thisLocTicks.length - laterThanTicksCt);
+			     			
+			     			map.eachLayer(function (layer) {
+			     				if(layer.feature && layer.feature.properties.customTicksCt){
+								    var mapLayerId = layer.feature.properties.id;
+								    if(thisLoc.properties.id === mapLayerId){
+								    	 layer.setRadius(newRadius);	
+								    }
+								 }
+							});	
 			     		}
+
+			     		if( ! $("#time-slider-label").is(":visible")){
+			     			$("#time-slider-label").show();
+			     		}
+			     		$("#time-slider-label").text( selectedDate.getMonth() + " / " + selectedDate.getDay() + " / " + selectedDate.getFullYear()  + " | " + rtsCt + " Ticks");
+			     	}
 			      },
 			      stop: function( event, ui ) {
 			      	setTimeout(function(){ 
@@ -214,6 +254,21 @@
 	  				dataType: "json"
 				})
 	 		}
+	 		
+	 		
+	 		////
+	 		// Crag points are the climbing area locations
+	 		////
+	 		function getTodoCragPts() {	
+	 			return $.ajax({
+	  				url: "todocrags",
+	  				context: document.body,
+	  				type: "GET",
+	  				crossDomain: false,
+	  				dataType: "json"
+				})
+	 		}
+	 		
 	 		
 	 		////
 	 		// Area points are the climbing area locations
@@ -299,11 +354,10 @@
 					for(var rtI=0; rtI<routesArr.length; rtI++){
 						var route = routesArr[rtI];											
 						
-						// This will not work if checked against state level geographies because geoLoc includes the state as a root commonly
-						// a better approach is to parse the location string in a better way. 
 						if(contentType === 'todo'){
 							route.routeCategory = "TODO";
 							setToDoLocationRouteAttributes(route);
+							setCragLocationRouteAttributes(route);
 						}
 						else if(contentType === 'tick'){
 							route.routeCategory = "TICK";
@@ -312,8 +366,10 @@
 					}
 					
 					setToDoLocationRouteFrequency();
+					setCragLocationRouteFrequency();
 					setTickLocationRouteFrequency();
 			}
+			
 			
 			function reportMissingAreas(data) {
 				var areas = data[0].missingAreas;
@@ -353,7 +409,7 @@
 			////
 			function setToDoLocationRouteFrequency() {	
 					
-				// @todoAreaPts - globally imported in HTML head imports
+				// @todoAreaPts 
 				for(var n=0; n<todoAreaPts.features.length; n++){
 					var currAreaId = todoAreaPts.features[n].properties.id;
 					
@@ -363,6 +419,25 @@
 					todoAreaPts.features[n].properties.customRouteCt = todoAreaPts.features[n].properties.count;
 				}								
 			}
+			
+			
+			////
+			// Set the frequency of crags on locations that will dictate the point size.
+			//
+			////
+			function setCragLocationRouteFrequency() {	
+					
+				// @todoCragPts 
+				for(var n=0; n<todoCragPts.features.length; n++){
+					var currAreaId = todoCragPts.features[n].properties.id;
+					
+					// create or reset var to ensure a clean ct
+					todoCragPts.features[n].properties.customRouteCt = 0;
+
+					todoCragPts.features[n].properties.customRouteCt = todoCragPts.features[n].properties.count;
+				}								
+			}
+			
 			
 			////
 			// Sets custom attributes of ticks on locations.
@@ -420,7 +495,7 @@
 			////
 			function setToDoLocationRouteAttributes(route) {
 				
-				// @todoAreaPts - globally imported in HTML head imports
+				// @todoAreaPts 
 				for(var n=0; n<todoAreaPts.features.length; n++){
 					var currAreaId = todoAreaPts.features[n].properties.id;
 					
@@ -460,6 +535,57 @@
 				}
 			}
 			
+			
+			////
+			// Set the types (trad, sport, boulder, etc...) and the route tracking array on the location objects
+			//
+			////
+			function setCragLocationRouteAttributes(route) {
+				
+				if(route.crag){
+					// @todoCragPts 
+					for(var n=0; n<todoCragPts.features.length; n++){
+						var currAreaId = todoCragPts.features[n].properties.id;
+						
+						if(!todoCragPts.features[n].properties.customRouteArr){
+							todoCragPts.features[n].properties.customRouteArr = [];
+						}
+						if(!todoCragPts.features[n].properties.customTradCt){
+							todoCragPts.features[n].properties.customTradCt = 0;
+						}
+						if(!todoCragPts.features[n].properties.customSportCt){
+							todoCragPts.features[n].properties.customSportCt = 0;
+						}
+						if(!todoCragPts.features[n].properties.customBoulderCt){
+							todoCragPts.features[n].properties.customBoulderCt = 0;
+						}
+						if(!todoCragPts.features[n].properties.customAlpineCt){
+							todoCragPts.features[n].properties.customAlpineCt = 0;
+						}	
+						
+						if(currAreaId === route.crag){				
+							todoCragPts.features[n].properties.customRouteArr.push(route);
+							
+							var type = String(route.type ? String(route.type) : 'n/a').trim();
+							
+							if(type.toLowerCase() === "trad"){
+								todoCragPts.features[n].properties.customTradCt = todoCragPts.features[n].properties.customTradCt + 1;
+							}
+							else if(type.toLowerCase() === "sport"){
+								todoCragPts.features[n].properties.customSportCt = todoCragPts.features[n].properties.customSportCt + 1;
+							}
+							else if(type.toLowerCase() === "boulder"){
+								todoCragPts.features[n].properties.customBoulderCt = todoCragPts.features[n].properties.customBoulderCt + 1;
+							}
+							else if(type.toLowerCase() === "alpine"){
+								todoCragPts.features[n].properties.customAlpineCt = todoCragPts.features[n].properties.customAlpineCt + 1;
+							}
+						}
+					}
+				}
+			}
+			
+			
 			////
 			// Simple way to control the size of the location points
 			//
@@ -468,20 +594,35 @@
 				if(rtCount < 1){
 					return 0
 				}
-				else if(rtCount < 5){
-					return 5
+				else if(rtCount < 3){
+					return 3
 				}
-				else if(rtCount >= 5 && rtCount < 10){
-					return 10
+				else if(rtCount >= 3 && rtCount < 5){
+					return 4
 				}
-				else if(rtCount >= 10 && rtCount < 30){
+				else if(rtCount >= 5 && rtCount < 7){
+					return 6
+				}
+				else if(rtCount >= 7 && rtCount < 10){
+					return 9
+				}
+				else if(rtCount >= 10 && rtCount < 20){
 					return 15
 				}
-				else if(rtCount >= 30 && rtCount < 50){
+				else if(rtCount >= 20 && rtCount < 30){
+					return 20
+				}
+				else if(rtCount >= 30 && rtCount < 40){
 					return 25
 				}
-				else if(rtCount >= 50 && rtCount < 70){
+				else if(rtCount >= 40 && rtCount < 50){
+					return 30
+				}
+				else if(rtCount >= 50 && rtCount < 60){
 					return 35
+				}
+				else if(rtCount >= 60 && rtCount < 70){
+					return 40
 				}
 				else if(rtCount >= 70 && rtCount < 100){
 					return 45
@@ -498,20 +639,55 @@
 			////
 			// Sets the size of the location points respective to the amount of climbs in that area
 			// TODO: better check for ticks vs. todos
+			//
+			// NOTE: only resizes areas that are currently added to the map.  
+			//
+			// @param filter - a filter keyword that filters the radius by route type.
 			////
-			function resizeLocations() {	
+			function resizeLocations(filter) {	
 					map.eachLayer(function(layer){
 						if(layer.feature){
-							// customRouteCt is currently ToDo frequency and will take priority over existing area points
-							if(layer.feature.properties.customRouteCt > 0){
-								var routeCt = getLocationSizeBucket(layer.feature.properties.customRouteCt);
-								layer.setRadius(routeCt);
+							layer.setRadius(0);
+
+							if(filter.toUpperCase() === 'ALL'){
+								// customRouteCt is currently ToDo frequency and will take priority over existing area points
+								if(layer.feature.properties.customRouteCt > 0){
+									var routeCt = getLocationSizeBucket(layer.feature.properties.customRouteCt);
+									layer.setRadius(routeCt);
+								}
+								
+								if(layer.feature.properties.customTicksCt > 0){
+									var ticksCt = getLocationSizeBucket(layer.feature.properties.customTicksCt);
+									layer.setRadius(ticksCt);
+								}
+
 							}
-							if(layer.feature.properties.customTicksCt > 0){
-								var ticksCt = getLocationSizeBucket(layer.feature.properties.customTicksCt);
-								layer.setRadius(ticksCt);
+							else if(filter.toUpperCase() === 'TRAD'){
+								if(layer.feature.properties.customTradCt > 0){
+									var routeCt = getLocationSizeBucket(layer.feature.properties.customTradCt);
+									layer.setRadius(routeCt);
+								}
+							}
+							else if(filter.toUpperCase() === 'SPORT'){
+								if(layer.feature.properties.customSportCt > 0){
+									var routeCt = getLocationSizeBucket(layer.feature.properties.customSportCt);
+									layer.setRadius(routeCt);
+								}
+							}
+							else if(filter.toUpperCase() === 'BOULDER'){
+								if(layer.feature.properties.customBoulderCt > 0){
+									var routeCt = getLocationSizeBucket(layer.feature.properties.customBoulderCt);
+									layer.setRadius(routeCt);
+								}
+							}
+							else if(filter.toUpperCase() === 'ALPINE'){
+								if(layer.feature.properties.customAlpineCt > 0){
+									var routeCt = getLocationSizeBucket(layer.feature.properties.customAlpineCt);
+									layer.setRadius(routeCt);
+								}
 							}
 						}	
+
 					});			     
 			}
 				
@@ -522,7 +698,7 @@
 					function onEachTodoFeature(feature, layer) {
 						layer.on({
 			            mouseover: todoHoverAction,
-			            mouseout: resetTodoHover,
+			            mouseout: resetAreaHover,
 			            click: featureClickEvent
 			            });
 					}	
@@ -530,7 +706,7 @@
 					function onEachTickFeature(feature, layer) {
 						layer.on({
 			            mouseover: tickHoverAction,
-			            mouseout: resetTickHover,
+			            mouseout: resetAreaHover,
 			            click: featureClickEvent
 			            });
 					}	
@@ -547,7 +723,7 @@
 						layer.on({
 			            mouseover: basicCragHoverAction,
 			            mouseout: resetBasicCragHover,
-			            click: basicLocationFeatureClickEvent 
+			            click: basicLocationFeatureClickEvent
 			            });
 					}
 					
@@ -586,48 +762,48 @@
 					
 					
 					function tickHoverAction(e) {
-      				var layer = e.target;
-      				
-      				if($("#tick-time-chart")){
-      					$("#tick-time-chart").remove()
-      				}
-      				
-      				layer.setStyle({"fillColor":"#878787"});
-      				
-      				$("#left-sidebar-heading-info-container").show();
-      				$("#left-sidebar-heading").text(layer.feature.properties.area);
-      				
-      				//////
-      				/// TODO: this is really boring. Make this rout info more interesting
-      				/////
-      				if(layer.feature.properties.customTicksArr){
-	      				var html = '<div class="tick-info-container">';
-							for(var i=0; i<layer.feature.properties.customTicksArr.length; i++){
-								var rt = layer.feature.properties.customTicksArr[i];
-								var date = new Date(rt.date);
-								var dateStr = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear();
-								
-								var newTickInfo = '<div class="info-content"><b>' + rt.name + '</b> : ' + rt.notes + ' ' + dateStr + '</div>'
-								html += newTickInfo;		
-							}
-							html += "</div>";
- 
-						   $("#hover-text-info-container").html('<p class="info-content"><b>' + layer.feature.properties.customTicksCt + '</b> Ticks</p>')
-						   
-						   if(!$("#chart-row-1").is(':visible')){
-								$("#chart-row-1").show();
-							}
-							if(!$("#chart-row-2").is(':visible')){
-								$("#chart-row-2").show();
-							}
-								
-						   $("#chart-row-1").append('<div id="tick-grade-chart" ></div>');
-				   		var hoverBarChart = new BarChart(layer.feature.properties.customTicksArr, "#tick-grade-chart", $("#tick-grade-chart").parent().width());	
-				   		hoverBarChart.build();
-				   		
-				   		$("#chart-row-2").append('<div id="tick-type-chart" ></div> <div id="tick-height-chart" ></div>');
-				   		new PieChart(layer.feature, "#tick-type-chart", $("#tick-type-chart").parent().width()/2);
-				   		new RouteHeightPieChart(layer.feature, "#tick-height-chart", $("#tick-height-chart").parent().width()/2);
+	      				var layer = e.target;
+	      				
+	      				if($("#tick-time-chart")){
+	      					$("#tick-time-chart").remove()
+	      				}
+	      				
+	      				layer.setStyle({"fillColor":"#878787"});
+	      				
+	      				$("#left-sidebar-heading-info-container").show();
+	      				$("#left-sidebar-heading").text(layer.feature.properties.area);
+	      				
+	      				//////
+	      				/// TODO: this is really boring. Make this rout info more interesting
+	      				/////
+	      				if(layer.feature.properties.customTicksArr){
+		      				var html = '<div class="tick-info-container">';
+								for(var i=0; i<layer.feature.properties.customTicksArr.length; i++){
+									var rt = layer.feature.properties.customTicksArr[i];
+									var date = new Date(rt.date);
+									var dateStr = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear();
+									
+									var newTickInfo = '<div class="info-content"><b>' + rt.name + '</b> : ' + rt.notes + ' ' + dateStr + '</div>'
+									html += newTickInfo;		
+								}
+								html += "</div>";
+	 
+							   $("#hover-text-info-container").html('<p class="info-content"><b>' + layer.feature.properties.customTicksCt + '</b> Ticks</p>')
+							   
+							   if(!$("#chart-row-1").is(':visible')){
+									$("#chart-row-1").show();
+								}
+								if(!$("#chart-row-2").is(':visible')){
+									$("#chart-row-2").show();
+								}
+									
+							   $("#chart-row-1").append('<div id="tick-grade-chart" ></div>');
+					   		var hoverBarChart = new BarChart(getRouteArrayByType(layer.feature.properties.customTicksArr, routeTypeFilter), "#tick-grade-chart", $("#tick-grade-chart").parent().width());	
+					   		hoverBarChart.build();
+					   		
+					   		$("#chart-row-2").append('<div id="tick-type-chart" ></div> <div id="tick-height-chart" ></div>');
+					   		new PieChart(layer.feature, "#tick-type-chart", $("#tick-type-chart").parent().width()/2, routeTypeFilter);
+					   		new RouteHeightPieChart(getRouteArrayByType(layer.feature.properties.customTicksArr, routeTypeFilter), "#tick-height-chart", $("#tick-height-chart").parent().width()/2);
 				   							
 							// TODO: Add some more fun hover actions like a chart of all the comments from ticked routes	  
 						} 					 
@@ -635,63 +811,112 @@
 					
 					// action to perform when mousing over a feature
 					function todoHoverAction(e) {
-					    	var layer = e.target;
+					    var layer = e.target;
+
+					    removeAllCharts();
 					    	
-					    	if($("#tick-time-chart")){
+					    if($("#tick-time-chart")){
       						$("#tick-time-chart").remove()
       					}
       				
-					    	layer.setStyle({"fillColor":"#138DA9"});
-					    	
-   						$("#left-sidebar-heading-info-container").show();
-						   $("#left-sidebar-heading").text(layer.feature.properties.area);
-						   
-						   if(layer.feature.properties.customRouteCt){
-						   	$("#hover-text-info-container").html('<p class="info-content"><b>' + layer.feature.properties.customRouteCt + '</b> ToDos</p>');
-								
-								if(!$("#chart-row-1").is(':visible')){
-									$("#chart-row-1").show();
-								}
-								if(!$("#chart-row-2").is(':visible')){
-									$("#chart-row-2").show();
-								}
+      					if(layer.feature.properties.areatype === "TODO") {
+				    		layer.setStyle({"fillColor":"#138DA9"});
+				    	}
+				    	else if(layer.feature.properties.areatype === "CRAG"){
+				    		layer.setStyle({"fillColor":"#878787"});
+				    	}
+				    	
+						$("#left-sidebar-heading-info-container").show();
+					    $("#left-sidebar-heading").text(layer.feature.properties.area);
+
+					    var routeCountPropertyName = "customRouteCt"; // Default
+					    if(routeTypeFilter === "ALL"){
+					    	routeCountPropertyName = "customRouteCt";
+					    }
+					    else if(routeTypeFilter === "TRAD"){
+					    	routeCountPropertyName = "customTradCt";
+					    }
+					    else if(routeTypeFilter === "SPORT"){
+					    	routeCountPropertyName = "customSportCt";
+					    }
+					    else if(routeTypeFilter === "BOULDER"){
+					    	routeCountPropertyName = "customBoulderCt";
+					    }
+					    else if(routeTypeFilter === "ALPINE"){
+					    	routeCountPropertyName = "customAlpineCt";
+					    }
+					   
+					    if( layer.feature.properties[routeCountPropertyName] ){
+					   		$("#hover-text-info-container").html('<p class="info-content"><b>' + layer.feature.properties[routeCountPropertyName] + '</b> ToDos</p>');
 							
-								$("#chart-row-1").append('<div id="todo-grade-chart" ></div>');
-						   	var todoBarChart = new BarChart(layer.feature.properties.customRouteArr, "#todo-grade-chart", $("#todo-grade-chart").parent().width());	
-						   	todoBarChart.build();	
-						   	
-						   	$("#chart-row-2").append('<div id="todo-type-chart" ></div> <div id="todo-height-chart" ></div>');
-								new PieChart(layer.feature, "#todo-type-chart", $("#todo-type-chart").parent().width()/2);   
-								new RouteHeightPieChart(layer.feature, "#todo-height-chart", $("#todo-height-chart").parent().width()/2);	
-							}		   
+							if(!$("#chart-row-1").is(':visible')){
+								$("#chart-row-1").show();
+							}
+							if(!$("#chart-row-2").is(':visible')){
+								$("#chart-row-2").show();
+							}
 						
+							$("#chart-row-1").append('<div id="todo-grade-chart" ></div>');
+					   		var todoBarChart = new BarChart(getRouteArrayByType(layer.feature.properties.customRouteArr, routeTypeFilter), "#todo-grade-chart", $("#todo-grade-chart").parent().width());	
+					   		todoBarChart.build();	
+					   	
+					   		$("#chart-row-2").append('<div id="todo-type-chart" ></div> <div id="todo-height-chart" ></div>');
+							new PieChart(layer.feature, "#todo-type-chart", $("#todo-type-chart").parent().width()/2, routeTypeFilter);   
+							new RouteHeightPieChart(getRouteArrayByType(layer.feature.properties.customRouteArr, routeTypeFilter), "#todo-height-chart", $("#todo-height-chart").parent().width()/2);	
+						}		 
 					}
+
+					function getRouteArrayByType(routeArr, routeTyoe){
+						var newTypeArr = [];
+
+						if(routeTyoe.toUpperCase() === "ALL"){
+							return routeArr;
+						}
+						else{
+							for(let i=0; i<routeArr.length; i++){
+								var rt = routeArr[i];
+								if(rt.type && rt.type.toUpperCase() === routeTyoe.toUpperCase()){
+									newTypeArr.push(rt);
+								}
+							}
+						}
+
+						return newTypeArr;
+					}  
 					
-					function resetTickHover(e) {
-						var feature = e.target;
-						feature.setStyle({"fillColor":"#505050"});
-						$("#tick-grade-chart").remove();
-						$("#tick-type-chart").remove();
-						$("#tick-height-chart").remove();
-						$("#left-sidebar-heading-info-container").hide();
-						$("#left-sidebar-heading").text("");
-					   $("#hover-text-info-container").html("");
-						$("#chart-row-1").hide();
-						$("#chart-row-2").hide();
- 					 }
 					
-					// action to perform when mousing off of a feature 
-					function resetTodoHover(e) {  
+					function resetAreaHover(e) {  
 						var layer = e.target;
-						layer.setStyle({"fillColor": "#0a4958"});
+						resetFeatureColor(layer);	
+						removeAllCharts();
+					}
+
+
+					function resetFeatureColor(layer) {
+
+						if(layer.feature.properties.areatype === "TODO") {
+					    	layer.setStyle({"fillColor": "#0a4958"});
+					    }
+					    else if(layer.feature.properties.areatype === "CRAG"){
+					    	layer.setStyle({"fillColor":"orange"});
+					    }
+					    else if(layer.feature.properties.areatype === "TICK"){
+					    	layer.setStyle({"fillColor":"#505050"});
+					    }
+					}
+
+
+					function removeAllCharts() {
 						$("#todo-grade-chart").remove();
 						$("#todo-type-chart").remove();
 						$("#todo-height-chart").remove();
 						$("#left-sidebar-heading-info-container").hide();
 						$("#left-sidebar-heading").text("");
-					   $("#hover-text-info-container").html("");
-					   $("#chart-row-1").hide();
-					   $("#chart-row-2").hide();
+						$("#hover-text-info-container").html("");
+						$("#chart-row-1").hide();
+						$("#chart-row-1").html("");
+						$("#chart-row-2").hide();
+						$("#chart-row-2").html("");
 					}		
 					
 					function basicLocationFeatureClickEvent(e) {
@@ -701,34 +926,34 @@
 							geojsonLayer.eachLayer(
 							    function(l){
 							    	
-							    	  var layerName = l.feature.properties.area;
-									  var layerId = l.feature.properties.id;
-									  var layerCreatedby = l.feature.properties.createdby;
-								     var layerAreaType = l.feature.properties.areatype;
+							    	var layerName = l.feature.properties.area;
+									var layerId = l.feature.properties.id;
+									var layerCreatedby = l.feature.properties.createdby;
+								    var layerAreaType = l.feature.properties.areatype;
 										
 							        drawnItems.addLayer(l);
 							        
 							        var html = '<form class="new-area-form" action="/updatearea" method="post">' +
 					        			'<div class="form-group">' +
-					            	'<label>Name</label>' +
+					            		'<label>Name</label>' +
 										'<input id="areaid_" type="hidden" class="form-control" name="areaid" value="'+layerId+'">' +
-					            	'<input id="name_" type="text" class="form-control" name="areaname" value="'+layerName+'">' +
-					            	'<p><strong>NOTE:</strong> This name should match the name of the area in Mountain Project if possible. Ex: If the location heading looks like this: "Locations > Colorado > Boulder > Eldorado Canyon SP > Redgarden Wall > Redgarden - Lumpe to the top" a good name would be "Eldorado Canyon SP".</p>' +
+					            		'<input id="name_" type="text" class="form-control" name="areaname" value="'+layerName+'">' +
+					            		'<p><strong>NOTE:</strong> This name should match the name of the area in Mountain Project if possible. Ex: If the location heading looks like this: "Locations > Colorado > Boulder > Eldorado Canyon SP > Redgarden Wall > Redgarden - Lumpe to the top" a good name would be "Eldorado Canyon SP".</p>' +
 					        			'</div>'+
 					        			
 					        			'<div class="form-group">' +
-					            	'<label for="areatype">Area Type</label>' +
+					            		'<label for="areatype">Area Type</label>' +
 					        			'<select id="area-type-select" class="form-control" name="areatype">' +
 		  									'<option value="AREA">General Area (ex: Yosemite Valley)</option>' +
-//		  									'<option value="CRAG">Crag (ex: Half Dome)</option>' +
+		  									'<option value="CRAG">Crag (ex: Half Dome)</option>' +
 										'</select>' +
 					        			'</div>'+
 		
 					        			
 					        			'<div class="form-group">' +
-					            	'<input id="lat" class="location-input" type="hidden" class="form-control" name="lat">' +
-					            	'<input id="lng" class="location-input" type="hidden" class="form-control" name="lng">' +
-					            	'<input id="userid" class="location-input" type="hidden" class="form-control" name="userid" value="'+userId+'">' +
+					            		'<input id="lat" class="location-input" type="hidden" class="form-control" name="lat">' +
+					            		'<input id="lng" class="location-input" type="hidden" class="form-control" name="lng">' +
+					            		'<input id="userid" class="location-input" type="hidden" class="form-control" name="userid" value="'+userId+'">' +
 					        			'</div>'+
 					
 					        			'<button id="submit-btn"  type="submit" class="btn btn-success btn-sm">Submit</button>' +
@@ -759,6 +984,7 @@
 					
 					////
 					// click event for areas
+					////
 					function featureClickEvent(e) {	
 					
 					 	var layer = e.target;
@@ -785,39 +1011,52 @@
 							var layers = layer.feature.properties.customRouteArr;	
 							subHeading = "ToDo";	
 						}
+
+						// Sort the array by the orderIndex property
+						function compare(a,b) {
+						  if (a.difficultyindex < b.difficultyindex)
+						     return -1;
+						  if (a.difficultyindex > b.difficultyindex)
+						    return 1;
+						  return 0;
+						}					
+						layers.sort(compare);	
 						
 						$("#info-area-title").text(subHeading+": "+layer.feature.properties.area);
 					
-						for(var l=0; l<layers.length; l++){						
-							var name = String(layers[l].name ? layers[l].name : 'n/a');
-							var type = String(layers[l].type ? layers[l].type :"n/a");
-							if(type.toLowerCase() === "trad" || type.toLowerCase() === "sport"){
-								var rating = String(layers[l].ropegrade ? layers[l].ropegrade : 'n/a');
+						for(var l=0; l<layers.length; l++){
+						   
+						    if(routeTypeFilter === "ALL" || layers[l].type.toUpperCase() === routeTypeFilter ){						
+								var name = String(layers[l].name ? layers[l].name : 'n/a');
+								var type = String(layers[l].type ? layers[l].type :"n/a");
+								if(type.toUpperCase() === "TRAD" || type.toUpperCase() === "SPORT" || type.toUpperCase() === "ALPINE"){
+									var rating = String(layers[l].ropegrade ? layers[l].ropegrade : 'n/a');
+								}
+								else{
+									var rating = String(layers[l].bouldergrade ? layers[l].bouldergrade : 'n/a');							
+								}
+								var pitches = String(layers[l].pitches ? layers[l].pitches :"n/a");
+								var stars = String(layers[l].stars ? layers[l].stars :"n/a");
+								var starVotes = String(layers[l].starVotes ? layers[l].starVotes :"n/a");
+								var url = String(layers[l].url ? layers[l].url :"n/a");
+								var geoLoc = String(layers[l].location ? layers[l].location :"n/a");
+								var crag = getLocationName(layers[l].area) ;
+								var imgMed = String(layers[l].imgMed ? layers[l].imgMed :"n/a");
+								var imgMed = String(layers[l].imgMed ? layers[l].imgMed :"n/a");
+								  
+								var routeHTMLStr = "<ul class='info-ul'>";
+								routeHTMLStr += "<li class='info-text'><h3 class='info-header'><u>" +  name + "</u></h3></li>";
+								routeHTMLStr += "<li class='info-text'><i>Rating:  </i>" +  rating + "</li>";
+								routeHTMLStr += "<li class='info-text'><i>Type:  </i>" +  type + "</li>";
+								routeHTMLStr += "<li class='info-text'><i>Pitches:  </i>" +  pitches + "</li>";
+								routeHTMLStr += "<li class='info-text'><i>Stars:  </i>" +  stars + " out of "+ starVotes + " votes</li>";
+								routeHTMLStr += "<li class='info-text'><i>Crag:  </i>" +  crag + "</li>";
+								routeHTMLStr += "<li class='info-text'><a class='info-link' target='_blank' href='"+  url + "'>See it on Mountain Project</a></li>";	
+								// routeHTMLStr += "<li class='info-link'> <img class='info-image' src=http://mountainproject.com"+ imgMed +" alt='Climbing Img'> </li>";						
+								routeHTMLStr += "</ul>";
+								
+								$("#info-box").append(routeHTMLStr);
 							}
-							else{
-								var rating = String(layers[l].bouldergrade ? layers[l].bouldergrade : 'n/a');							
-							}
-							var pitches = String(layers[l].pitches ? layers[l].pitches :"n/a");
-							var stars = String(layers[l].stars ? layers[l].stars :"n/a");
-							var starVotes = String(layers[l].starVotes ? layers[l].starVotes :"n/a");
-							var url = String(layers[l].url ? layers[l].url :"n/a");
-							var geoLoc = String(layers[l].location ? layers[l].location :"n/a");
-							var crag = getLocationName(layers[l].area) ;
-							var imgMed = String(layers[l].imgMed ? layers[l].imgMed :"n/a");
-							var imgMed = String(layers[l].imgMed ? layers[l].imgMed :"n/a");
-							  
-							var routeHTMLStr = "<ul class='info-ul'>";
-							routeHTMLStr += "<li class='info-text'><h3 class='info-header'><u>" +  name + "</u></h3></li>";
-							routeHTMLStr += "<li class='info-text'><i>Rating:  </i>" +  rating + "</li>";
-							routeHTMLStr += "<li class='info-text'><i>Type:  </i>" +  type + "</li>";
-							routeHTMLStr += "<li class='info-text'><i>Pitches:  </i>" +  pitches + "</li>";
-							routeHTMLStr += "<li class='info-text'><i>Stars:  </i>" +  stars + " out of "+ starVotes + " votes</li>";
-							routeHTMLStr += "<li class='info-text'><i>Crag:  </i>" +  crag + "</li>";
-							routeHTMLStr += "<li class='info-text'><a class='info-link' target='_blank' href='"+  url + "'>See it on Mountain Project</a></li>";	
-							routeHTMLStr += "<li class='info-link'> <img class='info-image' src=http://mountainproject.com"+ imgMed +" alt='Climbing Img'> </li>";						
-							routeHTMLStr += "</ul>";
-							
-							$("#info-box").append(routeHTMLStr);
 
 						}
 						
@@ -871,7 +1110,7 @@
 					    fillOpacity: 0.8
 					};	
 				
-					// add todo pts to map
+					
 					var areaTodoPtsObj = new L.GeoJSON(todoAreaPts, {
 							pointToLayer: function (feature, latlng) {
 		        				return L.circleMarker(latlng, areaTodoPtsDefaultStyle);
@@ -879,7 +1118,13 @@
 							onEachFeature: onEachTodoFeature		
 					});		
 					
-					// add tick pts to map
+					var todoCragPtsObj = new L.GeoJSON(todoCragPts, {
+							pointToLayer: function (feature, latlng) {
+		        				return L.circleMarker(latlng, allCragPtsDefaultStyle);
+		   				},
+							onEachFeature: onEachTodoFeature	
+					});
+					
 					var areaTickPtsObj = new L.GeoJSON(tickAreaPts, {
 							pointToLayer: function (feature, latlng) {
 		        				return L.circleMarker(latlng, areaTickPtsDefaultStyle);
@@ -898,9 +1143,9 @@
 							pointToLayer: function (feature, latlng) {
 		        				return L.circleMarker(latlng, allCragPtsDefaultStyle);
 		   				},
-							onEachFeature: onEachBasicCragFeature	
+							onEachFeature: onEachBasicCragFeature		
 					});
-					
+									
 					
 					// initialize the Leaflet map object
 					map = new L.Map('map', {
@@ -981,7 +1226,7 @@
 				            	'<label for="areatype">Area Type</label>' +
 				        			'<select id="area-type-select" class="form-control" name="areatype">' +
 	  									'<option value="AREA">General Area (ex: Yosemite Valley)</option>' +
-//	  									'<option value="CRAG">Crag (ex: Half Dome)</option>' +
+	  									'<option value="CRAG">Crag (ex: Half Dome)</option>' +
 									'</select>' +
 				        			'</div>'+
 	
@@ -1004,11 +1249,11 @@
 						
 						function createNewBasicLocation(geojson) {
 							return new L.GeoJSON(geojson, {
-														pointToLayer: function (response, latlng) {
-									        				return L.circleMarker(latlng, allAreaPtsDefaultStyle );
-									   				},
-														onEachFeature: onEachBasicAreaFeature
-												});
+								pointToLayer: function (response, latlng) {
+				        			return L.circleMarker(latlng, allAreaPtsDefaultStyle );
+				   				},
+								onEachFeature: onEachBasicAreaFeature
+							});
 						}
 						
 						function addFeatureToAreaPts(newFeature) {
@@ -1041,13 +1286,13 @@
 						function removeExistingEditMarkers() {
 							 var editLayers = drawnItems.getLayers();
 							 for(var i=0; i<editLayers.length; i++){
-							 		var layer = editLayers[i];
-							 	
-							 		if(!layer.editing.enabled()){
-							 			drawnItems.eachLayer(function(layer){
-							 				drawnItems.removeLayer(layer)
-							 			});
-							 		}
+						 		var layer = editLayers[i];
+						 	
+						 		if(!layer.editing.enabled()){
+						 			drawnItems.eachLayer(function(layer){
+						 				drawnItems.removeLayer(layer)
+						 			});
+						 		}
 							 }
 						}
 						
@@ -1080,16 +1325,15 @@
 							submitButton.unbind('click').bind('click',function() {
 							   $form.unbind('submit').bind('submit',function() {
 							      $.post($(this).attr('action'), $(this).serialize(), function(response){
-							            console.log("SUCCESS! ", response);
 							            
 							           	var tempAreaTodoPtsDefaultStyle = {
-											    radius: 4,
-											    fillColor: "red",
-											    stroke: false,
-											    weight: 1,
-											    opacity: 1,
-											    fillOpacity: 0.8
-											};
+										    radius: 4,
+										    fillColor: "red",
+										    stroke: false,
+										    weight: 1,
+										    opacity: 1,
+										    fillOpacity: 0.8
+										};
 												
 							            if(response.actiontype === "NEW"){
 								            var latlng = L.latLng(response.lat, response.lng);
@@ -1151,10 +1395,24 @@
 							    if(optSelected === "CRAG"){
 							   	var parentAreaSelEl = '<div class="form-group">' +
 				            	'<label for="areatype">Parent Area</label>' +
-				            	'<select id="parent-area-select" class="form-control" name="parentarea">';			
-	  								for(var i=0; i<areaPts.features.length; i++){
+				            	'<select id="parent-area-select" class="form-control" name="parentarea">';	
+				            	
+				            	var sortedAreaPts = areaPts.features.sort(function(a, b) {
+									    var textA = a.properties.area.toUpperCase();
+									    var textB = b.properties.area.toUpperCase();
+									    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+									});	
+									
+	  								for(var i=0; i<sortedAreaPts.length; i++){
 	  									var area = areaPts.features[i];
-	  									parentAreaSelEl += '<option value="'+ area.properties.id +'">'+ area.properties.area +'</option>';
+	  									var parentState = area.properties.parentstate;
+	  									if (parentState) {
+	  										var label = parentState +" / "+ area.properties.area;
+	  									}
+	  									else {
+	  										var label = area;
+	  									}
+	  									parentAreaSelEl += '<option value="'+ area.properties.id +'">'+ label +'</option>';
 	  								}
 									parentAreaSelEl += '</select></div>';	
 									
@@ -1190,7 +1448,8 @@
 					
 					// add overlays to the map object	
 					map.addLayer(areaTodoPtsObj);
-					map.addLayer(areaTickPtsObj);
+					// map.addLayer(areaTickPtsObj);
+					// map.addLayer(todoCragPtsObj);
 					
 					if(areaTodoPtsObj.getLayers().length > 0){
 						map.fitBounds(areaTodoPtsObj.getBounds());				
@@ -1201,13 +1460,13 @@
 					
 					
 					// Putting ticks below todos
-					map.eachLayer(function(layer){
-						if(layer.feature){
-							if(layer.feature.properties.customTicksArr){
-								layer.bringToBack()	;				
-							}
-						}
-					});
+					// map.eachLayer(function(layer){
+					// 	if(layer.feature){
+					// 		if(layer.feature.properties.customTicksArr){
+					// 			layer.bringToBack();			
+					// 		}
+					// 	}
+					// });
 						
 					// define the base layer switcher
 					var baseMaps = {
@@ -1215,32 +1474,38 @@
 						"Light": positron,						
 						"MapQuest OSM": mqosm,
 						"MapQuest Aerial": mqaerial
-						};
+					};
 						
 					// define the overlay layer switcher
 					var overlays = {
-						"ToDos": areaTodoPtsObj,
-						"Ticks": areaTickPtsObj,
-						"All Areas": areaPtsObj
-						//"All Crags": cragPtsObj
-						}; 
+						"To-Do Areas": areaTodoPtsObj,
+						"To-Do Crags": todoCragPtsObj,
+						"Tick Areas": areaTickPtsObj,
+						"All Areas (editable)": areaPtsObj,
+						"All Crags (editable)": cragPtsObj
+					}; 
 						
 						
 					map.on('layeradd', function(event) {
-					     if(event.layer == areaTickPtsObj) {
-					         $("#tick-slider").show();
-					     }
+					    if(event.layer == areaTickPtsObj) {
+					        $("#tick-slider").show();
+					        resizeLocations(routeTypeFilter);
+					    }
+					    else if(event.layer == todoCragPtsObj) {
+					    	resizeLocations(routeTypeFilter);
+					    }
 					});
 					
 					map.on('layerremove', function(event) {
-					     if(event.layer == areaTickPtsObj) {
-					         $("#tick-slider").hide();
-					     }
+					    if(event.layer == areaTickPtsObj) {
+					        $("#tick-slider").hide();
+					    }
 					});
 
 						
 					// adds the layer switcher control
-					map.addControl(new L.control.layers(baseMaps,overlays, {"collapsed":true}));
+					map.addControl(new L.control.layers(baseMaps,overlays, {"collapsed":false}));
+
 			}
 
 			var that = this;

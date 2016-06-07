@@ -22,6 +22,11 @@ class MPData:
 		ORDER BY a.id;""")
 		global areaLookup
 		areaLookup = cur.fetchall()	
+
+		cur.execute("SELECT a.id as areaId, a.name as areaName, c.id as cragId, c.name as cragName FROM area a INNER JOIN crag c ON a.id = c.area;")	
+		global cragLookup
+		cragLookup = cur.fetchall()	
+		
 		
 		cur.execute("SELECT id, area, crag, locationstr FROM route;")		
 		global routeLookup
@@ -30,7 +35,7 @@ class MPData:
 		conn.close()
 
 		
-	def updateRoutes(self, dbConnectParams, changedAreaId):
+	def updateRoutes(self, dbConnectParams, changedAreaId, areaType):
 		dbHost = dbConnectParams['dbHost']
 		dbPort = dbConnectParams['dbPort']
 		dbUser = dbConnectParams['dbUser']
@@ -51,16 +56,28 @@ class MPData:
 			for l in locationStrArr:
 				formattedLocArr.append(l.strip().lstrip("u'").rstrip("'").lstrip('u"').rstrip('"'))
 			
-			matchedAreaId = self.getAreaMatchId(formattedLocArr)
+			if areaType == "AREA":
+				matchedAreaId = self.getAreaMatchId(formattedLocArr)
 
-			if str(assignedAreaId) == str(changedAreaId):
-				query = "UPDATE route SET area = -1 WHERE routeid = '"+ str(routeId) +"';"
-				cur.execute(query)
-				conn.commit()	
-			if matchedAreaId >= 0 and str(matchedAreaId) != str(assignedAreaId):
-				query = "UPDATE route SET area = " + str(matchedAreaId) + " WHERE routeid = '"+ str(routeId) +"';"
-				cur.execute(query)
-				conn.commit()	
+				if str(assignedAreaId) == str(changedAreaId):
+					query = "UPDATE route SET area = -1 WHERE routeid = '"+ str(routeId) +"';"
+					cur.execute(query)
+					conn.commit()	
+				if matchedAreaId >= 0 and str(matchedAreaId) != str(assignedAreaId):
+					query = "UPDATE route SET area = " + str(matchedAreaId) + " WHERE routeid = '"+ str(routeId) +"';"
+					cur.execute(query)
+					conn.commit()	
+			elif areaType == "CRAG":
+				matchedCragId = self.getCragMatchId(formattedLocArr)
+
+				if str(assignedCragId) == str(changedAreaId):
+					query = "UPDATE route SET crag = -1 WHERE routeid = '"+ str(routeId) +"';"
+					cur.execute(query)
+					conn.commit()	
+				if matchedCragId >= 0 and str(matchedCragId) != str(assignedAreaId):
+					query = "UPDATE route SET crag = " + str(matchedCragId) + " WHERE routeid = '"+ str(routeId) +"';"
+					cur.execute(query)
+					conn.commit()	
 
 		conn.close()		
 	
@@ -159,6 +176,7 @@ class MPData:
 if __name__ == '__main__':
 	
 	changedAreaId = sys.argv[1] 
+	areaType = sys.argv[2]
 
 	dbHost = os.getenv('OPENSHIFT_POSTGRESQL_DB_HOST', 'localhost')
 	dbPort = os.getenv('OPENSHIFT_POSTGRESQL_DB_PORT', 5432)
@@ -171,7 +189,7 @@ if __name__ == '__main__':
 	
 	MPData = MPData()
 	MPData.init(dbConnectParams)
-	MPData.updateRoutes(dbConnectParams, changedAreaId)
+	MPData.updateRoutes(dbConnectParams, changedAreaId, areaType)
 	
 	print("DONE")
 	sys.stdout.flush()

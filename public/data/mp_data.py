@@ -191,6 +191,24 @@ class MPData:
 					
 				resp = requests.get(url=url)
 				for rt in json.loads(resp.text)["routes"]:
+					# Locations from MP are arrays of location names
+					# will search from crag to area (more discrete location to less discrete)
+					thisLocArr = rt["location"]
+					thisAreaId = self.getAreaMatchId(thisLocArr)
+					thisCragId = self.getCragMatchId(thisLocArr)
+					rating = self.getCleanRating(str(rt["rating"]))
+					routeType = self.getRouteType(rt["type"])
+					
+					# Get the grade
+					if "boulder" in rt["type"].lower():
+						grade = self.getBoulderGrade(rating)
+					else:
+						grade = self.getYDSGrade(rating)							
+					
+					if len(str(rt["pitches"])) > 0:
+						pitches = rt["pitches"]
+					else:
+						pitches = 0 # a better default than n/a
 					
 					# Check if the route exists in the db
 					routeExists = self.routeExists(rt["id"])
@@ -201,27 +219,39 @@ class MPData:
 					if rt["id"] in idTracking:
 						routeExists = True
 
-					if routeExists is False:
-						area = ','.join(rt["location"])
-						
+					if routeExists is True:
+						## if self.existingRouteLocationExists(rt["id"]) is False:
 						# Locations from MP are arrays of location names
 						# will search from crag to area (more discrete location to less discrete)
 						thisLocArr = rt["location"]
 						thisAreaId = self.getAreaMatchId(thisLocArr)
-						thisCragId = self.getCragMatchId(thisLocArr)
-						rating = self.getCleanRating(str(rt["rating"]))
-						routeType = self.getRouteType(rt["type"])
+
+						if thisAreaId >= 0:
+							query = cur.mogrify("UPDATE route SET area = %s, name = %s, type = %s, grade = %s, mpurl = %s, mpimgsmallurl = %s, mpimgmedurl = %s, mpstars = %s, mpstarvotes = %s, pitches = %s, locationstr = %s WHERE routeid = '"+ str(rt["id"]) +"';", ( str(thisAreaId), rt["name"], str(routeType), str(grade), str(rt["url"]), str(rt["imgSmall"]), str(rt["imgMed"]), str(rt["stars"]), str(rt["starVotes"]), str(pitches), str(rt["location"]) ))
+
+							cur.execute(query)
+							conn.commit()
+					else:
+						area = ','.join(rt["location"])
 						
-						# Get the grade
-						if "boulder" in rt["type"].lower():
-							grade = self.getBoulderGrade(rating)
-						else:
-							grade = self.getYDSGrade(rating)							
+						# # Locations from MP are arrays of location names
+						# # will search from crag to area (more discrete location to less discrete)
+						# thisLocArr = rt["location"]
+						# thisAreaId = self.getAreaMatchId(thisLocArr)
+						# thisCragId = self.getCragMatchId(thisLocArr)
+						# rating = self.getCleanRating(str(rt["rating"]))
+						# routeType = self.getRouteType(rt["type"])
 						
-						if len(str(rt["pitches"])) > 0:
-							pitches = rt["pitches"]
-						else:
-							pitches = 0 # a better default than n/a
+						# # Get the grade
+						# if "boulder" in rt["type"].lower():
+						# 	grade = self.getBoulderGrade(rating)
+						# else:
+						# 	grade = self.getYDSGrade(rating)							
+						
+						# if len(str(rt["pitches"])) > 0:
+						# 	pitches = rt["pitches"]
+						# else:
+						# 	pitches = 0 # a better default than n/a
 						
 						query = cur.mogrify("INSERT INTO route(id,routeid,name,area,type,grade,mpurl,mpimgmedurl,mpimgsmallurl,mpstars,mpstarvotes,pitches,crag,locationstr) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (str(rt["id"]), str(rt["id"]), rt["name"], str(thisAreaId), str(routeType), str(grade), str(rt["url"]), str(rt["imgMed"]), str(rt["imgSmall"]), str(rt["stars"]), str(rt["starVotes"]), str(pitches), str(thisCragId), str(rt["location"]) ))
 
@@ -230,18 +260,6 @@ class MPData:
 						
 						# tracking to prevent duplicates which can occur with Ticks
 						idTracking.append(rt["id"])		
-										
-					else:
-						if self.existingRouteLocationExists(rt["id"]) is False:
-							# Locations from MP are arrays of location names
-							# will search from crag to area (more discrete location to less discrete)
-							thisLocArr = rt["location"]
-							thisAreaId = self.getAreaMatchId(thisLocArr)
-						
-							if thisAreaId >= 0:
-								query = "UPDATE route SET area = " + str(thisAreaId) + " WHERE routeid = '"+ str(rt["id"]) +"';"
-								cur.execute(query)
-								conn.commit()
 							
 						
 				ids = ''
@@ -397,18 +415,18 @@ class MPData:
 		# I.E. "trad, bouder"
 		if "boulder" in type.lower():
 			# sometimes types are boulder, trad. this is non-sense. its boulder
-			type = "Boulder"	
+			return "Boulder"	
+		elif "alpine" in type.lower():
+			return "Alpine"
 		elif "trad" in type.lower():
 			# i don't care if it's "sport, trad". lets consider it trad if you use passive gear
-			type = "Trad"
-		elif "alpine" in type.lower():
-			type = "Alpine"
+			return "Trad"
 		elif "sport" in type.lower():
-			type = "Sport"
+			return "Sport"
 		elif "tr" in type.lower():
-			type = "Top-Rope"
+			return "Top-Rope"
 		
-		return type
+		return "n/a"
 
 
 	def getRouteType(self, type):

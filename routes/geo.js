@@ -30,7 +30,7 @@ exports.loadTodoAreas = function(req, res) {
           return res.send('No data found');
         } 
         else {
-        		rowJSON = { "type": "Feature", "properties": { "id": row.id, "area": row.name, "count": row.count }, "geometry": { "type": "Point", "coordinates": [ row.long, row.lat ] } };
+        		rowJSON = { "type": "Feature", "properties": { "id": row.id, "area": row.name, "count": row.count, "areatype": "TODO"  }, "geometry": { "type": "Point", "coordinates": [ row.long, row.lat ] } };
         		result.addRow(rowJSON);
         }
     	})
@@ -73,7 +73,50 @@ exports.loadTickAreas = function(req, res) {
 	          return res.send('No data found');
 	        } 
 	        else {
-	        		rowJSON = { "type": "Feature", "properties": { "id": row.id, "area": row.name, "count": row.count }, "geometry": { "type": "Point", "coordinates": [ row.long, row.lat ] } };
+	        		rowJSON = { "type": "Feature", "properties": { "id": row.id, "area": row.name, "count": row.count, "areatype": "TICK" }, "geometry": { "type": "Point", "coordinates": [ row.long, row.lat ] } };
+	        		result.addRow(rowJSON);
+	        }
+	    })
+	    
+	    query.on("end", function (result) {
+	        		
+	          res.send( 
+	          	JSON.stringify(
+	          		{ "type": "FeatureCollection", "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },                                                                         
+						"features": result.rows 
+						}
+	          	) 
+	          );
+	          res.end();
+	    })
+	    
+	    done();
+	 })
+	 
+	 //pg.end();
+};
+
+
+exports.loadTodoCrags = function(req, res) {
+	
+	 var userSessionId = req._passport.session.user;
+	 if(!userSessionId){
+		userSessionId = 1; // just for fun we'll set it to my data	 
+	 }
+	 
+    pg.connect(conString, function(err, client, done) {
+	    var retval = "no data";
+	    var idformat = "'" + req.params.id + "'";
+	    idformat = idformat.toUpperCase();
+	     
+	    var query = client.query("SELECT a.id, a.name, st_y(a.geo_point) as lat, st_x(a.geo_point) as long, count(*) as count FROM crag a INNER JOIN route r ON r.crag = a.id INNER JOIN todo t ON r.id = t.routeid INNER JOIN appuser c ON t.climberid = c.id WHERE c.id = "+ userSessionId +" GROUP BY a.id");
+	   
+	    query.on('row', function(row, result) {
+	        if (!result) {
+	          return res.send('No data found');
+	        } 
+	        else {
+	        		rowJSON = { "type": "Feature", "properties": { "id": row.id, "area": row.name, "count": row.count, "parentarea": row.area, "areatype": "CRAG" }, "geometry": { "type": "Point", "coordinates": [ row.long, row.lat ] } };
 	        		result.addRow(rowJSON);
 	        }
 	    })
@@ -136,15 +179,15 @@ exports.loadCrags = function(req, res) {
 
 exports.loadAreas = function(req, res) {
     pg.connect(conString, function(err, client, done) {
-	     
-	    var query = client.query("SELECT id, name, createdby, ST_Y(geo_point) as lat, ST_X(geo_point) as long FROM area;");
+	    // TODO: add parent country and any other parent geography possible to this query.
+	    var query = client.query("SELECT a.id, a.name, a.createdby, s.name as state, ST_Y(geo_point) as lat, ST_X(geo_point) as long FROM area a LEFT JOIN usa_states s ON st_within(a.geo_point, s.geo_poly);");
 	   
 	    query.on('row', function(row, result) {
 	        if (!result) {
 	          return res.send('No data found');
 	        } 
 	        else {
-	        		rowJSON = { "type": "Feature", "properties": { "id": row.id, "area": row.name, "createdby": row.createdby, "areatype": "AREA" }, "geometry": { "type": "Point", "coordinates": [ row.long, row.lat ] } };
+	        		rowJSON = { "type": "Feature", "properties": { "id": row.id, "area": row.name, "createdby": row.createdby, "areatype": "AREA", "parentstate":row.state }, "geometry": { "type": "Point", "coordinates": [ row.long, row.lat ] } };
 	        		result.addRow(rowJSON);
 	        }
 	    })
@@ -182,7 +225,7 @@ exports.loadTicks = function(req, res) {
 	    var idformat = "'" + req.params.id + "'";
 	    idformat = idformat.toUpperCase();
 	     
-	    var queryString = "SELECT r.id as routeid, r.name, r.area, rt.type, g.usa as ropegrade, g.hueco as bouldergrade, r.mpurl, r.mpimgmedurl, r.mpimgsmallurl, r.mpstars, r.mpstarvotes, r.pitches, t.notes, t.date FROM tick t INNER JOIN appuser c ON t.climberid = c.id INNER JOIN route r ON t.routeid = r.id INNER JOIN area a ON r.area = a.id LEFT JOIN grade g ON r.grade = g.id LEFT JOIN route_type rt ON r.type = rt.id WHERE c.id = "+ userSessionId +" ORDER BY t.date;";
+	    var queryString = "SELECT r.id as routeid, r.name, r.area, rt.type, g.usa as ropegrade, g.hueco as bouldergrade, g.difficultyindex as difficultyindex, r.mpurl, r.mpimgmedurl, r.mpimgsmallurl, r.mpstars, r.mpstarvotes, r.pitches, t.notes, t.date FROM tick t INNER JOIN appuser c ON t.climberid = c.id INNER JOIN route r ON t.routeid = r.id INNER JOIN area a ON r.area = a.id LEFT JOIN grade g ON r.grade = g.id LEFT JOIN route_type rt ON r.type = rt.id WHERE c.id = "+ userSessionId +" ORDER BY t.date;";
 	    var query = client.query(queryString);
 	    
 	    query.on('row', function(row, result) {
@@ -190,7 +233,7 @@ exports.loadTicks = function(req, res) {
 	          return res.send('No data found');
 	        } 
 	        else {
-	        		thisRowJSON = { "id": row.id, "routeid": row.routeid, "name": row.name, "area": row.area, "type": row.type, "ropegrade": row.ropegrade, "bouldergrade": row.bouldergrade, "url": row.mpurl, 
+	        		thisRowJSON = { "id": row.id, "routeid": row.routeid, "name": row.name, "area": row.area, "type": row.type, "ropegrade": row.ropegrade, "bouldergrade": row.bouldergrade, "difficultyindex": row.difficultyindex, "url": row.mpurl, 
 	        						    "imgSmall": row.mpimgsmallurl, "imgMed": row.mpimgmedurl, "stars": row.mpstars, "starVotes": row.mpstarvotes, "pitches": row.pitches,
 	        						    "notes": row.notes, "date": row.date }
 	        		result.addRow(thisRowJSON);
@@ -225,7 +268,7 @@ exports.loadToDos = function(req, res) {
 	    var idformat = "'" + req.params.id + "'";
 	    idformat = idformat.toUpperCase();
 	     
-	    var queryString = "SELECT r.id as routeid, r.name, r.area, rt.type, g.usa as ropegrade, g.hueco as bouldergrade, r.mpurl, r.mpimgmedurl, r.mpimgsmallurl, r.mpstars, r.mpstarvotes, r.pitches FROM todo t INNER JOIN appuser c ON t.climberid = c.id INNER JOIN route r ON t.routeid = r.id INNER JOIN area a ON r.area = a.id LEFT JOIN grade g ON r.grade = g.id LEFT JOIN route_type rt ON r.type = rt.id WHERE c.id = "+ userSessionId +";";
+	    var queryString = "SELECT r.id as routeid, r.name, r.area, cr.id as crag, rt.type, g.usa as ropegrade, g.hueco as bouldergrade, g.difficultyindex as difficultyindex, r.mpurl, r.mpimgmedurl, r.mpimgsmallurl, r.mpstars, r.mpstarvotes, r.pitches FROM todo t INNER JOIN appuser c ON t.climberid = c.id INNER JOIN route r ON t.routeid = r.id INNER JOIN area a ON r.area = a.id LEFT JOIN crag cr ON cr.id = r.crag LEFT JOIN grade g ON r.grade = g.id LEFT JOIN route_type rt ON r.type = rt.id WHERE c.id = "+ userSessionId +";";
 	    var query = client.query(queryString);
 	    
 	    query.on('row', function(row, result) {
@@ -233,7 +276,7 @@ exports.loadToDos = function(req, res) {
 	          return res.send('No data found');
 	        } 
 	        else {
-	        		thisRowJSON = { "id": row.id, "routeid": row.routeid, "name": row.name, "area": row.area, "type": row.type, "ropegrade": row.ropegrade, "bouldergrade": row.bouldergrade, "url": row.mpurl, 
+	        		thisRowJSON = { "id": row.id, "routeid": row.routeid, "name": row.name, "crag": row.crag, "area": row.area, "type": row.type, "ropegrade": row.ropegrade, "bouldergrade": row.bouldergrade, "difficultyindex": row.difficultyindex, "url": row.mpurl, 
 	        						    "imgSmall": row.mpimgsmallurl, "imgMed": row.mpimgmedurl, "stars": row.mpstars, "starVotes": row.mpstarvotes, "pitches": row.pitches }
 	        		result.addRow(thisRowJSON);
 	        }
@@ -310,7 +353,7 @@ exports.persistarea = function(name, lat, lng, areatype, userid, parentArea, res
 	      
 	    done();
 	    
-		 updateRoutes(-1)
+		 updateRoutes(-1, areatype)
 		 
 		 res.json({"name":name, "actiontype": "NEW", "areatype":areatype, "lat":lat, "lng":lng, "persisted":true});
 	 })
@@ -334,7 +377,7 @@ exports.updatearea = function(id, name, lat, lng, areatype, userid, parentArea, 
   
 	    done();
 
-	  	 updateRoutes(id)
+	  	 updateRoutes(id, areatype)
 		 res.json( {"type": "Feature", "persisted":true, "actiontype": "UPDATE", "properties": { "id": id, "area": name, "createdby": userid, "areatype": areatype }, "geometry": { "type": "Point", "coordinates": [ lng, lat ] } } );
 	 })
 	  
@@ -342,10 +385,10 @@ exports.updatearea = function(id, name, lat, lng, areatype, userid, parentArea, 
 };
 
 
-function updateRoutes(changedAreaId) {
+function updateRoutes(changedAreaId, areaType) {
 	 
 	 var options = {
-		  args: [changedAreaId]
+		  args: [changedAreaId, areaType]
 	 };
 	 PythonShell.run('./public/data/update_routes.py', options, function (err, results) {
 	  	if (err){
