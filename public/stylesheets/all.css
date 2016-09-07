@@ -82,7 +82,9 @@ body{
 		color: #F5F5F5;
 	}
 	
-
+	.navbar-form #area-search .form-group{
+		display:inline;
+	}
 .right-main-panel{
 	height: 100%;
 }

@@ -303,8 +303,16 @@ exports.loadToDos = function(req, res) {
 // CURRENTLY RETURNING MISSING AREAS FOR EVERYONE
 /////
 exports.loadMissingAreas = function(req, res) {
+
+	var userSessionId = req._passport.session.user;
+	if(!userSessionId){
+		userSessionId = 1; // just for fun we'll set it to my data	 
+	}
+
 	pg.connect(conString, function(err, client, done) {
-	    var queryString = "SELECT r.name, r.mpurl FROM route r WHERE area = -1;";
+	    //var queryString = "SELECT r.name, r.mpurl FROM route r WHERE area = -1;";
+	    var queryString = "SELECT r.name, r.locationstr, max(r.mpurl) as mpurl FROM route r, area a, todo t, tick ti, appuser c WHERE r.area = -1 and c.id = "+ userSessionId +" and (t.climberid = c.id OR ti.climberid = c.id) and (r.id = t.routeid or r.id = ti.routeid) GROUP BY r.locationstr, r.name;";
+
 	    var query = client.query(queryString);
 	    
 	    query.on('row', function(row, result) {
@@ -312,7 +320,7 @@ exports.loadMissingAreas = function(req, res) {
 	          return res.send('No data found');
 	        } 
 	        else {
-	        		thisRowJSON = { "name": row.name, "mpurl": row.mpurl }
+	        		thisRowJSON = { "name": row.name, "locationstr": row.locationstr, "mpurl": row.mpurl }
 	        		result.addRow(thisRowJSON);
 	        }
 	    })
