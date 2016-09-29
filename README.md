@@ -48,12 +48,14 @@ Backend
 Awesome! 
 
 <h4>Dev Env Setup</h4>
-# Pull the repo to your local webserver root (typically /var/www on Linux using Apache HTTPD).
-# CD into the climbmapper root directory.
-# Install Node.js if you don't have it installed already.
-# Type 'npm start' in your terminal when cd'd into the cimbmapper root directory
-# Access the site at http://localhost:8080/climbmapper
-# Use the 'issues' tab in GitHub for reporting or accepting tickets
+<ul>
+<li> Pull the repo to your local webserver root (typically /var/www on Linux using Apache HTTPD).
+<li> CD into the climbmapper root directory.
+<li> Install Node.js if you don't have it installed already.
+<li> Type 'npm start' in your terminal when cd'd into the cimbmapper root directory
+<li> Access the site at http://localhost:8080/climbmapper
+<li> Use the 'issues' tab in GitHub for reporting or accepting tickets
+</ul>
 
 <h4>General Needs</h4>
 See the issues tab for more details.
