@@ -7,7 +7,7 @@ You can see the app live at www.climbmapper.com
 <h3>About</h3>
 The goal of this app is to provide a better toolset for visualizing where someone wants to climb based on their MountainProject.com ToDos and Ticks.  While the initial interest was to leverage Mountain Project there is a general interest to break away from that connection to allow for other integrations and possibly the ability to add routes solely to ClimbMapper.  However, none of that is in the works right now. 
 
-<h4>Features</h4>
+<h4>Current Features</h4>
 * MountainProject.com user integration
 * Tick and ToDo downloads from user profiles
 * Mapping ToDo/Tick density by location (climbing area and partial crag level support)
@@ -42,3 +42,25 @@ Backend
 * Node
 * PostgreSQL (PostGIS)
 * Python (for some data processing)
+
+
+<h3>Want to help out?</h3>
+Awesome! 
+
+<h4>Dev Env Setup</h4>
+# Pull the repo to your local webserver root (typically /var/www on Linux using Apache HTTPD).
+# CD into the climbmapper root directory.
+# Install Node.js if you don't have it installed already.
+# Type 'npm start' in your terminal when cd'd into the cimbmapper root directory
+# Access the site at http://localhost:8080/climbmapper
+# Use the 'issues' tab in GitHub for reporting or accepting tickets
+
+<h4>General Needs</h4>
+See the issues tab for more details.
+# Migration from a Proof of Concept to a real app (IN PROGRESS - see reactify branch)
+# Better security authentication
+# UI/UX makeover (especially with editing locations)
+# Stronger domain models that help minimize the bridge to Mountain Project
+# Connectors to other climbing websites (8a.nu, thecrag.com, etc...)
+# Ability to add routes directly to ClimbMapper
+
