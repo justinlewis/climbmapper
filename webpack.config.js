@@ -11,6 +11,7 @@ var devFlagPlugin = new webpack.DefinePlugin({
 
 var config = {
   entry: APP_DIR + '/index.jsx',
+  debug: true,
   output: {
     path: BUILD_DIR,
     filename: 'bundle.js'

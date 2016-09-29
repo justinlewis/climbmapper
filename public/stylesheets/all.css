@@ -19,11 +19,11 @@ html, body {
 	overflow-x: hidden;
 	overflow-y: hidden;
 }
-	
+
 body{
 	height: 100%;
 }
-	
+
 #main{
 	 margin-left: 0;
     margin-right: 0;
@@ -34,7 +34,8 @@ body{
     top: 0;
     left: 0;
     right: 0;
-    width: 100%
+    width: 100%;
+		padding: 0;
 }
 
 #map {
@@ -45,6 +46,13 @@ body{
 	bottom: 0px;
 	height: 100%;
  	width: 100%;
+}
+
+.leaflet-container {
+    height: 100%;
+    width: 100%;
+		top: 0;
+    position: absolute !important;
 }
 
 /*HEADER / NAVBAR	*/
@@ -60,28 +68,28 @@ body{
 		top: 0px;
 		z-index: 9999;
 	}
-	
+
 	.header-title {
 		margin: 10px 10px 10px 10px;
 		text-align: center;
 		color: white;
 	}
-	
+
 	#searchForm {
 		position: absolute;
 		margin: 1px;
 		padding: 5px;
 		top: 30px;
 	}
-	
+
 	.navbar.navbar-custom.navbar-fixed-top{
 		background: rgba(80, 80, 80, .9);
 	}
-	
+
 	.navbar-nav a{
 		color: #F5F5F5;
 	}
-	
+
 	.navbar-form #area-search .form-group{
 		display:inline;
 	}
@@ -96,11 +104,11 @@ body{
 		height: 100%;
 		z-index: 999;
 	}
-	
+
 	#left-sidebar-heading{
 		font-weight: bolder;
 	}
-	
+
 	#left-sidebar-heading-info-container{
 		background-color: rgba(255,255,255,0.5);
     	margin: 0;
@@ -111,15 +119,15 @@ body{
     	top: 0;
     	display: none;
 	}
-	
+
 	.row{
-		height: 100%;	
+		height: 100%;
 	}
 	.container-fluid{
 		 padding-top: 50px;
 		 height: 100%;
 	}
-	
+
 /*	#footer {
 		position: absolute;
 		background-color: #FFFAFA;
@@ -147,35 +155,35 @@ body{
 		font-weight: bold;
 		margin: 0;
 		margin-bottom: -10px;
-	}	
+	}
 
 /*	table {
 		width: 100%;
 		border-collapse: collapse;
 		}
-		
+
 	td, tr {
 		background-color: #FFFFFF;
 		border: 1px solid black;
 		padding: 3px;
 		}
-		
+
 	th {
 		background-color: #DDDDDD;
 		border: 1px solid #666666;
 		text-align: center;
 		padding: 3px;
 		}*/
-		
+
 	.leaflet-popup-content {
 		overflow: none;
 	}
-	
-	
+
+
 	.leaflet-draw-actions {
-		display: none !important;	
+		display: none !important;
 	}
-		
+
 	#info-area-title{
 		text-align: center;
 		background: #505050;
@@ -184,7 +192,7 @@ body{
 		color: white;
 		height: 30px;
 	}
-	
+
 	.info-header{
 		margin-bottom: 5px;
 		text-align: left;
@@ -192,18 +200,18 @@ body{
 		text-align: center;
 		font-weight: bold;
 	}
-	
+
 	.info-content{
 		margin-top: 5px;
 		font-size: 13px;
 		text-align: center;
 		font-size: 20px;
 	}
-	
+
 	.info-content b{
 		font-size: 25px;
 	}
-	
+
 	.info-ul{
 		margin-top: 5px;
 		margin-bottom: 5px;
@@ -214,12 +222,12 @@ body{
     	padding: 10px;
     	background-color: rgba(255,255,255,.5);
 	}
-	
+
 	.info-image{
 		margin-bottom: 10px;
 		width: 100%;
 	}
-	
+
 	#info-container{
 		position: absolute;
 		bottom: 0px;
@@ -231,7 +239,7 @@ body{
 		overflow: hidden;
 		border-left: solid 1px grey;
 	}
-	    
+
 	#info-box{
 		bottom: 0px;
 		left: 0px;
@@ -243,26 +251,26 @@ body{
     	position: absolute;
     	padding: 5px;
 	}
-	
+
 	.info-text{
-		text-align: center;	
+		text-align: center;
 	}
-	
+
 	#info-box-content{
 		overflow-y: auto;
 		height: 450px;
 	}
-	
+
 	.error-link{
-		margin-left: 25px;	
+		margin-left: 25px;
 		margin: 0 auto;
       width: 70%;
 	}
-	
+
 	.error-message{
-		color: red;	
+		color: red;
 	}
-	
+
 	#hover-box{
 		position: absolute;
 		bottom: 0px;
@@ -272,135 +280,135 @@ body{
 		z-index: 9999;
 		padding: 5px 5px 5px 5px;
 	}
-	
+
 	a.info-link{
 		text-decoration: none;
 		color: darkblue;
 	}
-	
+
 	#issue-box{
 		color: red;
 		z-index: 9999;
 		overflow-y: auto;
 	}
-	
+
 	#issues-modal .modal-dialog{
 	    width: 800px;
 	}
-	
+
 	#user-name-container{
 	    font-weight: bold;
 	    font-style: italic;
 	    color: white;
 	    height: 100%;
 	}
-	
+
 	#user-name-container h3{
-	/*	margin: 0;	
+	/*	margin: 0;
 		position: relative;
   		top: 50%;
   		transform: translateY(-50%);*/
-  		
+
 	}
-	
-	
+
+
 /*	CHART STYLES*/
 
 	.chart-row{
-		height: 200px;	
+		height: 200px;
 		position: absolute;
 	   width: 100%;
-	   background-color: rgba(255,255,255,.5);		
+	   background-color: rgba(255,255,255,.5);
 	}
-	
+
 	#chart-row-1{
 		bottom: 62px;
 	}
-	
+
 	#chart-row-2{
 	   bottom: 264px;
 	}
-	
+
 	.bar {
 	  fill: #193441;
 	}
-	
+
 	.bar:hover {
 	  fill: black;
 	}
-	
+
 	.axis {
 	  font: 10px sans-serif;
 	}
-	
+
 	.axis path,
 	.axis line {
 	  fill: none;
 	  stroke: #000;
 	  shape-rendering: crispEdges;
 	}
-	
+
 	.x.axis path {
 	  display: none;
 	}
-	
-	
+
+
 	.arc path {
 /*	  stroke: #fff;*/
 	}
-	
+
 /*	#todo-type-chart{
 		margin: 0 auto;
 	 	left: 0;
 	 	right: 0;
 	}*/
-	
+
 
 	.axis line {
 	  fill: none;
 	  stroke: #000;
 	  shape-rendering: crispEdges;
 	}
-	
-	
+
+
 	.line {
 	  fill: none;
 	  stroke: steelblue;
 	  stroke-width: 3px;
 	}
-	
+
 	#tick-type-chart{
 		width: 50%;
-    	float: left;	
+    	float: left;
     	position: relative;
   		top: 50%;
   		transform: translateY(-50%);
 	}
-	
+
 	#tick-height-chart{
 		width: 50%;
-    	float: left;	
+    	float: left;
     	position: relative;
   		top: 50%;
  		transform: translateY(-50%);
 	}
-	
+
 	#todo-type-chart{
 		width: 50%;
-    	float: left;	
+    	float: left;
     	position: relative;
   		top: 50%;
   		transform: translateY(-50%);
 	}
-	
+
 	#todo-height-chart{
 		width: 50%;
-    	float: left;	
+    	float: left;
     	position: relative;
   		top: 50%;
  		transform: translateY(-50%);
 	}
-	
+
 	.polyline{
 		opacity: .3;
 		stroke: red;
@@ -423,7 +431,7 @@ body{
     	position: absolute;
     	width: 100%;
 	}
-	
+
 	#time-slider-label-container{
 		 position: absolute;
 	    bottom: 5px;
@@ -446,12 +454,12 @@ body{
 		background: #505050;
 	/*	border: solid 1px white;*/
 	}
-	
+
 	.ui-slider-handle.ui-state-default.ui-corner-all{
 		background: #757575;
 	/*	border: solid 1px white;*/
 	}
-	
+
 	.ui-slider-handle.ui-state-default.ui-corner-all.ui-state-hover{
 		background: #505050;
 		cursor: move;
@@ -492,75 +500,75 @@ body{
 		#area-search{
 			/*position: absolute;
     		top: 8px;
-    		right: 7px;	*/	
+    		right: 7px;	*/
 		}
-		
+
 		.twitter-typeahead{
 			position: static !important;
     		display: inline !important;
 		}
-		
+
 		.tt-menu,
 		.gist {
 		  text-align: left;
 		}
-		
+
 		/* base styles */
 		/* ----------- */
-		
+
 		html {
 		  font: normal normal normal 18px/1.2 "Helvetica Neue", Roboto, "Segoe UI", Calibri, sans-serif;
 		  color: #292f33;
 		}
-		
-		
+
+
 		a {
 		  color: #03739c;
 		  text-decoration: none;
 		}
-		
+
 		a:hover {
 		  text-decoration: underline;
 		}
-		
+
 		.table-of-contents li {
 		  display: inline-block;
 		  *display: inline;
 		  zoom: 1;
 		}
-		
+
 		.table-of-contents li a {
 		  font-size: 16px;
 		  color: #999;
 		}
-		
+
 		p + p {
 		  margin: 30px 0 0 0;
 		}
-		
+
 		/* site theme */
 		/* ---------- */
-		
+
 		.title {
 		  margin: 20px 0 0 0;
 		  font-size: 64px;
 		}
-		
+
 		.example {
 		  padding: 30px 0;
 		}
-		
+
 		.example-name {
 		  margin: 20px 0;
 		  font-size: 32px;
 		}
-		
+
 		.demo {
 		  position: relative;
 		  *z-index: 1;
 		  margin: 50px 0;
 		}
-		
+
 		.typeahead,
 		.tt-query,
 		.tt-hint {
@@ -575,25 +583,25 @@ body{
 		          border-radius: 4px;
 		  outline: none;
 		}
-		
+
 		.typeahead {
 		  background-color: #fff;
 		}
-		
+
 		.typeahead:focus {
 		  border: 2px solid #0097cf;
 		}
-		
+
 		.tt-query {
 		  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 		     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 		          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 		}
-		
+
 		.tt-hint {
 		  color: #999
 		}
-		
+
 		.tt-menu {
 		  width: 422px;
 		  margin: 12px 0;
@@ -608,29 +616,29 @@ body{
 		     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
 		          box-shadow: 0 5px 10px rgba(0,0,0,.2);
 		}
-		
+
 		.tt-suggestion {
 		  padding: 3px 20px;
 		  font-size: 18px;
 		  line-height: 24px;
 		}
-		
+
 		.tt-suggestion:hover {
 		  cursor: pointer;
 		  color: #fff;
 		  background-color: #0097cf;
 		}
-		
+
 		.tt-suggestion.tt-cursor {
 		  color: #fff;
 		  background-color: #0097cf;
-		
+
 		}
-		
+
 		.tt-suggestion p {
 		  margin: 0;
 		}
-		
+
 		.gist {
 		  font-size: 14px;
 		}

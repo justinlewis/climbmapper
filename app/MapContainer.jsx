@@ -1,6 +1,6 @@
 import React from 'react';
 
-import MapComponent from './Map.jsx';
+import MapComponent from './MainMap.jsx';
 import AboutModalComponent from './AboutModal.jsx';
 import IssuesModalComponent from './IssuesModal.jsx';
 import WelcomeModalComponent from './WelcomeModal.jsx';
