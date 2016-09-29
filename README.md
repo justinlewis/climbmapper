@@ -7,7 +7,7 @@ You can see the app live at www.climbmapper.com
 
 NOTE: After some interest from the community it was decided that this project is being ported from a Proof of Concept implementation to something we all can be more proud of.  The target stack will include:
 
-** See the reactify branch for the work in progress
+** See the <a href="https://github.com/justinlewis/climbmapper/blob/reactify/README.md" >reactify</a> branch for the work in progress
 
 Basic Front-end
 * React
