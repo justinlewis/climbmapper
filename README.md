@@ -57,10 +57,13 @@ Awesome!
 
 <h4>General Needs</h4>
 See the issues tab for more details.
-# Migration from a Proof of Concept to a real app (IN PROGRESS - see reactify branch)
-# Better security authentication
-# UI/UX makeover (especially with editing locations)
-# Stronger domain models that help minimize the bridge to Mountain Project
-# Connectors to other climbing websites (8a.nu, thecrag.com, etc...)
-# Ability to add routes directly to ClimbMapper
+
+<ul>
+<li> Migration from a Proof of Concept to a real app (IN PROGRESS - see reactify branch)
+<li> Better security authentication
+<li> UI/UX makeover (especially with editing locations)
+<li> Stronger domain models that help minimize the bridge to Mountain Project
+<li> Connectors to other climbing websites (8a.nu, thecrag.com, etc...)
+<li> Ability to add routes directly to ClimbMapper
+</ul>
 
