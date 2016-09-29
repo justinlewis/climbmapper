@@ -48,24 +48,24 @@ Backend
 Awesome! 
 
 <h4>Dev Env Setup</h4>
-<ul>
+<ol>
 <li> Pull the repo to your local webserver root (typically /var/www on Linux using Apache HTTPD).
 <li> CD into the climbmapper root directory.
 <li> Install Node.js if you don't have it installed already.
 <li> Type 'npm start' in your terminal when cd'd into the cimbmapper root directory
 <li> Access the site at http://localhost:8080/climbmapper
 <li> Use the 'issues' tab in GitHub for reporting or accepting tickets
-</ul>
+</ol>
 
 <h4>General Needs</h4>
 See the issues tab for more details.
 
-<ul>
+<ol>
 <li> Migration from a Proof of Concept to a real app (IN PROGRESS - see reactify branch)
 <li> Better security authentication
 <li> UI/UX makeover (especially with editing locations)
 <li> Stronger domain models that help minimize the bridge to Mountain Project
 <li> Connectors to other climbing websites (8a.nu, thecrag.com, etc...)
 <li> Ability to add routes directly to ClimbMapper
-</ul>
+</ol>
 
