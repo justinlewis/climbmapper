@@ -57,6 +57,13 @@ Awesome!
 <li> Use the 'issues' tab in GitHub for reporting or accepting tickets
 </ol>
 
+<h4>Making Changes</h4>
+<ol>
+<li> Make a branch
+<li> When you make changes run webpack in your terminal to compile your changes (simply type webpack)
+<li> Refresh your browser
+</ol>
+
 <h4>General Needs</h4>
 See the issues tab for more details.
 
