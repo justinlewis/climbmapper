@@ -21,4 +21,9 @@ class App extends React.Component {
   }
 }
 
-render(<App/>, document.getElementById('app'));
+render(
+  <Provider store={createStore(reducer)}>
+    <App/>
+  </Provider>,
+  document.getElementById('app')
+);

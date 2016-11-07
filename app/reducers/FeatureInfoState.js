@@ -18,6 +18,12 @@ export default function map(state = initialState, action) {
         heading : newHeading,
         body : newBody
       }
+    case types.HOVER_FEATURE_INFO:
+      const test = state.heading;
+
+      return {
+        heading : test
+      }
 
     default:
       return state;

@@ -18,3 +18,10 @@ export function setFeatureInfo(info) {
     info
   };
 }
+
+export function hoverFeatureInfo(info) {
+  return {
+    type: types.HOVER_FEATURE_INFO,
+    info
+  };
+}

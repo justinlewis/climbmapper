@@ -14,6 +14,11 @@ import { Map,
 import GeoJsonUpdatable from "./GeoJsonUpdatable.jsx"
 import { setFeatureInfo } from './actions/MapActions.js';
 
+import BarChart from './BarChart.jsx';
+// import LineChart from './charts/LineChart.js';
+// import PieChart from './charts/PieChart.js';
+// import RouteHeightPieChart from './charts/RouteHeightPieChart.js';
+
 
 
 const TODOFILL = "#0a4958";
@@ -24,8 +29,8 @@ const SIMPLECRAGFILL = "orange";
 const TODOFILLHOVER = "#138DA9";
 const CRAGFILLHOVER = "#878787";
 const TICKFILLHOVER = "#878787";
-const TICKROUTETYPE = "TICK"
-const TODOROUTETYPE = "TODO"
+const TICKROUTETYPE = "TICK";
+const TODOROUTETYPE = "TODO";
 
 const getLocationSizeBucket = function(rtCount) {
   if(rtCount < 1){
@@ -71,6 +76,8 @@ const getLocationSizeBucket = function(rtCount) {
     return 80
   }
 }
+
+var routeTypeFilter = 'ALL'
 
 var areaTodoPtsDefaultStyle = {
     radius: 0,
@@ -719,7 +726,7 @@ class MapComponent extends React.Component {
         }
 
 
-        function getRouteArrayByType(routeArr, routeTyoe){
+        this.getRouteArrayByType = function(routeArr, routeTyoe){
           var newTypeArr = [];
 
           if(routeTyoe.toUpperCase() === "ALL"){
@@ -778,6 +785,8 @@ class MapComponent extends React.Component {
      }
 
     render () {
+        const { store } = this.context;
+        var that = this;
         const position = [this.state.lat, this.state.lng];
 
         function onEachTodoFeature(thisRef, feature, layer) {
@@ -959,7 +968,7 @@ class MapComponent extends React.Component {
         // action to perform when mousing over a feature
         function todoHoverAction(e) {
             var layer = e.target;
-
+            store.dispatch(setFeatureInfo(layer))
             // removeAllCharts();
 
           //   if($("#tick-time-chart")){
@@ -1004,8 +1013,8 @@ class MapComponent extends React.Component {
           //   }
           //
           //   $("#chart-row-1").append('<div id="todo-grade-chart" ></div>');
-          //     var todoBarChart = new BarChart(getRouteArrayByType(layer.feature.properties.customRouteArr, routeTypeFilter), "#todo-grade-chart", $("#todo-grade-chart").parent().width());
-          //     todoBarChart.build();
+              // var todoBarChart = new BarChart(that.getRouteArrayByType(layer.feature.properties.customRouteArr, routeTypeFilter), "#todo-grade-chart", $("#todo-grade-chart").parent().width());
+              // todoBarChart.build();
           //
           //     $("#chart-row-2").append('<div id="todo-type-chart" ></div> <div id="todo-height-chart" ></div>');
           //   new PieChart(layer.feature, "#todo-type-chart", $("#todo-type-chart").parent().width()/2, routeTypeFilter);
@@ -1091,6 +1100,9 @@ class MapComponent extends React.Component {
         </Map>
   		);
     }
+}
+MapComponent.contextTypes = {
+  store: React.PropTypes.object
 }
 
 // window.ReactDOM.render(<SimpleExample />, document.getElementById('map'));

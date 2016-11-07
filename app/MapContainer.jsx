@@ -1,10 +1,14 @@
 import React from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
 import MapComponent from './MainMap.jsx';
 import AboutModalComponent from './AboutModal.jsx';
 import IssuesModalComponent from './IssuesModal.jsx';
 import WelcomeModalComponent from './WelcomeModal.jsx';
 import FeatureInfoComponent from './FeatureInfo.jsx';
+import BarChart from './BarChart.jsx';
+
 
 class MapContainerComponent extends React.Component {
     constructor(props){
@@ -12,6 +16,7 @@ class MapContainerComponent extends React.Component {
     }
 
     render () {
+      const { store } = this.context;
 
       var hideStyle = {display:'none'};
 
@@ -25,8 +30,9 @@ class MapContainerComponent extends React.Component {
     				      		<div id="hover-text-info-container"></div>
     				      </div>
 
-      						<div id="chart-row-2" className="row chart-row" style={hideStyle}></div>
-      						<div id="chart-row-1" className="row chart-row" style={hideStyle}></div>
+                  <BarChart  ></BarChart>
+      						{/* <div id="chart-row-2" className="row chart-row" style={hideStyle}></div>
+      						<div id="chart-row-1" className="row chart-row" style={hideStyle}></div> */}
 
       						<div className="row slider-row">
       							<div id="tick-slider">
@@ -52,6 +58,10 @@ class MapContainerComponent extends React.Component {
   		  </div>
   		);
     }
+
+}
+MapContainerComponent.contextTypes = {
+  store: React.PropTypes.object
 }
 
 export default MapContainerComponent;
