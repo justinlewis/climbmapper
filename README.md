@@ -9,4 +9,4 @@ Because the initial implementation was a proof of concept and experiment.  I wou
 
 
 ## Contributer Notes
-I am slowly moving all the JavaScript/JQuery code to React in the reactify branch.  Currently I have all the code that is already or is in progress of being ported in the 'app' directory in the project root. We can extract this out later but I wanted to isolate React specific implementations from the legacy. 
+I am slowly moving all the JavaScript/JQuery code to React in the reactify branch.  Currently I have all the code that is already (or is in progress of being) ported in the 'app' directory in the project root. We can extract this out later but I wanted to isolate React specific implementations from the legacy. 
