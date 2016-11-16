@@ -4,7 +4,7 @@ An experiment built on Node.js using Mountain Project climbing route data and my
 
 You can see the app live at www.climbmapper.com
 
-# Why Port To React?
+## Why Port To React?
 Because the initial implementation was a proof of concept and experiment.  I would like to re-build with better tools and better features so the app is more useful for others and developers are more excited to contribute.  I want this to be an app by the people and for the people. 
 
 
