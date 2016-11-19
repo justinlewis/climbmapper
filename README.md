@@ -51,8 +51,8 @@ Awesome!
 <ol>
 <li> Install Node.js if you don't have it installed already.
 <li> Install PostgreSQL if you don't have it installed already.
-<li> <b>TODO: create setup file</b> Setup a simple climbmapper database using the SQL setup file
-<li> Ensure you have a PostgreSQL instance running.
+<li> <b>TODO: create setup file</b> | Setup a simple climbmapper database using the SQL setup file
+<li> Ensure you have a PostgreSQL (with PostGIS) instance running.
 <li> Pull the repo to your local webserver root (typically /var/www on Linux using Apache HTTPD).
 <li> CD into the climbmapper root directory.
 <li> Type 'npm start' in your terminal when cd'd into the cimbmapper root directory
