@@ -39,9 +39,9 @@ Visualization Specific
 * D3.js
 
 Backend
-* Node
-* PostgreSQL (PostGIS)
-* Python (for some data processing)
+* Node 9.9.1
+* PostgreSQL 9.6.1 (PostGIS 2 >)
+* Python 2.7 (for some data processing)
 
 
 <h3>Want to help out?</h3>
