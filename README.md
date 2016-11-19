@@ -47,15 +47,17 @@ Backend
 <h3>Want to help out?</h3>
 Awesome! 
 
-<h4>Dev Database Setup</h4>
+<h4>1.  Dev Database Setup</h4>
 
 <ol>
 <li> Install PostgreSQL if you don't have it installed already.
 <li> Create 'climbmapper' database with PostGIS installed.
+<li> Create a new login user called 'app_user' who is a read only user.
+<li> **There is another user used in the production environment which you probably don't need but conatact me if you do end up needing it.
 <li> Populate the database by restoring climbmapper/project_setup/climbmapper.backup.
 </ol>
 
-<h4>Dev Server Env Setup</h4>
+<h4>2.  Dev Server Env Setup</h4>
 
 <ol>
 <li> Install Node.js if you don't have it installed already.
@@ -65,14 +67,14 @@ Awesome!
 <li> Type 'webpack' in your terminal when cd'd into the cimbmapper root directory.
 <li> Type 'npm start' in your terminal when cd'd into the cimbmapper root directory.
 <li> Access the site at http://localhost:8080/climbmapper
-<li> Use the 'issues' tab in GitHub for reporting or accepting tickets.
 </ol>
 
-<h4>Making Changes</h4>
+<h4>3.  Making Changes</h4>
 <ol>
 <li> Make a branch
 <li> When you make changes run webpack in your terminal to compile your changes (simply type webpack)
 <li> Refresh your browser
+<li> Use the 'issues' tab in GitHub for reporting or accepting tickets.
 </ol>
 
 <h4>General Needs</h4>
