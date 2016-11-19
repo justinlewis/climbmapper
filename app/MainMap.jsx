@@ -969,6 +969,7 @@ class MapComponent extends React.Component {
         function todoHoverAction(e) {
             var layer = e.target;
             store.dispatch(setFeatureInfo(layer))
+            console.log("dispatched")
             // removeAllCharts();
 
           //   if($("#tick-time-chart")){
