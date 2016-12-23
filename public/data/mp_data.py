@@ -2,76 +2,97 @@ import json, requests, psycopg2, collections, sys, os
 
 class MPData:
 	
-	def init(self, appuserid, dbConnectParams):
+	def __init__(self, appuserid, dbConnectParams):
 		
-		dbHost = dbConnectParams['dbHost']
-		dbPort = dbConnectParams['dbPort']
-		dbUser = dbConnectParams['dbUser']
-		dbPass = dbConnectParams['dbPass']
-		dbName = dbConnectParams['dbName']
+		self.dbHost = dbConnectParams['dbHost']
+		self.dbPort = dbConnectParams['dbPort']
+		self.dbUser = dbConnectParams['dbUser']
+		self.dbPass = dbConnectParams['dbPass']
+		self.dbName = dbConnectParams['dbName']
 
 		#DB connection properties
-		conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
-		cur = conn.cursor()  ## open a cursor
+		self.conn = psycopg2.connect(database = self.dbName,\
+								host= self.dbHost,\
+								port= self.dbPort,\
+								user = self.dbUser,\
+								password= self.dbPass)
+
+		self.cur = self.conn.cursor()  ## open a cursor
 		
 		
-		cur.execute("DELETE FROM tick WHERE climberid = '"+str(appuserid)+"';")
-		cur.execute("DELETE FROM todo WHERE climberid = '"+str(appuserid)+"';")
-		conn.commit()
+		self.cur.execute("DELETE FROM tick WHERE climberid = '"+str(appuserid)+"';")
+		self.cur.execute("DELETE FROM todo WHERE climberid = '"+str(appuserid)+"';")
+		self.conn.commit()
 		#conn.close()	
 		print "Cleaned db of Todos and Ticks"
 		
-		cur.execute("SELECT routeid FROM tick WHERE climberid = "+str(appuserid)+";")
-		global existingUserTicks
-		existingUserTicks = cur.fetchall()
+		# Querying App User info
+		self.cur.execute("""SELECT routeid 
+							FROM tick 
+							WHERE climberid = "+str(appuserid)+";""")
+
+		# global existingUserTicks
+		self.existingUserTicks = self.cur.fetchall()
 		
-		cur.execute("SELECT routeid from todo WHERE climberid = "+str(appuserid)+";")
-		global existingUserTodos
-		existingUserTodos = cur.fetchall()
+		self.cur.execute("""SELECT routeid 
+							FROM todo 
+							WHERE climberid = "+str(appuserid)+";""")
+
+		# global existingUserTodos
+		self.existingUserTodos = self.cur.fetchall()
 		
-		cur.execute("SELECT id, usa, hueco FROM grade;")
-		global gradesLookup
-		gradesLookup = cur.fetchall()	
+		self.cur.execute("""SELECT id, usa, hueco 
+							FROM grade;""")
+
+		# global gradesLookup
+		self.gradesLookup = self.cur.fetchall()
 		
-		cur.execute("SELECT id, type FROM route_type;")	
-		global typeLookup
-		typeLookup = cur.fetchall()	
+		self.cur.execute("""SELECT id, type 
+							FROM route_type;""")
+
+		# global typeLookup
+		self.typeLookup = self.cur.fetchall()
 		
-		cur.execute("SELECT a.id as areaId, a.name as areaName, c.id as cragId, c.name as cragName FROM area a INNER JOIN crag c ON a.id = c.area;")	
-		global cragLookup
-		cragLookup = cur.fetchall()	
+		self.cur.execute("""SELECT a.id as areaId, a.name as areaName, c.id as cragId, c.name as cragName 
+							FROM area a 
+							INNER JOIN crag c ON a.id = c.area;""")
+
+		# global cragLookup
+		self.cragLookup = cur.fetchall()	
 		
 		#cur.execute("SELECT a.id as areaId, a.name as areaName FROM area a;")	
-		cur.execute("""SELECT a.id as areaId, a.name as areaName, c.name AS country, s.name AS state FROM area a
-		INNER JOIN countries c ON st_within(a.geo_point, c.geo_poly)
-		LEFT JOIN usa_states s ON st_within(a.geo_point, s.geo_poly)
-		ORDER BY a.id;""")
-		global areaLookup
-		areaLookup = cur.fetchall()	
+		self.cur.execute("""SELECT a.id as areaId, a.name as areaName, c.name AS country, s.name AS state FROM area a
+							INNER JOIN countries c ON st_within(a.geo_point, c.geo_poly)
+							LEFT JOIN usa_states s ON st_within(a.geo_point, s.geo_poly)
+							ORDER BY a.id;""")
+
+		# global areaLookup
+		self.areaLookup = self.cur.fetchall()	
 		
-		cur.execute("SELECT id, area FROM route;")	
-		global routeLookup
-		routeLookup = cur.fetchall()
+		self.cur.execute("SELECT id, area FROM route;")	
 		
-		conn.close()
+		# global routeLookup
+		self.routeLookup = self.cur.fetchall()
+		
+		self.conn.close()
 
 		
-	def getToDos(self, mpUserKey, mpUserEmail, appUserId, dbConnectParams):
-		dbHost = dbConnectParams['dbHost']
-		dbPort = dbConnectParams['dbPort']
-		dbUser = dbConnectParams['dbUser']
-		dbPass = dbConnectParams['dbPass']
-		dbName = dbConnectParams['dbName']
+	def getToDos(self, mpUserKey, mpUserEmail, appUserId):
+		# dbHost = dbConnectParams['dbHost']
+		# dbPort = dbConnectParams['dbPort']
+		# dbUser = dbConnectParams['dbUser']
+		# dbPass = dbConnectParams['dbPass']
+		# dbName = dbConnectParams['dbName']
 
-		#DB connection properties
-		conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
-		cur = conn.cursor()  ## open a cursor
+		# #DB connection properties
+		# conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
+		# cur = conn.cursor()  ## open a cursor
 		
 		urlRoot = "http://www.mountainproject.com/data?action=getToDos"
-		urlPropId = "&email="+mpUserEmail
+		urlPropId = "&email=" + mpUserEmail
 		urlPropStartPos = "&startPos="
 		urlPropStartPosList = [0, 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000]
-		mpKey = "&key="+mpUserKey
+		mpKey = "&key=" + mpUserKey
 		toDoList = []
 		
 						
@@ -86,29 +107,29 @@ class MPData:
 				for toDoId in toDos["toDos"]:
 					if not self.todoExists(toDoId):
 						toDoList.append(toDoId)
-						query = cur.mogrify("INSERT INTO todo(id,routeid,climberid) VALUES (%s, %s, %s)", (str(toDoId), str(toDoId), str(appUserId)))
+						query = self.cur.mogrify("INSERT INTO todo(id,routeid,climberid) VALUES (%s, %s, %s)", (str(toDoId), str(toDoId), str(appUserId)))
 						
-						cur.execute(query)
-						conn.commit()	
+						self.cur.execute(query)
+						self.conn.commit()	
 			else:
 				print "BAD REQUEST"
 					
-		conn.close()
+		self.conn.close()
 		print len(toDoList), " ToDos"
 		return toDoList
 	
 	
-	def getTicks(self, mpUserKey, mpUserEmail, appUserId, dbConnectParams):
+	def getTicks(self, mpUserKey, mpUserEmail, appUserId):
 		
-		dbHost = dbConnectParams['dbHost']
-		dbPort = dbConnectParams['dbPort']
-		dbUser = dbConnectParams['dbUser']
-		dbPass = dbConnectParams['dbPass']
-		dbName = dbConnectParams['dbName']
+		# dbHost = dbConnectParams['dbHost']
+		# dbPort = dbConnectParams['dbPort']
+		# dbUser = dbConnectParams['dbUser']
+		# dbPass = dbConnectParams['dbPass']
+		# dbName = dbConnectParams['dbName']
 
-		#DB connection properties
-		conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
-		cur = conn.cursor()  ## open a cursor
+		# #DB connection properties
+		# conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
+		# cur = conn.cursor()  ## open a cursor
 		
 		root = "http://www.mountainproject.com/data?action=getTicks"
 		uid = "&email="+mpUserEmail
@@ -149,31 +170,32 @@ class MPData:
 						else:
 							thisDate = str(tick["date"])
 						
-						query = cur.mogrify("INSERT INTO tick(id,routeid,climberid,notes,date) VALUES (%s, %s, %s, %s, %s)", (str(tick["routeId"]), str(tick["routeId"]), str(appUserId), tick["notes"], thisDate))
+						query = self.cur.mogrify("INSERT INTO tick(id,routeid,climberid,notes,date) VALUES (%s, %s, %s, %s, %s)", (str(tick["routeId"]), str(tick["routeId"]), str(appUserId), tick["notes"], thisDate))
 						
-						cur.execute(query)
-						conn.commit()
+						self.cur.execute(query)
+						self.conn.commit()
 
 				reqChunks = reqChunks + 200
 			else:
 				print "BAD REQUEST"
 			
-		conn.close()	
+		self.conn.close()	
 		
 		print len(ticksArr), " Ticks"
 		return ticksArr
-		
-	# @contentType can be 'todo' or 'tick'	
-	def getRoutes(self, idsList, contentType, mpUserKey, dbConnectParams, idTracking):
-		dbHost = dbConnectParams['dbHost']
-		dbPort = dbConnectParams['dbPort']
-		dbUser = dbConnectParams['dbUser']
-		dbPass = dbConnectParams['dbPass']
-		dbName = dbConnectParams['dbName']
+	
 
-		#DB connection properties
-		conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
-		cur = conn.cursor()  ## open a cursor
+	# @contentType can be 'todo' or 'tick'	
+	def getRoutes(self, idsList, contentType, mpUserKey, idTracking):
+		# dbHost = dbConnectParams['dbHost']
+		# dbPort = dbConnectParams['dbPort']
+		# dbUser = dbConnectParams['dbUser']
+		# dbPass = dbConnectParams['dbPass']
+		# dbName = dbConnectParams['dbName']
+
+		# #DB connection properties
+		# conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
+		# cur = conn.cursor()  ## open a cursor
 		
 		root = "http://www.mountainproject.com/data?action=getRoutes&routeIds="
 		ids = ''
@@ -229,8 +251,8 @@ class MPData:
 						if thisAreaId >= 0:
 							query = cur.mogrify("UPDATE route SET area = %s, name = %s, type = %s, grade = %s, mpurl = %s, mpimgsmallurl = %s, mpimgmedurl = %s, mpstars = %s, mpstarvotes = %s, pitches = %s, locationstr = %s WHERE routeid = '"+ str(rt["id"]) +"';", ( str(thisAreaId), rt["name"], str(routeType), str(grade), str(rt["url"]), str(rt["imgSmall"]), str(rt["imgMed"]), str(rt["stars"]), str(rt["starVotes"]), str(pitches), str(rt["location"]) ))
 
-							cur.execute(query)
-							conn.commit()
+							self.cur.execute(query)
+							self.conn.commit()
 					else:
 						area = ','.join(rt["location"])
 						
@@ -255,8 +277,8 @@ class MPData:
 						
 						query = cur.mogrify("INSERT INTO route(id,routeid,name,area,type,grade,mpurl,mpimgmedurl,mpimgsmallurl,mpstars,mpstarvotes,pitches,crag,locationstr) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (str(rt["id"]), str(rt["id"]), rt["name"], str(thisAreaId), str(routeType), str(grade), str(rt["url"]), str(rt["imgMed"]), str(rt["imgSmall"]), str(rt["stars"]), str(rt["starVotes"]), str(pitches), str(thisCragId), str(rt["location"]) ))
 
-						cur.execute(query)
-						conn.commit()
+						self.cur.execute(query)
+						self.conn.commit()
 						
 						# tracking to prevent duplicates which can occur with Ticks
 						idTracking.append(rt["id"])		
@@ -264,7 +286,7 @@ class MPData:
 						
 				ids = ''
 			idCt += 1	
-		conn.close()		
+		self.conn.close()		
 		
 		print len(idTracking), " imported routes"
 		return idTracking
@@ -280,7 +302,7 @@ class MPData:
 		for loc in reversed(locationArr):		
 			thisLoc = loc.lower().lstrip("*").replace(" ", "")
 			
-			for a in areaLookup:
+			for a in self.areaLookup:
 				aId = a[0]
 				aName = a[1].lower().lstrip("*").replace(" ", "")
 				
@@ -312,7 +334,7 @@ class MPData:
 		## iterate from smallest geography to biggest	
 		for loc in reversed(locationArr):		
 			thisLoc = loc.lower().lstrip("*").replace(" ", "")
-			for a in areaLookup:
+			for a in self.areaLookup:
 				aId = a[0]
 				aName = a[1].lower().lstrip("*").replace(" ", "")
 				
@@ -339,7 +361,7 @@ class MPData:
 	# currently only matching crags with known areas (check sql query for cragLookup)
 	def getCragMatchId(self, locationArr):
 		for loc in locationArr:	
-			for a in cragLookup:
+			for a in self.cragLookup:
 				cId = a[2]
 				cName = a[3]
 				
@@ -349,30 +371,34 @@ class MPData:
 		#no match found
 		return -1
 	
+
 	def existingRouteLocationExists(self, inRouteId):
-		for route in routeLookup:
+		for route in self.routeLookup:
 			if str(route[0]) == str(inRouteId):
 				if route[1] >= 0:
 					return True
 				
 		return False
 		
+
 	def routeExists(self, inRouteId):
-		for route in routeLookup:
+		for route in self.routeLookup:
 			if str(route[0]) == str(inRouteId):
 				return True
 				
 		return False
 		
+
 	def todoExists(self, inRouteId):
-		for routeId in existingUserTodos:
+		for routeId in self.existingUserTodos:
 			if str(routeId[0]) == str(inRouteId):
 				return True
 				
 		return False
 	
+
 	def tickExists(self, inRouteId):
-		for routeId in existingUserTicks:
+		for routeId in self.existingUserTicks:
 			if str(routeId[0]) == str(inRouteId):
 				return True
 				
@@ -431,7 +457,7 @@ class MPData:
 
 	def getRouteType(self, type):
 		type = self.getCleanTypeName(type)		
-		for tRow in typeLookup:
+		for tRow in self.typeLookup:
 			typeId = tRow[0]
 			typeName = tRow[1]
 				
@@ -444,7 +470,7 @@ class MPData:
 
 	def getYDSGrade(self, inGrade):
 		found = False
-		for row in gradesLookup:
+		for row in self.gradesLookup:
 			gradeId = row[0]
 			ydsGrade = row[1]
 			boulderGrade = row[2]
@@ -462,7 +488,7 @@ class MPData:
 	
 	
 	def getBoulderGrade(self, inGrade):
-		for row in gradesLookup:
+		for row in self.gradesLookup:
 			gradeId = row[0]
 			
 			if row[2] is None:
@@ -489,7 +515,7 @@ if __name__ == '__main__':
 	#mpUserKey = "106251374-a0e6d43518505bec412a547956f25216"
 	#mpUserEmail = "j.mapping@gmail.com"
 	#appUserId = 1
-	
+
 
 	print "Getting Mountain Project Todo and Tick Routes..."
 	
@@ -502,8 +528,8 @@ if __name__ == '__main__':
 	dbConnectParams = { 'dbHost':dbHost, 'dbPort':dbPort, 'dbUser':dbUser, 'dbPass':dbPass, 'dbName':dbName }
 
 	
-	MPData = MPData()
-	MPData.init(appUserId, dbConnectParams)
+	MPData = MPData(appUserId, dbConnectParams)
+	
 	toDoIdList = MPData.getToDos(mpUserKey, mpUserEmail, appUserId, dbConnectParams)
 	idTracking = MPData.getRoutes(toDoIdList, 'todo', mpUserKey, dbConnectParams, [])
 	
