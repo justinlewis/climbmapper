@@ -529,7 +529,7 @@ if __name__ == '__main__':
 
 	
 	MPData = MPData(appUserId, dbConnectParams)
-	# MPData.init(appUserId, dbConnectParams)
+	
 	toDoIdList = MPData.getToDos(mpUserKey, mpUserEmail, appUserId, dbConnectParams)
 	idTracking = MPData.getRoutes(toDoIdList, 'todo', mpUserKey, dbConnectParams, [])
 	

@@ -2,51 +2,60 @@ import json, requests, psycopg2, collections, sys, os
 
 class MPData:
 	
-	def init(self, dbConnectParams):
+	def __init__(self, dbConnectParams):
 		
-		dbHost = dbConnectParams['dbHost']
-		dbPort = dbConnectParams['dbPort']
-		dbUser = dbConnectParams['dbUser']
-		dbPass = dbConnectParams['dbPass']
-		dbName = dbConnectParams['dbName']
+		self.dbHost = dbConnectParams['dbHost']
+		self.dbPort = dbConnectParams['dbPort']
+		self.dbUser = dbConnectParams['dbUser']
+		self.dbPass = dbConnectParams['dbPass']
+		self.dbName = dbConnectParams['dbName']
 
 		#DB connection properties
-		conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
-		cur = conn.cursor()  ## open a cursor
+		self.conn = psycopg2.connect(database = self.dbName,\
+								host= self.dbHost,\
+								port= self.dbPort,\
+								user = self.dbUser,\
+								password= self.dbPass)
+
+		self.cur = self.conn.cursor()  ## open a cursor
 		
 		
 		#cur.execute("SELECT a.id as areaId, a.name as areaName FROM area a;")	
-		cur.execute("""SELECT a.id as areaId, a.name as areaName, c.name AS country, s.name AS state FROM area a
-		INNER JOIN countries c ON st_within(a.geo_point, c.geo_poly)
-		LEFT JOIN usa_states s ON st_within(a.geo_point, s.geo_poly)
-		ORDER BY a.id;""")
-		global areaLookup
-		areaLookup = cur.fetchall()	
+		self.cur.execute("""SELECT a.id as areaId, a.name as areaName, c.name AS country, s.name AS state FROM area a
+							INNER JOIN countries c ON st_within(a.geo_point, c.geo_poly)
+							LEFT JOIN usa_states s ON st_within(a.geo_point, s.geo_poly)
+							ORDER BY a.id;""")
+							global areaLookup
+		
+		self.areaLookup = cur.fetchall()	
 
-		cur.execute("SELECT a.id as areaId, a.name as areaName, c.id as cragId, c.name as cragName FROM area a INNER JOIN crag c ON a.id = c.area;")	
-		global cragLookup
-		cragLookup = cur.fetchall()	
+		self.cur.execute("""SELECT a.id as areaId, a.name as areaName, c.id as cragId, c.name as cragName 
+							FROM area a 
+							INNER JOIN crag c ON a.id = c.area;""")
+
+		# global cragLookup
+		self.cragLookup = cur.fetchall()	
 		
+		self.cur.execute("SELECT id, area, crag, locationstr FROM route;")		
 		
-		cur.execute("SELECT id, area, crag, locationstr FROM route;")		
-		global routeLookup
-		routeLookup = cur.fetchall()
+		# global routeLookup
+		self.routeLookup = cur.fetchall()
 		
-		conn.close()
+		self.conn.close()
 
 		
-	def updateRoutes(self, dbConnectParams, changedAreaId, areaType):
-		dbHost = dbConnectParams['dbHost']
-		dbPort = dbConnectParams['dbPort']
-		dbUser = dbConnectParams['dbUser']
-		dbPass = dbConnectParams['dbPass']
-		dbName = dbConnectParams['dbName']
+	def updateRoutes(self, changedAreaId, areaType):
+		# dbHost = dbConnectParams['dbHost']
+		# dbPort = dbConnectParams['dbPort']
+		# dbUser = dbConnectParams['dbUser']
+		# dbPass = dbConnectParams['dbPass']
+		# dbName = dbConnectParams['dbName']
 
-		#DB connection properties
-		conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
-		cur = conn.cursor()  ## open a cursor
+		# #DB connection properties
+		# conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
+		# cur = conn.cursor()  ## open a cursor
 		
-		for rt in routeLookup:
+		for rt in self.routeLookup:
 			routeId = rt[0]
 			assignedAreaId = rt[1]
 			assignedCragId = rt[2]
@@ -61,23 +70,23 @@ class MPData:
 
 				if str(assignedAreaId) == str(changedAreaId):
 					query = "UPDATE route SET area = -1 WHERE routeid = '"+ str(routeId) +"';"
-					cur.execute(query)
-					conn.commit()	
+					self.cur.execute(query)
+					self.conn.commit()	
 				if matchedAreaId >= 0 and str(matchedAreaId) != str(assignedAreaId):
 					query = "UPDATE route SET area = " + str(matchedAreaId) + " WHERE routeid = '"+ str(routeId) +"';"
-					cur.execute(query)
-					conn.commit()	
+					self.cur.execute(query)
+					self.conn.commit()	
 			elif areaType == "CRAG":
 				matchedCragId = self.getCragMatchId(formattedLocArr)
 
 				if str(assignedCragId) == str(changedAreaId):
 					query = "UPDATE route SET crag = -1 WHERE routeid = '"+ str(routeId) +"';"
-					cur.execute(query)
-					conn.commit()	
+					self.cur.execute(query)
+					self.conn.commit()	
 				if matchedCragId >= 0 and str(matchedCragId) != str(assignedAreaId):
 					query = "UPDATE route SET crag = " + str(matchedCragId) + " WHERE routeid = '"+ str(routeId) +"';"
-					cur.execute(query)
-					conn.commit()	
+					self.cur.execute(query)
+					self.conn.commit()	
 
 		conn.close()		
 	
@@ -147,7 +156,7 @@ class MPData:
 	# currently only matching crags with known areas (check sql query for cragLookup)
 	def getCragMatchId(self, locationArr):
 		for loc in locationArr:	
-			for a in cragLookup:
+			for a in self.cragLookup:
 				cId = a[2]
 				cName = a[3]
 				
@@ -158,7 +167,7 @@ class MPData:
 		return -1
 	
 	def existingRouteLocationExists(self, inRouteId):
-		for route in routeLookup:
+		for route in self.routeLookup:
 			if str(route[0]) == str(inRouteId):
 				if route[1] >= 0:
 					return True
@@ -166,7 +175,7 @@ class MPData:
 		return False
 		
 	def routeExists(self, inRouteId):
-		for route in routeLookup:
+		for route in self.routeLookup:
 			if str(route[0]) == str(inRouteId):
 				return True
 				
@@ -187,8 +196,8 @@ if __name__ == '__main__':
 	dbConnectParams = { 'dbHost':dbHost, 'dbPort':dbPort, 'dbUser':dbUser, 'dbPass':dbPass, 'dbName':dbName }
 
 	
-	MPData = MPData()
-	MPData.init(dbConnectParams)
+	MPData = MPData(dbConnectParams)
+	
 	MPData.updateRoutes(dbConnectParams, changedAreaId, areaType)
 	
 	print("DONE")
