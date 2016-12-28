@@ -9,11 +9,10 @@ class NavBarAboutButton extends React.Component {
 
   render() {
     return (
-	<li class="active" data-toggle="modal" data-target="#about-modal"><a href="#">About</a></li>
+	     <li className="active" data-toggle="modal" data-target="#about-modal"><a href="#">About</a></li>
     );
   }
 
 }
 
 export default NavBarAboutButton;
-

@@ -29,7 +29,7 @@ var config = {
     ]
   },
   resolve: {
-    extensions: ['', '.js', '.json', '.map']
+    extensions: ['', '.js', '.json']
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),

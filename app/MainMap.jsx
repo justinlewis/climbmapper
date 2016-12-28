@@ -9,7 +9,7 @@ import { Map,
   CircleMarker,
   LayersControl,
   FeatureGroup,
-  GeoJson,
+  GeoJSON,
   ZoomControl } from 'react-leaflet';
 import GeoJsonUpdatable from "./GeoJsonUpdatable.jsx"
 import { setFeatureInfo } from './actions/MapActions.js';
@@ -1048,7 +1048,7 @@ class MapComponent extends React.Component {
 
 
   		return(
-        <Map center={position} zoom={this.state.zoom}>
+        <Map center={position} zoom={this.state.zoom} zoomControl={false} >
 
           <ZoomControl position={"topright"}></ZoomControl>
 

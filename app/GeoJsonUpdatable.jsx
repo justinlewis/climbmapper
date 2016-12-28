@@ -1,7 +1,7 @@
 import React from "react";
-import {GeoJson}  from "react-leaflet";
+import {GeoJSON}  from "react-leaflet";
 
-export default class GeoJsonUpdatable extends GeoJson {
+export default class GeoJsonUpdatable extends GeoJSON {
     componentWillReceiveProps(prevProps) {
         if (prevProps.data !== this.props.data) {
             this.leafletElement.clearLayers();
