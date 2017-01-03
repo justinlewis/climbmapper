@@ -41,8 +41,10 @@ class MPData:
 		# global routeLookup
 		self.routeLookup = cur.fetchall()
 		
-		self.conn.close()
+		#self.conn.close()
 
+	def __del__(self)
+		self.conn.close()
 		
 	def updateRoutes(self, changedAreaId, areaType):
 		# dbHost = dbConnectParams['dbHost']
