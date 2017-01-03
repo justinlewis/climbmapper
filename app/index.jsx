@@ -4,13 +4,15 @@ import { combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 
 import { createStore, renderDevTools } from './utils/devTools';
+const enhancers = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+
 
 import * as mapReducers from './reducers/MapState';
 import * as feautureInfoReducers from './reducers/FeatureInfoState';
 
 const allReducers = Object.assign({}, mapReducers, feautureInfoReducers);
 const reducer = combineReducers(allReducers);
-const store = createStore(reducer);
+const store = createStore(reducer, enhancers);
 
 import AppContainerComponent from './AppContainer.jsx';
 
@@ -22,7 +24,7 @@ class App extends React.Component {
 }
 
 render(
-  <Provider store={createStore(reducer)}>
+  <Provider store={store}>
     <App/>
   </Provider>,
   document.getElementById('app')
