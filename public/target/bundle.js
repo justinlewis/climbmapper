@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "466aad1502e5929ff13e"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "10969cb2c8e29db495ab"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -32664,7 +32664,8 @@
 	            return _react3.default.createElement(
 	                'div',
 	                null,
-	                _react3.default.createElement(_NavBar2.default, null)
+	                _react3.default.createElement(_NavBar2.default, null),
+	                _react3.default.createElement(_MapContainer2.default, null)
 	            );
 	        }
 	    }]);
