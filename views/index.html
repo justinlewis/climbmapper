@@ -3,18 +3,20 @@
   <head>
     <title>{{ title }}</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
-    
-    <link rel="stylesheet" type="text/css" href="javascripts/leaflet_0_7_3/leaflet.css"/>
-    <link rel="stylesheet" type="text/css" href="javascripts/leaflet_draw_0_2_4/dist/leaflet.draw.css"/>
+
+    <!-- <link rel="stylesheet" type="text/css" href="javascripts/leaflet_0_7_3/leaflet.css"/> -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
+
+    <!-- <link rel="stylesheet" type="text/css" href="javascripts/leaflet_draw_0_2_4/dist/leaflet.draw.css"/> -->
 	 <link rel="stylesheet" type="text/css" href="/stylesheets/all.css" />
 	 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
 	 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
 
 
-  	 <script type="text/javascript" src="javascripts/leaflet_0_7_3/leaflet-src.js"></script>
-    <script src="javascripts/leaflet-providers-master/leaflet-providers.js"></script>
-    <script src="javascripts/leaflet-omnivore-master/leaflet-omnivore.min.js"></script>
-    <script type="text/javascript" src="javascripts/leaflet_draw_0_2_4/dist/leaflet.draw.js"></script>
+  	 <!-- <script type="text/javascript" src="javascripts/leaflet_0_7_3/leaflet-src.js"></script> -->
+    <!-- <script src="javascripts/leaflet-providers-master/leaflet-providers.js"></script> -->
+    <!-- <script src="javascripts/leaflet-omnivore-master/leaflet-omnivore.min.js"></script> -->
+    <!-- <script type="text/javascript" src="javascripts/leaflet_draw_0_2_4/dist/leaflet.draw.js"></script> -->
     <!-- <script src="javascripts/turf/turf.min.js" charset="utf-8"></script> -->
 
     <script type="text/javascript" src="javascripts/jquery-2.1.3.min.js"></script>
@@ -22,315 +24,36 @@
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="javascripts/typeahead/typeahead.bundle.min.js"></script>
 
-    
-  
+
+
     <script src="http://d3js.org/d3.v3.min.js"></script>
 
-    <script src="javascripts/map.js" ></script>
+<!--     <script src="javascripts/map.js" ></script>
     <script src="javascripts/PieChart.js" ></script>
      <script src="javascripts/RouteHeightPieChart.js" ></script>
     <script src="javascripts/BarChart.js" ></script>
-    <script src="javascripts/LineChart.js" ></script>
-    
+    <script src="javascripts/LineChart.js" ></script> -->
+
     <script>
 		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 		  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-		
+
 		  ga('create', 'UA-69458559-1', 'auto');
 		  ga('send', 'pageview');
-		
+
 	 </script>
   </head>
-  
+
 	<body>
-	
-		<div id="app-config-el" style="display:none;" data-isauthenticated="{{isAuthenticated}}" data-authenticateduserid="{{authenticatedUserId}}"></div>
-		
-	    <div class="navbar navbar-custom navbar-fixed-top">
-			 <div class="navbar-header"></div>
-		    <div class="navbar-collapse collapse">
-		      <ul class="nav navbar-nav">
-		        <li class="active" data-toggle="modal" data-target="#about-modal"><a href="#">About</a></li>
-		        <li>&nbsp;</li>
-				  {{#isNOTAuthenticated}}
-		        		<li class="active"><a href="/signup">Sign Up</a></li>
-		        		<li>&nbsp;</li>
-		        		<li class="active"><a href="/login">Login</a></li>
-		        		<li>&nbsp;</li>
-		        {{/isNOTAuthenticated}}
-		        
-		        {{#isAuthenticated}}
-		        		<li class="active"><a href="/profile">Your Profile</a></li>
-		        		<li>&nbsp;</li>
-		        		<li class="active" data-toggle="modal" data-target="#issues-modal"><a href="#">Data Issues</a></li>
-		        {{/isAuthenticated}}	        
-		      </ul>
-		      
-<!-- 		      <div id="user-name-container">
-					<h3>{{username}}</h3>		    		
-		      </div> -->
 
-		      <ul class="nav navbar-nav pull-right">
-		      		<li>
-		      			<div id="user-name-container">
-							<p class="navbar-text">{{username}}</p>		    		
-		      			</div>
-		      		</li>
+		<div id="app-config-el" style="display:none;" data-username="{{username}}" data-isauthenticated="{{isAuthenticated}}" data-authenticateduserid="{{authenticatedUserId}}"></div>
 
-					<li class="dropdown">
-					    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">All Route Types 
-					    	<span class="caret"></span>
-					    </a>
-					  <ul class="dropdown-menu">
-					    <li><a id="trad-btn" href="#" data-type="TRAD">Trad </a></li>
-					    <li><a id="sport-btn" href="#" data-type="SPORT">Sport</a></li>
-					    <li><a id="boulder-btn" href="#" data-type="BOULDER">Boulder</a></li>
-					    <li><a id="alpine-btn" href="#" data-type="ALPINE">Alpine</a></li>
-					    <li role="separator" class="divider"></li>
-					    <li><a id="all-btn" href="#" data-type="ALL">All Types</a></li>
-					  </ul>
-					</li>
-					<li>
-				  	<form class="navbar-form" role="search">
-				  		<div id="area-search" class="input-group pull-right">
-				        	<div class="form-group" style="display:inline;">
-				        		<input type="text" class="typeahead form-control" placeholder="Search for a crag/area">
-				        	</div>
-				        
-				        	<span class="input-group-addon"><span class="glyphicon glyphicon-search"></span> </span>
-				        </div>
-			      	</form>
-			      	</li>
-			  </ul>
-		    </div>
-		</div>
-	
-	   <div class="container" id="main">
-		  <div class="row" style="">
-		  	<div class="col-xs-6 col-lg-4" id="left-sidebar" style="">
-		    	<div id="left-sidebar-heading-info-container">
-		      	<h2 id="left-sidebar-heading" class="text-center"></h2>
-		      	<!--<hr> --> 
-		      
-		      	<div id="hover-text-info-container"></div>
-		      </div>
-				
-				<div id="chart-row-2" class="row chart-row" style="display:none;"></div>
-				<div id="chart-row-1" class="row chart-row" style="display:none;"></div>
-				
-				<div class="row slider-row">
-					<div id="tick-slider">
-						<div id="time-slider-label-container">
-							<p id="time-slider-label"><p>
-						</div>
-					</div>
-				</div>
-		    </div>
-		    <div class="col-xs-12 col-sm-6 col-lg-8 right-main-panel">
-		    	<div class="row">
+		<div id="app"></div>
 
 
-
-			    	<div id="info-container" style="display:none;" >
-				   	<h4 id='info-area-title'></h4>
-				   	<div id="info-box">
-							<div id="click-chart-panel"></div>	   	
-				   	</div>
-				   </div>
-				 </div>
-		    </div>	 
-		  </div>
-		  <div id="map"></div>  
-		  
-		  
-		  <!-- About Modal -->
-		  <div class="modal fade" id="about-modal" role="dialog">
-		    <div class="modal-dialog">
-		    
-		      <!-- Modal content-->
-		      <div class="modal-content">
-		        <div class="modal-header">
-		          <button type="button" class="close" data-dismiss="modal">&times;</button>
-		          <h2 class="modal-title">About Climb Mapper</h2>
-		        </div>
-		        <div class="modal-body">
-		          	<div>  
-			    			<p>Climb Mapper seeks to provide planning and analysis for users of Mountain Project. 
-			    				After signing up and uploading your Mounatin Project data the application displays climbing areas sized by the number of your Mountain Project Ticks and ToDos. 
-			    				Charts are used throughout to display the breakdown of climb rating (using YDS), type (ex: boulder, sport, traditional) by area, and height (in pitches).
-			    				In addition to visualizing your existing data, logged-in users have the ability to add and edit climbing areas in the system to help better map Mountain Project Tick/ToDo data against Climb Mapper climbing areas.
-			    				This is an experiment and side project and so any collaboration is welcome. 
-			    				All the scrapy code is available on <a href="https://github.com/justinlewis/climbmapper" target="_blank">one of my GitHub repos</a>.		
-			    			</p>
-			    			
-			    			<br>
-			    			<h4>The Bigger Picture</h4>
-							<p>
-								I am tired of not being able to build useful tools for the climbing and outdoor community because of a lack of data. 
-								There are a number of websites out there actively crowd sourcing climbing area data from people just like you but never returning that data back to the community as open data. 
-								<b>NOTE:</b> Mountain Project was kind enough to make some data available through an API which helps power ClimbMapper (which is pretty damn great).
-								This is a problem because it makes it even harder for people like me to build free or inexpensive apps due to the overhead of collecting that same data WHILE then being forced to compete with other crowd sourcing websites that would be much better as partners than competitors. 
-								If ClimbMapper is at all successful I would like to build out the data management functionality so WE can collect more types of data to be used in other ways. 
-								With this open model developers like me can work on projects that affect the whole climbing community like building an application to help the Access Fund identify bad hardware and coordinate with those amazing teams that replace bad hardware to keep us happy and safe.
-							</p>
-			    		</div>
-			    		
-			    		<br><br>
-			    		<div>
-			    			<h4>About The Data</h4>	 
-			    			<p>All route data (Ticks and ToDos) are imported from <a href="http://www.mountainproject.com/" target="_blank">Mountain Project</a>. 
-			    			All climbing area data is created by Climb Mapper users independent of Mountain Project. 
-			    			All user submitted data will be open sourced for other applications to use in hopes that a common data source openly shared will benefit other future applications that help engage in this sport we love so much.
-			    			</p>
-			    		</div>
-			    		<div>
-			    			<h4>An Important Caveat</h4>	 
-			    			<ul>
-			    				<li>Mountain Project data is NOT available with geometrically based location data. 
-			    					Instead the application attempts to assign routes to climbing areas based on name matching.
-			    					This is problematic because it means that climbing areas in Climb Mapper must grammatically match a name in the location hierarchy of a route on Mountain Project.
-			    					For example, if a route on Mountain Project has a location hierarchy (found at top of page) like this "All Locations > California > Yosemite National Park > Tuolumne Meadows > Cathedral Range > Cathedral Peak" then an area in Climb Mapper must exist that has one of those names between the ">" symbols (i.e. Yosemite National Park).
-			    					If there these location names do not match up the route will not be matched to an area in Climb Mapper. 
-			    				</li>
-			    			</ul>
-			    		</div>
-			    		
-			    		<br>
-			    		<div>
-			    			<h4>About The Technology Used</h4>	 
-			    			<p>
-			    				The application is built on PostgreSQL/PostGIS, Node.js, Leaflet.js, D3.js, Bootstrap, and JQuery. 
-			    				Needless to say there is a lot of JavaScript used for presentation and a little Python for data extraction/processing.
-			    			</p>
-			    		</div>
-			    		
-			    		<br>
-			    		<div>
-			    			<h4>Future Plans</h4>	  
-			    			<p>
-			    				Because this is an experiment you can expect the visualizations to get better and more interesting. 
-								More details and implementation specifics can be found at the <a href="https://github.com/justinlewis/climbmapper" target="_blank">public GitHub repo</a> where anyone can submit issue or request tickets.
-			    			</p> 
-			    		</div>
-			    		
-			    		<br>
-			    		<div>
-							<h4>About Me</h4>	  
-							<p>I am a software developer with a particular interest in geography and web visualization. 
-								I have been climbing for a long time and this application serves as a junction between the real and the digital. 
-								You can find me on <a href="https://twitter.com/jmapping" target="_blank">Twitter @jmapping</a>
-							</p>  
-						</div>
-		        </div>
-		        <div class="modal-footer">
-		          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-		        </div>
-		      </div>
-		      
-		    </div>
-		  </div>
-		  
-		  <div class="modal fade" id="issues-modal" role="dialog">
-		    <div class="modal-dialog">
-		    
-		      <!-- Modal content-->
-		      <div class="modal-content">
-		        <div class="modal-header">
-		          <button type="button" class="close" data-dismiss="modal">&times;</button>
-		          <h2 class="modal-title">Known Issues</h2>
-		        </div>
-		        <div class="modal-body">
-		        
-		        		<div id="issues-content-msg"></div>	
-						
-						<div id="issue-content-container" style="display:none;">		
-							<h4>This includes all data issues for the entire system (not just for your data). We are exposing all issues to allow others to help create data where it is missing in the system.</h4>					
-							<table class="table table-striped table-bordered">	
-							    <thead class="thead-inverse">
-							      <tr>
-							        <th>Route</th>
-							        <th>Problem</th>
-							        <th>Possible Solution</th>
-							        <th>Source Link</th>
-							      </tr>
-							    </thead>
-							    <tbody id="issues-content"></tbody>						    				
-							</table>	  
-						</div>  		
-		        </div>
-		        <div class="modal-footer">
-		          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-		        </div>
-		      </div>
-		      
-		    </div>
-		  </div>
-		  
-		  
-		  <div class="modal fade wide" id="welcome-modal" role="dialog">
-		    <div class="modal-dialog">
-		    
-		      <!-- Modal content-->
-		      <div class="modal-content">
-		        <div class="modal-header">
-		          <button type="button" class="close" data-dismiss="modal">&times;</button>
-		          <h2 class="modal-title">Welcome to ClimbMapper</h2>
-		        </div>
-		        <div class="modal-body">
-
-						<div id="welcome-modal-content">
-							<h3>What the hell is this?</h3>
-							<p>Good question. It's an experiment to help show where a climber has and wants to climb. It's a bit of an exploration and planning tool to help sort out where you might want to go climbing.</p>						
-							
-							<h3>Why should you care?</h3>
-							<ol>
-								<li>You can get your own FREE version of this map!</li>
-								<li>You can create new climbing areas.</li>
-								<li>Climbing area data will be shared back to the community as open data which you or other software developers can use to make other applications.</li>
-								<li>You can help develop the app by contributing code to the <a href="https://github.com/justinlewis/climbmapper" target="_blank">GitHub Repo</a>, submitting bug reports, or just giving general feedback.</li>						
-							</ol>
-							
-							<h3>Interested?</h3>
-							<p>Setting up your account is easy.</p>
-							<ol>
-								<li><a href="/signup">Sign Up</a> for a FREE account on ClimbMapper.</li>
-								<li>Add your Mountain Project key and email to your profile (instructions on your profile page).</li>	
-								<li>Click the Mountain Project upload button on your profile.</li>						
-							</ol>
-							
-							<h3>What's the catch?</h3>
-							<p>There isn't one. This is an experiment which I would like to be collaborative with other climbers and software developers. I have no intention of monetizing this. That said I will leave you with these disclaimers:</p>
-							<ol>
-								<li>Climbing areas are very incomplete at the moment.  We need more people like you to join and help add more.</li>	
-								<li>Route, ToDo, and Tick data all comes from Mountain Project and there are very challenging issues with incorporating their data into ClimbMapper.</li>
-								<li>Expect bugs! This is a project I work on when I have time so there are sure to be issues. However, with your help we can clean up that mess.</li>
-							</ol>
-							
-							<h3>The Bigger Picture</h3>
-							<p>
-								I am tired of not being able to build useful tools for the climbing and outdoor community because of a lack of data. 
-								There are a number of websites out there actively crowd sourcing climbing area data from people just like you but never returning that data back to the community as open data.
-								<b>NOTE:</b> Mountain Project was kind enough to make some data available through an API which helps power ClimbMapper (which is pretty damn great).
-								This is a problem because it makes it even harder for people like me to build free or inexpensive apps due to the overhead of collecting that same data WHILE then being forced to compete with other crowd sourcing websites that would be much better as partners than competitors. 
-								If ClimbMapper is at all successful I would like to build out the data management functionality so WE can collect more types of data to be used in other ways. 
-								With this open model developers like me can work on projects that affect the whole climbing community like building an application to help the Access Fund identify bad hardware and coordinate with those amazing teams that replace bad hardware to keep us happy and safe.
-							</p>
-						
-						</div>			    		
-			    		
-		        </div>
-		        <div class="modal-footer">
-		          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-		        </div>
-		      </div>
-		      
-		    </div>
-		  </div>
-		  
-		  
-	  </div> <!-- end main -->
+	  <script src="target/bundle.js" type="text/javascript"></script>
 
 	</body>
 </html>
