@@ -43,7 +43,7 @@ class MPData:
 		
 		#self.conn.close()
 
-	def __del__(self)
+	def __del__(self):
 		self.conn.close()
 		
 	def updateRoutes(self, changedAreaId, areaType):
@@ -90,7 +90,7 @@ class MPData:
 					self.cur.execute(query)
 					self.conn.commit()	
 
-		conn.close()		
+		# conn.close()		
 	
 	
 	def getAreaMatchId(self, locationArr):
