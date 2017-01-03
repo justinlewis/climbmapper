@@ -74,8 +74,8 @@ class MPData:
 		# global routeLookup
 		self.routeLookup = self.cur.fetchall()
 
-		def __del__(self):#TODO: manage connection requests to not leak
-			self.conn.close()
+	def __del__(self):#TODO: manage connection requests to not leak
+		self.conn.close()
 
 
 	def getToDos(self, mpUserKey, mpUserEmail, appUserId):
