@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "10969cb2c8e29db495ab"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "9a637f60e22550713d80"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -1821,9 +1821,11 @@
 	  };
 	}
 
+	var enhancers = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
+
 	var allReducers = Object.assign({}, mapReducers, feautureInfoReducers);
 	var reducer = (0, _redux.combineReducers)(allReducers);
-	var store = (0, _devTools.createStore)(reducer);
+	var store = (0, _devTools.createStore)(reducer, enhancers);
 
 	var App = _wrapComponent('App')(function (_React$Component) {
 	  _inherits(App, _React$Component);
@@ -1846,7 +1848,7 @@
 
 	(0, _reactDom.render)(_react3.default.createElement(
 	  _reactRedux.Provider,
-	  { store: (0, _devTools.createStore)(reducer) },
+	  { store: store },
 	  _react3.default.createElement(App, null)
 	), document.getElementById('app'));
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import MapContainerComponent from './containers/MapContainer.js';
-import NavBarComponent from './NavBar.jsx';
+import NavBarComponent from './containers/NavBarContainer.js';
 
 class AppContainerComponent extends React.Component {
     constructor(props){
