@@ -10,7 +10,10 @@ var devFlagPlugin = new webpack.DefinePlugin({
 
 
 var config = {
-  entry: APP_DIR + '/index.jsx',
+  entry: [
+    'webpack-hot-middleware/client',
+    APP_DIR + '/index.jsx'
+  ],
   debug: true,
   output: {
     path: BUILD_DIR,
@@ -35,7 +38,7 @@ var config = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
     devFlagPlugin
-]
+  ],
 };
 
 module.exports = config;
