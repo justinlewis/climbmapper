@@ -135,6 +135,7 @@ class MapComponent extends React.Component {
           areas : null,
           ticks : null,
           todos : null,
+          type: null,
           todoLayerStyle : areaTodoPtsDefaultStyle,
           tickLayerStyle : areaTickPtsDefaultStyle
         };

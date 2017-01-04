@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 //import AboutButtonComponent from './AboutButtonComponent.jsx';
 
 class NavBarTools extends React.Component {
@@ -8,7 +7,13 @@ class NavBarTools extends React.Component {
 	super(props);
     }
 
+    handleClick(routeType) {
+        this.props.filterByType(routeType)
+    }
+
     render () {
+
+
 
       	//TODO: This is a bad way to pass data to a component.
       	var username = document.getElementById("app-config-el").dataset.username;
@@ -26,7 +31,7 @@ class NavBarTools extends React.Component {
                              <span className="caret"></span>
                          </a>
                          <ul className="dropdown-menu">
-                             <li><a id="trad-btn" href="#" data-type="TRAD">Trad </a></li>
+                             <li><a id="trad-btn" href="#" data-type="TRAD" onClick={() => this.handleClick('TRAD')}>Trad </a></li>
                              <li><a id="sport-btn" href="#" data-type="SPORT">Sport</a></li>
                              <li><a id="boulder-btn" href="#" data-type="BOULDER">Boulder</a></li>
                              <li><a id="alpine-btn" href="#" data-type="ALPINE">Alpine</a></li>

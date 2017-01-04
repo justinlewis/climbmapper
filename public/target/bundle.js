@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "9a637f60e22550713d80"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "ede71df28fcd1a6d07cd"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -32532,6 +32532,7 @@
 
 	// user actions
 	var CLICK_FEATURE = exports.CLICK_FEATURE = 'CLICK_FEATURE';
+	var TRAD_FILTER = exports.TRAD_FILTER = 'TRAD_FILTER';
 
 /***/ },
 /* 398 */
@@ -32613,9 +32614,9 @@
 
 	var _MapContainer2 = _interopRequireDefault(_MapContainer);
 
-	var _NavBar = __webpack_require__(626);
+	var _NavBarContainer = __webpack_require__(626);
 
-	var _NavBar2 = _interopRequireDefault(_NavBar);
+	var _NavBarContainer2 = _interopRequireDefault(_NavBarContainer);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -32666,7 +32667,7 @@
 	            return _react3.default.createElement(
 	                'div',
 	                null,
-	                _react3.default.createElement(_NavBar2.default, null),
+	                _react3.default.createElement(_NavBarContainer2.default, null),
 	                _react3.default.createElement(_MapContainer2.default, null)
 	            );
 	        }
@@ -33062,6 +33063,7 @@
 	      areas: null,
 	      ticks: null,
 	      todos: null,
+	      type: null,
 	      todoLayerStyle: areaTodoPtsDefaultStyle,
 	      tickLayerStyle: areaTickPtsDefaultStyle
 	    };
@@ -57094,6 +57096,83 @@
 /* 626 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(14);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _redux = __webpack_require__(356);
+
+	var _reactRedux = __webpack_require__(376);
+
+	var _UserActions = __webpack_require__(627);
+
+	var _UserActions2 = _interopRequireDefault(_UserActions);
+
+	var _NavBar = __webpack_require__(628);
+
+	var _NavBar2 = _interopRequireDefault(_NavBar);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var mapStateToProps = function mapStateToProps(state) {
+
+	  return {
+	    info: "test"
+	  };
+	};
+	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+	  return {
+	    filterByType: function filterByType() {
+	      dispatch((0, _UserActions2.default)());
+	    }
+	  };
+	};
+
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_NavBar2.default);
+
+/***/ },
+/* 627 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.filterByType = undefined;
+	exports.clickFeature = clickFeature;
+
+	var _ActionTypes = __webpack_require__(397);
+
+	var types = _interopRequireWildcard(_ActionTypes);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function clickFeature(feature) {
+	  return {
+	    type: types.CLICK_FEATURE,
+	    feature: feature
+	  };
+	}
+
+	var filterByType = exports.filterByType = function filterByType(data) {
+	  debugger;
+	  return {
+	    type: types.TRAD_FILTER,
+	    data: data
+	  };
+	};
+
+/***/ },
+/* 628 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/* WEBPACK VAR INJECTION */(function(module) {'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
@@ -57118,11 +57197,11 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _NavBarButtons = __webpack_require__(627);
+	var _NavBarButtons = __webpack_require__(629);
 
 	var _NavBarButtons2 = _interopRequireDefault(_NavBarButtons);
 
-	var _NavBarTools = __webpack_require__(633);
+	var _NavBarTools = __webpack_require__(635);
 
 	var _NavBarTools2 = _interopRequireDefault(_NavBarTools);
 
@@ -57172,6 +57251,8 @@
 	    _createClass(NavBarComponent, [{
 	        key: 'render',
 	        value: function render() {
+	            var _this2 = this;
+
 	            return _react3.default.createElement(
 	                'div',
 	                { id: 'navbar', className: 'navbar navbar-custom navbar-fixed-top' },
@@ -57180,7 +57261,10 @@
 	                    'div',
 	                    { className: 'navbar-collapse collapse' },
 	                    _react3.default.createElement(_NavBarButtons2.default, null),
-	                    _react3.default.createElement(_NavBarTools2.default, null)
+	                    _react3.default.createElement(_NavBarTools2.default, { filterByType: this.props.filterByType }),
+	                    _react3.default.createElement('button', { onClick: function onClick() {
+	                            return _this2.props.filterByType;
+	                        } })
 	                )
 	            );
 	        }
@@ -57193,7 +57277,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 627 */
+/* 629 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {'use strict';
@@ -57220,23 +57304,23 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _NavBarAboutButton = __webpack_require__(628);
+	var _NavBarAboutButton = __webpack_require__(630);
 
 	var _NavBarAboutButton2 = _interopRequireDefault(_NavBarAboutButton);
 
-	var _NavBarSignUpButton = __webpack_require__(629);
+	var _NavBarSignUpButton = __webpack_require__(631);
 
 	var _NavBarSignUpButton2 = _interopRequireDefault(_NavBarSignUpButton);
 
-	var _NavBarLoginButton = __webpack_require__(630);
+	var _NavBarLoginButton = __webpack_require__(632);
 
 	var _NavBarLoginButton2 = _interopRequireDefault(_NavBarLoginButton);
 
-	var _NavBarProfileButton = __webpack_require__(631);
+	var _NavBarProfileButton = __webpack_require__(633);
 
 	var _NavBarProfileButton2 = _interopRequireDefault(_NavBarProfileButton);
 
-	var _NavBarDataIssuesButton = __webpack_require__(632);
+	var _NavBarDataIssuesButton = __webpack_require__(634);
 
 	var _NavBarDataIssuesButton2 = _interopRequireDefault(_NavBarDataIssuesButton);
 
@@ -57325,7 +57409,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 628 */
+/* 630 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {"use strict";
@@ -57417,7 +57501,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 629 */
+/* 631 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {"use strict";
@@ -57512,7 +57596,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 630 */
+/* 632 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {"use strict";
@@ -57607,7 +57691,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 631 */
+/* 633 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {"use strict";
@@ -57700,7 +57784,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 632 */
+/* 634 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {"use strict";
@@ -57792,10 +57876,10 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 633 */
+/* 635 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(module) {"use strict";
+	/* WEBPACK VAR INJECTION */(function(module) {'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -57819,6 +57903,10 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _UserActions = __webpack_require__(627);
+
+	var _UserActions2 = _interopRequireDefault(_UserActions);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -57829,19 +57917,19 @@
 
 	var _components = {
 	    NavBarTools: {
-	        displayName: "NavBarTools"
+	        displayName: 'NavBarTools'
 	    }
 	};
 
 	var _reactTransformHmr2 = (0, _reactTransformHmr4.default)({
-	    filename: "/Users/nicholaschambers/Desktop/Turing/mod3/projects/climbmapper_dependency_hell/climbmapper/app/NavBarTools.jsx",
+	    filename: '/Users/nicholaschambers/Desktop/Turing/mod3/projects/climbmapper_dependency_hell/climbmapper/app/NavBarTools.jsx',
 	    components: _components,
 	    locals: [module],
 	    imports: [_react3.default]
 	});
 
 	var _reactTransformCatchErrors2 = (0, _reactTransformCatchErrors4.default)({
-	    filename: "/Users/nicholaschambers/Desktop/Turing/mod3/projects/climbmapper_dependency_hell/climbmapper/app/NavBarTools.jsx",
+	    filename: '/Users/nicholaschambers/Desktop/Turing/mod3/projects/climbmapper_dependency_hell/climbmapper/app/NavBarTools.jsx',
 	    components: _components,
 	    locals: [],
 	    imports: [_react3.default, _redboxReact3.default]
@@ -57855,7 +57943,7 @@
 
 	//import AboutButtonComponent from './AboutButtonComponent.jsx';
 
-	var NavBarTools = _wrapComponent("NavBarTools")(function (_React$Component) {
+	var NavBarTools = _wrapComponent('NavBarTools')(function (_React$Component) {
 	    _inherits(NavBarTools, _React$Component);
 
 	    function NavBarTools(props) {
@@ -57865,106 +57953,115 @@
 	    }
 
 	    _createClass(NavBarTools, [{
-	        key: "render",
+	        key: 'handleClick',
+	        value: function handleClick(routeType) {
+	            debugger;
+	            this.props.filterByType(routeType);
+	        }
+	    }, {
+	        key: 'render',
 	        value: function render() {
+	            var _this2 = this;
 
 	            //TODO: This is a bad way to pass data to a component.
 	            var username = document.getElementById("app-config-el").dataset.username;
 
 	            return _react3.default.createElement(
-	                "ul",
-	                { className: "nav navbar-nav pull-right" },
+	                'ul',
+	                { className: 'nav navbar-nav pull-right' },
 	                _react3.default.createElement(
-	                    "li",
+	                    'li',
 	                    null,
 	                    _react3.default.createElement(
-	                        "div",
-	                        { id: "user-name-container" },
+	                        'div',
+	                        { id: 'user-name-container' },
 	                        _react3.default.createElement(
-	                            "p",
-	                            { className: "navbar-text" },
+	                            'p',
+	                            { className: 'navbar-text' },
 	                            username
 	                        )
 	                    )
 	                ),
 	                _react3.default.createElement(
-	                    "li",
-	                    { className: "dropdown" },
+	                    'li',
+	                    { className: 'dropdown' },
 	                    _react3.default.createElement(
-	                        "a",
-	                        { href: "#", className: "dropdown-toggle", "data-toggle": "dropdown", role: "button", "aria-haspopup": "true", "aria-expanded": "false" },
-	                        "All Route Types",
-	                        _react3.default.createElement("span", { className: "caret" })
+	                        'a',
+	                        { href: '#', className: 'dropdown-toggle', 'data-toggle': 'dropdown', role: 'button', 'aria-haspopup': 'true', 'aria-expanded': 'false' },
+	                        'All Route Types',
+	                        _react3.default.createElement('span', { className: 'caret' })
 	                    ),
 	                    _react3.default.createElement(
-	                        "ul",
-	                        { className: "dropdown-menu" },
+	                        'ul',
+	                        { className: 'dropdown-menu' },
 	                        _react3.default.createElement(
-	                            "li",
+	                            'li',
 	                            null,
 	                            _react3.default.createElement(
-	                                "a",
-	                                { id: "trad-btn", href: "#", "data-type": "TRAD" },
-	                                "Trad "
+	                                'a',
+	                                { id: 'trad-btn', href: '#', 'data-type': 'TRAD', onClick: function onClick() {
+	                                        return _this2.handleClick('TRAD');
+	                                    } },
+	                                'Trad '
 	                            )
 	                        ),
 	                        _react3.default.createElement(
-	                            "li",
+	                            'li',
 	                            null,
 	                            _react3.default.createElement(
-	                                "a",
-	                                { id: "sport-btn", href: "#", "data-type": "SPORT" },
-	                                "Sport"
+	                                'a',
+	                                { id: 'sport-btn', href: '#', 'data-type': 'SPORT' },
+	                                'Sport'
 	                            )
 	                        ),
 	                        _react3.default.createElement(
-	                            "li",
+	                            'li',
 	                            null,
 	                            _react3.default.createElement(
-	                                "a",
-	                                { id: "boulder-btn", href: "#", "data-type": "BOULDER" },
-	                                "Boulder"
+	                                'a',
+	                                { id: 'boulder-btn', href: '#', 'data-type': 'BOULDER' },
+	                                'Boulder'
 	                            )
 	                        ),
 	                        _react3.default.createElement(
-	                            "li",
+	                            'li',
 	                            null,
 	                            _react3.default.createElement(
-	                                "a",
-	                                { id: "alpine-btn", href: "#", "data-type": "ALPINE" },
-	                                "Alpine"
+	                                'a',
+	                                { id: 'alpine-btn', href: '#', 'data-type': 'ALPINE' },
+	                                'Alpine'
 	                            )
 	                        ),
-	                        _react3.default.createElement("li", { role: "separator", className: "divider" }),
+	                        _react3.default.createElement('li', { role: 'separator', className: 'divider' }),
 	                        _react3.default.createElement(
-	                            "li",
+	                            'li',
 	                            null,
 	                            _react3.default.createElement(
-	                                "a",
-	                                { id: "all-btn", href: "#", "data-type": "ALL" },
-	                                "All Types"
+	                                'a',
+	                                { id: 'all-btn', href: '#', 'data-type': 'ALL' },
+	                                'All Types'
 	                            )
 	                        )
 	                    )
 	                ),
 	                _react3.default.createElement(
-	                    "li",
+	                    'li',
 	                    null,
 	                    _react3.default.createElement(
-	                        "form",
-	                        { className: "navbar-form", role: "search" },
+	                        'form',
+	                        { className: 'navbar-form', role: 'search' },
 	                        _react3.default.createElement(
-	                            "div",
-	                            { id: "area-search", className: "input-group pull-right" },
+	                            'div',
+	                            { id: 'area-search', className: 'input-group pull-right' },
 	                            _react3.default.createElement(
-	                                "div",
-	                                { className: "form-group" },
-	                                _react3.default.createElement("input", { type: "text", className: "typeahead form-control", placeholder: "Search for a crag/area" })
+	                                'div',
+	                                { className: 'form-group' },
+	                                _react3.default.createElement('input', { type: 'text', className: 'typeahead form-control', placeholder: 'Search for a crag/area' })
 	                            ),
 	                            _react3.default.createElement(
-	                                "span",
-	                                { className: "input-group-addon" },
-	                                _react3.default.createElement("span", { className: "glyphicon glyphicon-search" })
+	                                'span',
+	                                { className: 'input-group-addon' },
+	                                _react3.default.createElement('span', { className: 'glyphicon glyphicon-search' })
 	                            )
 	                        )
 	                    )

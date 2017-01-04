@@ -2,16 +2,23 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
+import { filterByRouteType } from '../actions/UserActions';
+
 import NavBarComponent from '../NavBar.jsx';
 
 const mapStateToProps = (state) => {
+
   return {
     info: "test"
   }
+
+}
+const mapDispatchToProps = (dispatch) => {
+  return {
+    filterByType: () => {
+      dispatch(filterByRouteType())
+    }
+  }
 }
 
-const NavBarContainer = connect(
-  mapStateToProps
-)(NavBarComponent)
-
-export default NavBarContainer;
+export default connect(mapStateToProps, mapDispatchToProps)(NavBarComponent)
