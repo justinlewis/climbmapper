@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "5fc83049172d75abaa9a"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "b74996abfe9f757e07a4"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -32607,7 +32607,7 @@
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function routeType() {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { routeType: 'ALL' };
 	  var action = arguments[1];
 
 	  switch (action.type) {
@@ -32911,7 +32911,6 @@
 	  store: _react3.default.PropTypes.object
 	};
 	var mapStateToProps = function mapStateToProps(state) {
-	  debugger;
 	  return state;
 	};
 
@@ -33103,7 +33102,6 @@
 	      areas: null,
 	      ticks: null,
 	      todos: null,
-	      type: null,
 	      todoLayerStyle: areaTodoPtsDefaultStyle,
 	      tickLayerStyle: areaTickPtsDefaultStyle
 	    };
@@ -33132,7 +33130,7 @@
 	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-
+	      debugger;
 	      this.toDoAreaReq = $.get("todoareas", function (result) {
 	        this.setTodoAreaPtsCache(result);
 	      }.bind(this), "json");
@@ -33664,10 +33662,15 @@
 	        });
 	      };
 
-	      this.getRouteArrayByType = function (routeArr, routeTyoe) {
+	      // TODO: THIS IS WHERE WE ARE WORKING
+
+	      this.getRouteArrayByType = function (routeArr) {
+	        debugger;
+	        var routeType = this.props.routeType;
+	        console.log(routeType);
 	        var newTypeArr = [];
 
-	        if (routeTyoe.toUpperCase() === "ALL") {
+	        if (routeType.toUpperCase() === "ALL") {
 	          return routeArr;
 	        } else {
 	          for (var i = 0; i < routeArr.length; i++) {
@@ -33677,7 +33680,6 @@
 	            }
 	          }
 	        }
-
 	        return newTypeArr;
 	      };
 	    }
@@ -33752,6 +33754,7 @@
 	      }
 
 	      function resetFeatureColor(layer) {
+	        console.log(layer.feature.properties);
 	        if (layer.feature.properties.areatype === "TODO") {
 	          layer.setStyle({ "fillColor": TODOFILL });
 	        } else if (layer.feature.properties.areatype === "CRAG") {
@@ -33976,8 +33979,6 @@
 	      function cragPtsPointToLayer(feature, latlng) {
 	        return L.circleMarker(latlng, allCragPtsDefaultStyle);
 	      }
-
-	      console.log(this.props.routeType);
 
 	      return _react3.default.createElement(
 	        _reactLeaflet.Map,
@@ -58041,7 +58042,7 @@
 	                            _react3.default.createElement(
 	                                "a",
 	                                { id: "sport-btn", href: "#", "data-type": "SPORT", onClick: function onClick() {
-	                                        return _this2.handeClick('SPORT');
+	                                        return _this2.handleClick('SPORT');
 	                                    } },
 	                                "Sport"
 	                            )
@@ -58051,7 +58052,9 @@
 	                            null,
 	                            _react3.default.createElement(
 	                                "a",
-	                                { id: "boulder-btn", href: "#", "data-type": "BOULDER" },
+	                                { id: "boulder-btn", href: "#", "data-type": "BOULDER", onClick: function onClick() {
+	                                        return _this2.handleClick('BOULDER');
+	                                    } },
 	                                "Boulder"
 	                            )
 	                        ),
@@ -58060,7 +58063,9 @@
 	                            null,
 	                            _react3.default.createElement(
 	                                "a",
-	                                { id: "alpine-btn", href: "#", "data-type": "ALPINE" },
+	                                { id: "alpine-btn", href: "#", "data-type": "ALPINE", onClick: function onClick() {
+	                                        return _this2.handleClick('ALPINE');
+	                                    } },
 	                                "Alpine"
 	                            )
 	                        ),
@@ -58070,7 +58075,9 @@
 	                            null,
 	                            _react3.default.createElement(
 	                                "a",
-	                                { id: "all-btn", href: "#", "data-type": "ALL" },
+	                                { id: "all-btn", href: "#", "data-type": "ALL", onClick: function onClick() {
+	                                        return _this2.handleClick('ALL');
+	                                    } },
 	                                "All Types"
 	                            )
 	                        )

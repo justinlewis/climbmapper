@@ -37,7 +37,7 @@ class NavBarTools extends React.Component {
                              <li><a id="boulder-btn" href="#" data-type="BOULDER" onClick={() => this.handleClick('BOULDER')}>Boulder</a></li>
                              <li><a id="alpine-btn" href="#" data-type="ALPINE" onClick={() => this.handleClick('ALPINE')}>Alpine</a></li>
                              <li role="separator" className="divider"></li>
-                             <li><a id="all-btn" href="#" data-type="ALL">All Types</a></li>
+                             <li><a id="all-btn" href="#" data-type="ALL" onClick={() => this.handleClick('ALL')}>All Types</a></li>
                          </ul>
                      </li>
                      <li>

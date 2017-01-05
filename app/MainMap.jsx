@@ -115,7 +115,6 @@ const allCragPtsDefaultStyle = {
     fillOpacity: 0.8
 };
 
-
 class MapComponent extends React.Component {
     constructor(props){
 		    super(props);
@@ -135,7 +134,6 @@ class MapComponent extends React.Component {
           areas : null,
           ticks : null,
           todos : null,
-          type: null,
           todoLayerStyle : areaTodoPtsDefaultStyle,
           tickLayerStyle : areaTickPtsDefaultStyle
         };
@@ -162,7 +160,7 @@ class MapComponent extends React.Component {
     }
 
     componentDidMount() {
-
+        debugger;
     		this.toDoAreaReq = $.get("todoareas", function (result) {
     			this.setTodoAreaPtsCache(result);
     		}.bind(this), "json");
@@ -413,7 +411,6 @@ class MapComponent extends React.Component {
     				}
     			}
     		}
-
 
     		////
     		// Set the frequency of ticks on locations that will dictate the point size.
@@ -726,11 +723,15 @@ class MapComponent extends React.Component {
             });
         }
 
+        // TODO: THIS IS WHERE WE ARE WORKING
 
-        this.getRouteArrayByType = function(routeArr, routeTyoe){
+        this.getRouteArrayByType = function(routeArr){
+          debugger;
+          let routeType = this.props.routeType
+          console.log(routeType)
           var newTypeArr = [];
 
-          if(routeTyoe.toUpperCase() === "ALL"){
+          if(routeType.toUpperCase() === "ALL"){
             return routeArr;
           }
           else{
@@ -741,11 +742,9 @@ class MapComponent extends React.Component {
               }
             }
           }
-
           return newTypeArr;
         }
-     }
-
+      }
      componentWillMount() {
 
      }
@@ -813,6 +812,7 @@ class MapComponent extends React.Component {
         }
 
         function resetFeatureColor(layer) {
+          console.log(layer.feature.properties)
           if(layer.feature.properties.areatype === "TODO") {
               layer.setStyle({"fillColor": TODOFILL});
             }
@@ -1043,10 +1043,6 @@ class MapComponent extends React.Component {
         function cragPtsPointToLayer (feature, latlng) {
             return L.circleMarker(latlng, allCragPtsDefaultStyle);
         }
-
-
-
-        console.log(this.props.routeType)
 
   		return(
         <Map center={position} zoom={this.state.zoom} zoomControl={false} >

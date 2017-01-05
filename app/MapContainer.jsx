@@ -62,7 +62,6 @@ MapContainerComponent.contextTypes = {
   store: React.PropTypes.object
 }
 const mapStateToProps = (state) => {
-  debugger
   return state
 }
 
