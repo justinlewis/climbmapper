@@ -15,8 +15,8 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    filterByType: () => {
-      dispatch(filterByRouteType())
+    filterByType: (routeTypeSearchText) => {
+      dispatch(filterByRouteType(routeTypeSearchText))
     }
   }
 }

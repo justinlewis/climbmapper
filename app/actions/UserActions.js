@@ -7,9 +7,9 @@ export const clickFeature = (feature) => {
   };
 }
 
-export const filterByRouteType = (data) => {
+export const filterByRouteType = (routeTypeFilterText) => {
   return {
-    type: types.TRAD_FILTER,
-    data
+    type: types.SET_FILTER,
+    routeType: routeTypeFilterText,
   };
 }

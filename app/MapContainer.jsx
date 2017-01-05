@@ -14,12 +14,10 @@ class MapContainerComponent extends React.Component {
     constructor(props){
 		    super(props);
     }
-
     render () {
       const { store } = this.context;
 
       var hideStyle = {display:'none'};
-
   		return(
   	    	<div className="container" id="main">
     		  		<div className="row">
@@ -49,7 +47,7 @@ class MapContainerComponent extends React.Component {
     				    </div>
     				</div>
 
-  			  	<MapComponent />
+  			  	<MapComponent routeType={this.props.routeType}/>
 
   			  	<AboutModalComponent />
             <IssuesModalComponent />
@@ -63,5 +61,9 @@ class MapContainerComponent extends React.Component {
 MapContainerComponent.contextTypes = {
   store: React.PropTypes.object
 }
+const mapStateToProps = (state) => {
+  debugger
+  return state
+}
 
-export default MapContainerComponent;
+export default connect(mapStateToProps)(MapContainerComponent);

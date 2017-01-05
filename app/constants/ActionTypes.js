@@ -13,4 +13,4 @@ export const HOVER_FEATURE_INFO = 'HOVER_FEATURE_INFO';
 
 // user actions
 export const CLICK_FEATURE = 'CLICK_FEATURE';
-export const TRAD_FILTER = 'TRAD_FILTER'
+export const SET_FILTER = 'SET_FILTER'

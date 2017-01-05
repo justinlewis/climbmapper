@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "c22ea9c2244bf0ffb847"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "9736436047aae073e8c9"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -1775,11 +1775,11 @@
 
 	var _MapState = __webpack_require__(396);
 
-	var mapReducers = _interopRequireWildcard(_MapState);
+	var _MapState2 = _interopRequireDefault(_MapState);
 
 	var _FeatureInfoState = __webpack_require__(398);
 
-	var feautureInfoReducers = _interopRequireWildcard(_FeatureInfoState);
+	var _FeatureInfoState2 = _interopRequireDefault(_FeatureInfoState);
 
 	var _TypeReducer = __webpack_require__(399);
 
@@ -1788,8 +1788,6 @@
 	var _AppContainer = __webpack_require__(400);
 
 	var _AppContainer2 = _interopRequireDefault(_AppContainer);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1827,9 +1825,14 @@
 
 	var enhancers = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
 
-	var allReducers = Object.assign({}, mapReducers, feautureInfoReducers, _TypeReducer2.default);
-	var reducer = (0, _redux.combineReducers)(allReducers);
+	var reducer = (0, _redux.combineReducers)({
+	  map: _MapState2.default,
+	  featureInfo: _FeatureInfoState2.default,
+	  routeType: _TypeReducer2.default
+	});
 	var store = (0, _devTools.createStore)(reducer, enhancers);
+
+	console.log(_TypeReducer2.default);
 
 	var App = _wrapComponent('App')(function (_React$Component) {
 	  _inherits(App, _React$Component);
@@ -32536,7 +32539,7 @@
 
 	// user actions
 	var CLICK_FEATURE = exports.CLICK_FEATURE = 'CLICK_FEATURE';
-	var TRAD_FILTER = exports.TRAD_FILTER = 'TRAD_FILTER';
+	var SET_FILTER = exports.SET_FILTER = 'SET_FILTER';
 
 /***/ },
 /* 398 */
@@ -32547,7 +32550,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.default = map;
+	exports.default = featureInfo;
 
 	var _ActionTypes = __webpack_require__(397);
 
@@ -32560,7 +32563,7 @@
 	  body: ""
 	};
 
-	function map() {
+	function featureInfo() {
 	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
 	  var action = arguments[1];
 
@@ -32608,14 +32611,9 @@
 	  var action = arguments[1];
 
 	  switch (action.type) {
-	    case 'TRAD_FILTER':
-	      return Object.assign({}, state, routeType);
-	    case 'SPORT_FILTER':
-	      return Object.assign({}, state, routeType);
-	    case 'ALPINE_FILTER':
-	      return Object.assign({}, state, routeType);
-	    case 'BOULDER_FILTER':
-	      return Object.assign({}, state, routeType);
+	    case 'SET_FILTER':
+	      console.log(action);
+	      return Object.assign({}, state, { routeType: action.routeType });
 	    default:
 	      return state;
 	  }
@@ -32858,7 +32856,6 @@
 
 
 	      var hideStyle = { display: 'none' };
-
 	      return _react3.default.createElement(
 	        'div',
 	        { className: 'container', id: 'main' },
@@ -32899,7 +32896,7 @@
 	            )
 	          )
 	        ),
-	        _react3.default.createElement(_MainMap2.default, null),
+	        _react3.default.createElement(_MainMap2.default, { routeType: this.props.routeType }),
 	        _react3.default.createElement(_AboutModal2.default, null),
 	        _react3.default.createElement(_IssuesModal2.default, null),
 	        _react3.default.createElement(_WelcomeModal2.default, null)
@@ -32913,8 +32910,12 @@
 	MapContainerComponent.contextTypes = {
 	  store: _react3.default.PropTypes.object
 	};
+	var mapStateToProps = function mapStateToProps(state) {
+	  debugger;
+	  return state;
+	};
 
-	exports.default = MapContainerComponent;
+	exports.default = (0, _reactRedux.connect)(mapStateToProps)(MapContainerComponent);
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
@@ -33975,6 +33976,8 @@
 	      function cragPtsPointToLayer(feature, latlng) {
 	        return L.circleMarker(latlng, allCragPtsDefaultStyle);
 	      }
+
+	      console.log(this.props.routeType);
 
 	      return _react3.default.createElement(
 	        _reactLeaflet.Map,
@@ -57197,10 +57200,10 @@
 	  };
 	};
 
-	var filterByRouteType = exports.filterByRouteType = function filterByRouteType(data) {
+	var filterByRouteType = exports.filterByRouteType = function filterByRouteType(routeTypeFilterText) {
 	  return {
-	    type: types.TRAD_FILTER,
-	    data: data
+	    type: types.SET_FILTER,
+	    routeType: routeTypeFilterText
 	  };
 	};
 

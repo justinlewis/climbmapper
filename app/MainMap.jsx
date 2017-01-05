@@ -1046,7 +1046,7 @@ class MapComponent extends React.Component {
 
 
 
-
+        console.log(this.props.routeType)
 
   		return(
         <Map center={position} zoom={this.state.zoom} zoomControl={false} >
