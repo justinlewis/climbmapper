@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "9736436047aae073e8c9"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "5fc83049172d75abaa9a"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -57168,8 +57168,8 @@
 	};
 	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 	  return {
-	    filterByType: function filterByType() {
-	      dispatch((0, _UserActions.filterByRouteType)());
+	    filterByType: function filterByType(routeTypeSearchText) {
+	      dispatch((0, _UserActions.filterByRouteType)(routeTypeSearchText));
 	    }
 	  };
 	};
@@ -57985,6 +57985,7 @@
 	    _createClass(NavBarTools, [{
 	        key: "handleClick",
 	        value: function handleClick(routeType) {
+	            console.log(routeType);
 	            this.props.filterByType(routeType);
 	        }
 	    }, {
@@ -58039,7 +58040,9 @@
 	                            null,
 	                            _react3.default.createElement(
 	                                "a",
-	                                { id: "sport-btn", href: "#", "data-type": "SPORT" },
+	                                { id: "sport-btn", href: "#", "data-type": "SPORT", onClick: function onClick() {
+	                                        return _this2.handeClick('SPORT');
+	                                    } },
 	                                "Sport"
 	                            )
 	                        ),

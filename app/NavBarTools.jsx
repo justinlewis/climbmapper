@@ -33,9 +33,9 @@ class NavBarTools extends React.Component {
                          </a>
                          <ul className="dropdown-menu">
                              <li><a id="trad-btn" href="#" data-type="TRAD" onClick={() => this.handleClick('TRAD')}>Trad </a></li>
-                             <li><a id="sport-btn" href="#" data-type="SPORT">Sport</a></li>
-                             <li><a id="boulder-btn" href="#" data-type="BOULDER">Boulder</a></li>
-                             <li><a id="alpine-btn" href="#" data-type="ALPINE">Alpine</a></li>
+                             <li><a id="sport-btn" href="#" data-type="SPORT" onClick={() => this.handleClick('SPORT')}>Sport</a></li>
+                             <li><a id="boulder-btn" href="#" data-type="BOULDER" onClick={() => this.handleClick('BOULDER')}>Boulder</a></li>
+                             <li><a id="alpine-btn" href="#" data-type="ALPINE" onClick={() => this.handleClick('ALPINE')}>Alpine</a></li>
                              <li role="separator" className="divider"></li>
                              <li><a id="all-btn" href="#" data-type="ALL">All Types</a></li>
                          </ul>
