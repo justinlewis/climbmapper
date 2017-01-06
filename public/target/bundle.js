@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "033e18b93de1ee2c9452"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "df5b83990afa04a2ada9"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -33978,10 +33978,22 @@
 	      function cragPtsPointToLayer(feature, latlng) {
 	        return L.circleMarker(latlng, allCragPtsDefaultStyle);
 	      }
+	      function filterByRouteType(feature) {
+	        if (feature.properties.customTradCt === 0) {
+	          return false;
+	        } else if (feature.properties.customTradCt > 0) {
+	          return true;
+	        }
+	      }
 
 	      var toDoAreaPts = this.state.todoAreaPts;
 	      if (this.props.routeType.routeType === 'ALL') {
 	        toDoAreaPts = this.state.todoAreaPts;
+	        console.log(toDoAreaPts);
+	      } else if (this.props.routeType.routeType === 'TRAD') {
+	        var tradRouteCount = { features: this.state.todoAreaPts.features.filter(filterByRouteType) };
+	        console.log(tradRouteCount);
+	        toDoAreaPts = Object.assign(toDoAreaPts, tradRouteCount);
 	        console.log(toDoAreaPts);
 	      }
 

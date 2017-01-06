@@ -1053,9 +1053,12 @@ class MapComponent extends React.Component {
         let toDoAreaPts = this.state.todoAreaPts
         if (this.props.routeType.routeType === 'ALL') {
           toDoAreaPts = this.state.todoAreaPts
-          console.log(toDoAreaPts.features)
+          console.log(toDoAreaPts)
         } else if (this.props.routeType.routeType === 'TRAD') {
-          toDoAreaPts = this.state.todoAreaPts.features.filter(filterByRouteType)
+          let tradRouteCount = { features: this.state.todoAreaPts.features.filter(filterByRouteType) }
+          console.log(tradRouteCount)
+          toDoAreaPts = Object.assign(toDoAreaPts, tradRouteCount)
+          console.log(toDoAreaPts)
         }
 
   		return(
