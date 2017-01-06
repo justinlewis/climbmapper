@@ -992,7 +992,7 @@ class MapComponent extends React.Component {
           //     routeCountPropertyName = "customRouteCt";
           //   }
           //   else if(routeTypeFilter === "TRAD"){
-          //     routeCountPropertyName = "customTradCt";
+          //     routeCountPropertyName = "                       Ct";
           //   }
           //   else if(routeTypeFilter === "SPORT"){
           //     routeCountPropertyName = "customSportCt";
@@ -1044,6 +1044,11 @@ class MapComponent extends React.Component {
             return L.circleMarker(latlng, allCragPtsDefaultStyle);
         }
 
+        let toDoAreaPts = this.state.todoAreaPts
+        if (this.props.routeType.routeType === 'ALL') {
+          toDoAreaPts = this.state.todoAreaPts
+        }
+
   		return(
         <Map center={position} zoom={this.state.zoom} zoomControl={false} >
 
@@ -1065,7 +1070,7 @@ class MapComponent extends React.Component {
 
             <LayersControl.Overlay name='To-Do Areas' checked={true}>
               <GeoJsonUpdatable
-                data={this.state.todoAreaPts}
+                data={toDoAreaPts}
                 style={this.state.todoLayerStyle}
                 onEachFeature={onEachTodoFeature.bind(null, this)}
                 pointToLayer={areaTodoPtsPointToLayer} >

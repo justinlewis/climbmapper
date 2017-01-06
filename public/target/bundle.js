@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "b74996abfe9f757e07a4"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "cee96ad42fa1c7977f2d"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -33928,7 +33928,7 @@
 	        //     routeCountPropertyName = "customRouteCt";
 	        //   }
 	        //   else if(routeTypeFilter === "TRAD"){
-	        //     routeCountPropertyName = "customTradCt";
+	        //     routeCountPropertyName = "                       Ct";
 	        //   }
 	        //   else if(routeTypeFilter === "SPORT"){
 	        //     routeCountPropertyName = "customSportCt";
@@ -33980,6 +33980,8 @@
 	        return L.circleMarker(latlng, allCragPtsDefaultStyle);
 	      }
 
+	      var toDoAreaPts = this.state.todoAreaPts;
+
 	      return _react3.default.createElement(
 	        _reactLeaflet.Map,
 	        { center: position, zoom: this.state.zoom, zoomControl: false },
@@ -34007,7 +34009,7 @@
 	            _reactLeaflet.LayersControl.Overlay,
 	            { name: 'To-Do Areas', checked: true },
 	            _react3.default.createElement(_GeoJsonUpdatable2.default, {
-	              data: this.state.todoAreaPts,
+	              data: toDoAreaPts,
 	              style: this.state.todoLayerStyle,
 	              onEachFeature: onEachTodoFeature.bind(null, this),
 	              pointToLayer: areaTodoPtsPointToLayer })
