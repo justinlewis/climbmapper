@@ -160,7 +160,6 @@ class MapComponent extends React.Component {
     }
 
     componentDidMount() {
-        debugger;
     		this.toDoAreaReq = $.get("todoareas", function (result) {
     			this.setTodoAreaPtsCache(result);
     		}.bind(this), "json");
@@ -1043,10 +1042,20 @@ class MapComponent extends React.Component {
         function cragPtsPointToLayer (feature, latlng) {
             return L.circleMarker(latlng, allCragPtsDefaultStyle);
         }
+         function filterByRouteType(feature) {
+           if (feature.properties.customTradCt === 0) {
+             return false
+           } else if (feature.properties.customTradCt > 0) {
+             return true
+           }
+         }
 
         let toDoAreaPts = this.state.todoAreaPts
         if (this.props.routeType.routeType === 'ALL') {
           toDoAreaPts = this.state.todoAreaPts
+          console.log(toDoAreaPts.features)
+        } else if (this.props.routeType.routeType === 'TRAD') {
+          toDoAreaPts = this.state.todoAreaPts.features.filter(filterByRouteType)
         }
 
   		return(

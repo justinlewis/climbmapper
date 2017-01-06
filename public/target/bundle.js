@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "cee96ad42fa1c7977f2d"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "033e18b93de1ee2c9452"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -33130,7 +33130,6 @@
 	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      debugger;
 	      this.toDoAreaReq = $.get("todoareas", function (result) {
 	        this.setTodoAreaPtsCache(result);
 	      }.bind(this), "json");
@@ -33981,6 +33980,10 @@
 	      }
 
 	      var toDoAreaPts = this.state.todoAreaPts;
+	      if (this.props.routeType.routeType === 'ALL') {
+	        toDoAreaPts = this.state.todoAreaPts;
+	        console.log(toDoAreaPts);
+	      }
 
 	      return _react3.default.createElement(
 	        _reactLeaflet.Map,
