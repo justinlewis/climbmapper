@@ -527,7 +527,15 @@ class MapComponent extends React.Component {
         //
         // @param filter - a filter keyword that filters the radius by route type.
         ////
-        this.resizeLocations = function(filter) {
+
+        //working here
+        this.resizeLocations= function() {
+          map.eachLayer((layer) => {
+            const newSize = getLocationSizeBucket(layer.feature.properties.customTradCt)
+            layer.setRadius(newSize)
+          })
+        };
+
             // map.eachLayer(function(layer){
             //   if(layer.feature){
             //     layer.setRadius(0);
@@ -572,7 +580,6 @@ class MapComponent extends React.Component {
             //   }
             //
             // });
-        }
 
 
         this.setTimeSlider = function() {
@@ -1059,6 +1066,7 @@ class MapComponent extends React.Component {
           console.log(tradRouteCount)
           toDoAreaPts = Object.assign(toDoAreaPts, tradRouteCount)
           console.log(toDoAreaPts)
+          this.resizeLocations()
         }
 
   		return(
@@ -1085,7 +1093,8 @@ class MapComponent extends React.Component {
                 data={toDoAreaPts}
                 style={this.state.todoLayerStyle}
                 onEachFeature={onEachTodoFeature.bind(null, this)}
-                pointToLayer={areaTodoPtsPointToLayer} >
+                pointToLayer={areaTodoPtsPointToLayer}
+                getLocationSizeBucket={getLocationSizeBucket.bind(this)} >
               </GeoJsonUpdatable>
             </LayersControl.Overlay>
 

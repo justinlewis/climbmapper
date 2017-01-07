@@ -16,7 +16,6 @@ class NavBarComponent extends React.Component {
         		<div className="navbar-collapse collapse">
         			<NavBarButtons />
         			<NavBarTools filterByType={this.props.filterByType}/>
-              />
         		</div>
     	    </div>
     	 );

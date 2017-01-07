@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "df5b83990afa04a2ada9"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "ebc86aba00289ce2c221"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -33472,7 +33472,14 @@
 	      //
 	      // @param filter - a filter keyword that filters the radius by route type.
 	      ////
-	      this.resizeLocations = function (filter) {
+
+	      //working here
+	      this.resizeLocations = function (layer) {
+	        map.eachLayer(function (layer) {
+	          var newSize = getLocationSizeBucket(layer.feature.properties.customTradCt);
+	          layer.setRadius(newSize);
+	        });
+
 	        // map.eachLayer(function(layer){
 	        //   if(layer.feature){
 	        //     layer.setRadius(0);
@@ -34027,7 +34034,8 @@
 	              data: toDoAreaPts,
 	              style: this.state.todoLayerStyle,
 	              onEachFeature: onEachTodoFeature.bind(null, this),
-	              pointToLayer: areaTodoPtsPointToLayer })
+	              pointToLayer: areaTodoPtsPointToLayer,
+	              getLocationSizeBucket: getLocationSizeBucket.bind(this) })
 	          ),
 	          _react3.default.createElement(
 	            _reactLeaflet.LayersControl.Overlay,
@@ -55977,6 +55985,15 @@
 	            if (prevProps.style !== this.props.style) {
 	                this.leafletElement.setStyle(this.props.style);
 	            }
+
+	            // if (prevProps.data !== this.props.data) {
+	            //   console.log('newprops',this.props.data)
+	            //   map.eachLayer((layer) => {
+	            //     const newSize = this.props.getLocationSizeBucket(this.props.data.features.properties.customTradCt)
+	            //     console.log('newsize', newSize)
+	            //     layer.setRadius(newSize)
+	            // })
+	            // }
 	        }
 	    }]);
 
@@ -57315,8 +57332,7 @@
 	                    'div',
 	                    { className: 'navbar-collapse collapse' },
 	                    _react3.default.createElement(_NavBarButtons2.default, null),
-	                    _react3.default.createElement(_NavBarTools2.default, { filterByType: this.props.filterByType }),
-	                    '/>'
+	                    _react3.default.createElement(_NavBarTools2.default, { filterByType: this.props.filterByType })
 	                )
 	            );
 	        }
