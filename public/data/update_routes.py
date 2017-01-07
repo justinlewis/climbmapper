@@ -194,7 +194,7 @@ if __name__ == '__main__':
 	dbConnectParams = { 'dbHost':dbHost, 'dbPort':dbPort, 'dbUser':dbUser, 'dbPass':dbPass, 'dbName':dbName }
 
 	# Initialize MPData
-	MPData = MPData(dbConnectParams)
+	MPData = MPData_Routes(dbConnectParams)
 	
 	MPData.updateRoutes(dbConnectParams, changedAreaId, areaType)
 	
