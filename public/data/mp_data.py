@@ -1,6 +1,9 @@
 import json, requests, psycopg2, collections, sys, os
 
-class MPData:
+#TODO 	- break MPData into parent class for ToDo and Ticklist class
+#			* This would allow us to customize diffirent climbing app data
+#		- use try/except for data requests
+class MPData_Todo:
 
 	def __init__(self, appuserid, dbConnectParams):
 
@@ -19,11 +22,9 @@ class MPData:
 
 		self.cur = self.conn.cursor()  ## open a cursor
 
-
 		self.cur.execute("DELETE FROM tick WHERE climberid = '"+str(appuserid)+"';")
 		self.cur.execute("DELETE FROM todo WHERE climberid = '"+str(appuserid)+"';")
 		self.conn.commit()
-		#conn.close()
 		print "Cleaned db of Todos and Ticks"
 
 		# Querying App User info
@@ -74,20 +75,12 @@ class MPData:
 		# global routeLookup
 		self.routeLookup = self.cur.fetchall()
 
+
 	def __del__(self):#TODO: manage connection requests to not leak
 		self.conn.close()
 
 
 	def getToDos(self, mpUserKey, mpUserEmail, appUserId):
-		# dbHost = dbConnectParams['dbHost']
-		# dbPort = dbConnectParams['dbPort']
-		# dbUser = dbConnectParams['dbUser']
-		# dbPass = dbConnectParams['dbPass']
-		# dbName = dbConnectParams['dbName']
-
-		# #DB connection properties
-		# conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
-		# cur = conn.cursor()  ## open a cursor
 
 		urlRoot = "http://www.mountainproject.com/data?action=getToDos"
 		urlPropId = "&email=" + mpUserEmail
@@ -115,28 +108,15 @@ class MPData:
 			else:
 				print "BAD REQUEST"
 
-	    #TODO: manage connection requests to not leak
-		#self.conn.close()
 		print len(toDoList), " ToDos"
 		return toDoList
 
 
 	def getTicks(self, mpUserKey, mpUserEmail, appUserId):
 
-		# dbHost = dbConnectParams['dbHost']
-		# dbPort = dbConnectParams['dbPort']
-		# dbUser = dbConnectParams['dbUser']
-		# dbPass = dbConnectParams['dbPass']
-		# dbName = dbConnectParams['dbName']
-
-		# #DB connection properties
-		# conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
-		# cur = conn.cursor()  ## open a cursor
-
 		root = "http://www.mountainproject.com/data?action=getTicks"
 		uid = "&email="+mpUserEmail
 		key = "&key="+mpUserKey
-
 
 		# the api returns a max of 200 ticks in a request so we have to do this in chunks
 		reqChunks = 0
@@ -189,15 +169,6 @@ class MPData:
 
 	# @contentType can be 'todo' or 'tick'
 	def getRoutes(self, idsList, contentType, mpUserKey, idTracking):
-		# dbHost = dbConnectParams['dbHost']
-		# dbPort = dbConnectParams['dbPort']
-		# dbUser = dbConnectParams['dbUser']
-		# dbPass = dbConnectParams['dbPass']
-		# dbName = dbConnectParams['dbName']
-
-		# #DB connection properties
-		# conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
-		# cur = conn.cursor()  ## open a cursor
 
 		root = "http://www.mountainproject.com/data?action=getRoutes&routeIds="
 		ids = ''
@@ -289,8 +260,6 @@ class MPData:
 
 				ids = ''
 			idCt += 1
-		#TODO: manage connection requests to not leak
-		#self.conn.close()
 
 		print len(idTracking), " imported routes"
 		return idTracking
@@ -512,14 +481,13 @@ class MPData:
 
 if __name__ == '__main__':
 
-	mpUserKey = sys.argv[1]
-	mpUserEmail = sys.argv[2]
-	appUserId = sys.argv[3]
+	# mpUserKey = sys.argv[1]
+	# mpUserEmail = sys.argv[2]
+	# appUserId = sys.argv[3]
 
-	#mpUserKey = "106251374-a0e6d43518505bec412a547956f25216"
-	#mpUserEmail = "j.mapping@gmail.com"
-	#appUserId = 1
-
+	mpUserKey = "106251374-a0e6d43518505bec412a547956f25216"
+	mpUserEmail = "j.mapping@gmail.com"
+	appUserId = 1
 
 	print "Getting Mountain Project Todo and Tick Routes..."
 
@@ -531,8 +499,8 @@ if __name__ == '__main__':
 
 	dbConnectParams = { 'dbHost':dbHost, 'dbPort':dbPort, 'dbUser':dbUser, 'dbPass':dbPass, 'dbName':dbName }
 
-
-	MPData = MPData(appUserId, dbConnectParams)
+	# Unitialize MPData
+	MPData = MPData_Todo(appUserId, dbConnectParams)
 
 	toDoIdList = MPData.getToDos(mpUserKey, mpUserEmail, appUserId)
 	idTracking = MPData.getRoutes(toDoIdList, 'todo', mpUserKey, [])
