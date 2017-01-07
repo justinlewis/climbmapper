@@ -3,7 +3,7 @@ import json, requests, psycopg2, collections, sys, os
 #TODO 	- break MPData into parent class for ToDo and Ticklist class
 #			* This would allow us to customize diffirent climbing app data
 #		- use try/except for data requests
-class MPData_Todo:
+class MPData_ToDo:
 
 	def __init__(self, appuserid, dbConnectParams):
 
