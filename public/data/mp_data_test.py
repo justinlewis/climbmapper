@@ -10,7 +10,11 @@ class MPData_ToDo_Test(unittest.TestCase):
     def setUp(self):
 
         # We need a test account. Using Justin's for now.
-        self.appUserId = "106251374-a0e6d43518505bec412a547956f25216"
+        self.mpUserKey = "106251374-a0e6d43518505bec412a547956f25216"
+        self.mpUserEmail = "j.mapping@gmail.com"
+        self.appUserId = 1
+
+        # Database initialization
         self.dbHost = os.getenv('OPENSHIFT_POSTGRESQL_DB_HOST', 'localhost')
         self.dbPort = os.getenv('OPENSHIFT_POSTGRESQL_DB_PORT', 5432)
         self.dbUser = os.getenv('OPENSHIFT_POSTGRESQL_DB_USERNAME', "app_user")
@@ -21,6 +25,8 @@ class MPData_ToDo_Test(unittest.TestCase):
                                 'dbUser':dbUser,\
                                 'dbPass':dbPass,\
                                 'dbName':dbName }
+
+        # Initialize
         self.MPData_ToDo_Test = MPData_ToDo(self.appUserId, self.dbConnectParams)
 
 
@@ -28,6 +34,8 @@ class MPData_ToDo_Test(unittest.TestCase):
         del self.MPData_ToDo_Test
 
 
+    # IDK that these are useful...
+    #
     #TODO create a test database instead of using prod
     # def dB_Cursor_Test(self):
     #     self.assertRaises(psycopg2.Error, self.conn.cursor(),\
@@ -41,13 +49,20 @@ class MPData_ToDo_Test(unittest.TestCase):
 
 
     def getToDos_Test(self):
-        #TODO
-        pass
+        # returns list tDoLst
+        assertIsNot(not MPData_ToDo_Test.getToDos(self,\
+                                                mpUserKey,\
+                                                mpUserEmail,\
+                                                appUserId), True,\
+                                                        msg="ToDo list is empty.")
 
 
     def getTicks_Test(self):
-        #TOO
-        pass
+        assertIsNot(not MPData_ToDo_Test.getTicks(self,\
+                                                mpUserKey,\
+                                                mpUserEmail,\
+                                                appUserId), True,\
+                                                        msg="Ticks list is empty.")
 
 
     def getRoutes_Test(self):

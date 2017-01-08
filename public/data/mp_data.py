@@ -76,7 +76,7 @@ class MPData_ToDo:
 		self.routeLookup = self.cur.fetchall()
 
 
-	def __del__(self):#TODO: manage connection requests to not leak
+	def __del__(self):
 		self.conn.close()
 
 
@@ -160,8 +160,6 @@ class MPData_ToDo:
 				reqChunks = reqChunks + 200
 			else:
 				print "BAD REQUEST"
-		#TODO: manage connection requests to not leak
-		#self.conn.close()
 
 		print len(ticksArr), " Ticks"
 		return ticksArr
