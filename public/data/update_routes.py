@@ -28,21 +28,19 @@ class MPData_Routes:
 							LEFT JOIN usa_states s ON st_within(a.geo_point, s.geo_poly)
 							ORDER BY a.id;""")
 		
-		self.areaLookup = cur.fetchall()	
+		self.areaLookup = self.cur.fetchall()	
 
 		self.cur.execute("""SELECT a.id as areaId, a.name as areaName, c.id as cragId, c.name as cragName 
 							FROM area a 
 							INNER JOIN crag c ON a.id = c.area;""")
 
 		# global cragLookup
-		self.cragLookup = cur.fetchall()	
+		self.cragLookup = self.cur.fetchall()	
 		
 		self.cur.execute("SELECT id, area, crag, locationstr FROM route;")		
 		
 		# global routeLookup
-		self.routeLookup = cur.fetchall()
-		
-		#self.conn.close()
+		self.routeLookup = self.cur.fetchall()
 
 
 	def __del__(self):
