@@ -46,3 +46,7 @@ class MPData_Routes_Test(unittest.TestCase):
     def existingRouteLocationExists_Test(self):
         #TODO
         pass
+
+
+if __name__ == '__main__':
+    unittest.main()
