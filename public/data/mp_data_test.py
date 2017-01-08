@@ -1,7 +1,7 @@
 # Unit Tests for mp_data.py
 #
 
-import unittest
+import unittest, json, requests, psycopg2, collections, sys, os
 from mp_data import MPData_ToDo
 
 
@@ -48,7 +48,7 @@ class MPData_ToDo_Test(unittest.TestCase):
     #         msg="Class could not be initialized")
 
 
-    def getToDos_Test(self):
+    def test_GetToDos(self):
         # returns list tDoLst
         assertIsNot(not MPData_ToDo_Test.getToDos(self,\
                                                 mpUserKey,\
@@ -57,7 +57,7 @@ class MPData_ToDo_Test(unittest.TestCase):
                                                         msg="ToDo list is empty.")
 
 
-    def getTicks_Test(self):
+    def test_GetTicks(self):
         assertIsNot(not MPData_ToDo_Test.getTicks(self,\
                                                 mpUserKey,\
                                                 mpUserEmail,\
@@ -65,67 +65,67 @@ class MPData_ToDo_Test(unittest.TestCase):
                                                         msg="Ticks list is empty.")
 
 
-    def getRoutes_Test(self):
+    def test_GetRoutes(self):
         #TODO
         pass
 
 
-    def getAreaMatchId_Test(self):
+    def test_GetAreaMatchId(self):
         #TODO
         pass
 
 
-    def getContainingGeographyForArea_Test(self):
+    def test_GetContainingGeographyForArea(self):
         #TODO
         pass
 
 
-    def getCragMatchId_Test(self):
+    def test_GetCragMatchId(self):
         #TODO
         pass
 
 
-    def existingRouteLocationExists_Test(self):
+    def test_ExistingRouteLocationExists(self):
         #TODO
         pass
 
 
-    def routeExists_Test(self):
+    def test_RouteExists(self):
         #TODO
         pass
 
 
-    def todoExists_Test(self):
+    def test_TodoExists(self):
         #TODO
         pass
 
 
-    def tickExists_Test(self):
+    def test_TickExists(self):
         #TODO
         pass
 
 
-    def getCleanRating_Test(self):
+    def test_GetCleanRating(self):
         #TODO
         pass
 
 
-    def getCleanTypeName_Test(self):
+    def test_GetCleanTypeName(self):
         #TODO
         pass
 
 
-    def getRouteType_Test(self):
+    def test_GetRouteType(self):
         #TODO
         pass
 
 
-    def getYDSGrade_Test(self):
+    def test_GetYDSGrade(self):
         #TODO
         pass
 
 
-    def getBoulderGrade_Test(self):
+    def test_GetBoulderGrade(self):
         #TODO
         pass
 

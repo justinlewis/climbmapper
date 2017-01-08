@@ -1,7 +1,7 @@
 # Unit Tests for update_routes.py
 #
 
-import unittest
+import unittest, json, requests, psycopg2, collections, sys, os
 from update_routes import MPData_Routes
 
 
@@ -27,23 +27,23 @@ class MPData_Routes_Test(unittest.TestCase):
 
         del self.MPData_ToDo_Test
 
-    def updateRoutes_Test(self):
+    def test_UpdateRoutes(self):
         #TODO
         pass
 
-    def getAreaMatchId_Test(self):
+    def test_GetAreaMatchId(self):
         #TODO
         pass
 
-    def getContainingGeographyForArea_Test(self):
+    def test_GetContainingGeographyForArea(self):
         #TODO
         pass
 
-    def getCragMatchId_Test(self):
+    def test_GetCragMatchId(self):
         #TODO
         pass
 
-    def existingRouteLocationExists_Test(self):
+    def test_ExistingRouteLocationExists(self):
         #TODO
         pass
 
