@@ -20,11 +20,11 @@ class MPData_ToDo_Test(unittest.TestCase):
         self.dbUser = os.getenv('OPENSHIFT_POSTGRESQL_DB_USERNAME', "app_user")
         self.dbPass = os.getenv('OPENSHIFT_POSTGRESQL_DB_PASSWORD', "reader")
         self.dbName = os.getenv('OPENSHIFT_APP_NAME', 'climbmapper')
-        self.dbConnectParams = { 'dbHost':dbHost,\
-                                'dbPort':dbPort,\
-                                'dbUser':dbUser,\
-                                'dbPass':dbPass,\
-                                'dbName':dbName }
+        self.dbConnectParams = { 'dbHost':self.dbHost,\
+                                'dbPort':self.dbPort,\
+                                'dbUser':self.dbUser,\
+                                'dbPass':self.dbPass,\
+                                'dbName':self.dbName }
 
         # Initialize
         self.MPData_ToDo_Test = MPData_ToDo(self.appUserId, self.dbConnectParams)
