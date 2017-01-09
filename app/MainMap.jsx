@@ -493,7 +493,6 @@ class MapComponent extends React.Component {
                 }
                 break;
             }
-
             currentStyleObj.radius = radiusForType;
 
             return currentStyleObj;
@@ -528,13 +527,7 @@ class MapComponent extends React.Component {
         // @param filter - a filter keyword that filters the radius by route type.
         ////
 
-        //working here
-        this.resizeLocations= function() {
-          map.eachLayer((layer) => {
-            const newSize = getLocationSizeBucket(layer.feature.properties.customTradCt)
-            layer.setRadius(newSize)
-          })
-        };
+
 
             // map.eachLayer(function(layer){
             //   if(layer.feature){
@@ -655,7 +648,7 @@ class MapComponent extends React.Component {
                     if(layer.feature && layer.feature.properties.customTicksCt){
                       var mapLayerId = layer.feature.properties.id;
                       if(thisLoc.properties.id === mapLayerId){
-                         layer.setRadius(newRadius);
+                        layer.setRadius(newRadius);
                       }
                    }
                 });
@@ -828,6 +821,12 @@ class MapComponent extends React.Component {
             else if(layer.feature.properties.areatype === "TICK"){
               layer.setStyle({"fillColor": TICKFILL});
             }
+        }
+
+        function resizeLocations(rtCount) {
+              console.log('rtCount', rtCount)
+              const newSize = getLocationSizeBucket(rtCount)
+              console.log('newSize', newSize)
         }
 
 
@@ -1066,7 +1065,7 @@ class MapComponent extends React.Component {
           console.log(tradRouteCount)
           toDoAreaPts = Object.assign(toDoAreaPts, tradRouteCount)
           console.log(toDoAreaPts)
-          this.resizeLocations()
+          resizeLocations(toDoAreaPts)
         }
 
   		return(
@@ -1090,11 +1089,12 @@ class MapComponent extends React.Component {
 
             <LayersControl.Overlay name='To-Do Areas' checked={true}>
               <GeoJsonUpdatable
+                ref='map'
                 data={toDoAreaPts}
                 style={this.state.todoLayerStyle}
                 onEachFeature={onEachTodoFeature.bind(null, this)}
                 pointToLayer={areaTodoPtsPointToLayer}
-                getLocationSizeBucket={getLocationSizeBucket.bind(this)} >
+              >
               </GeoJsonUpdatable>
             </LayersControl.Overlay>
 

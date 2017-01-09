@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "ebc86aba00289ce2c221"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "7e95ac9995a25ad5d19e"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -33440,7 +33440,6 @@
 	            }
 	            break;
 	        }
-
 	        currentStyleObj.radius = radiusForType;
 
 	        return currentStyleObj;
@@ -33473,58 +33472,52 @@
 	      // @param filter - a filter keyword that filters the radius by route type.
 	      ////
 
-	      //working here
-	      this.resizeLocations = function (layer) {
-	        map.eachLayer(function (layer) {
-	          var newSize = getLocationSizeBucket(layer.feature.properties.customTradCt);
-	          layer.setRadius(newSize);
-	        });
 
-	        // map.eachLayer(function(layer){
-	        //   if(layer.feature){
-	        //     layer.setRadius(0);
-	        //
-	        //     if(filter.toUpperCase() === 'ALL'){
-	        //       // customRouteCt is currently ToDo frequency and will take priority over existing area points
-	        //       if(layer.feature.properties.customRouteCt > 0){
-	        //         var routeCt = getLocationSizeBucket(layer.feature.properties.customRouteCt);
-	        //         layer.setRadius(routeCt);
-	        //       }
-	        //
-	        //       if(layer.feature.properties.customTicksCt > 0){
-	        //         var ticksCt = getLocationSizeBucket(layer.feature.properties.customTicksCt);
-	        //         layer.setRadius(ticksCt);
-	        //       }
-	        //
-	        //     }
-	        //     else if(filter.toUpperCase() === 'TRAD'){
-	        //       if(layer.feature.properties.customTradCt > 0){
-	        //         var routeCt = getLocationSizeBucket(layer.feature.properties.customTradCt);
-	        //         layer.setRadius(routeCt);
-	        //       }
-	        //     }
-	        //     else if(filter.toUpperCase() === 'SPORT'){
-	        //       if(layer.feature.properties.customSportCt > 0){
-	        //         var routeCt = getLocationSizeBucket(layer.feature.properties.customSportCt);
-	        //         layer.setRadius(routeCt);
-	        //       }
-	        //     }
-	        //     else if(filter.toUpperCase() === 'BOULDER'){
-	        //       if(layer.feature.properties.customBoulderCt > 0){
-	        //         var routeCt = getLocationSizeBucket(layer.feature.properties.customBoulderCt);
-	        //         layer.setRadius(routeCt);
-	        //       }
-	        //     }
-	        //     else if(filter.toUpperCase() === 'ALPINE'){
-	        //       if(layer.feature.properties.customAlpineCt > 0){
-	        //         var routeCt = getLocationSizeBucket(layer.feature.properties.customAlpineCt);
-	        //         layer.setRadius(routeCt);
-	        //       }
-	        //     }
-	        //   }
-	        //
-	        // });
-	      };
+	      // map.eachLayer(function(layer){
+	      //   if(layer.feature){
+	      //     layer.setRadius(0);
+	      //
+	      //     if(filter.toUpperCase() === 'ALL'){
+	      //       // customRouteCt is currently ToDo frequency and will take priority over existing area points
+	      //       if(layer.feature.properties.customRouteCt > 0){
+	      //         var routeCt = getLocationSizeBucket(layer.feature.properties.customRouteCt);
+	      //         layer.setRadius(routeCt);
+	      //       }
+	      //
+	      //       if(layer.feature.properties.customTicksCt > 0){
+	      //         var ticksCt = getLocationSizeBucket(layer.feature.properties.customTicksCt);
+	      //         layer.setRadius(ticksCt);
+	      //       }
+	      //
+	      //     }
+	      //     else if(filter.toUpperCase() === 'TRAD'){
+	      //       if(layer.feature.properties.customTradCt > 0){
+	      //         var routeCt = getLocationSizeBucket(layer.feature.properties.customTradCt);
+	      //         layer.setRadius(routeCt);
+	      //       }
+	      //     }
+	      //     else if(filter.toUpperCase() === 'SPORT'){
+	      //       if(layer.feature.properties.customSportCt > 0){
+	      //         var routeCt = getLocationSizeBucket(layer.feature.properties.customSportCt);
+	      //         layer.setRadius(routeCt);
+	      //       }
+	      //     }
+	      //     else if(filter.toUpperCase() === 'BOULDER'){
+	      //       if(layer.feature.properties.customBoulderCt > 0){
+	      //         var routeCt = getLocationSizeBucket(layer.feature.properties.customBoulderCt);
+	      //         layer.setRadius(routeCt);
+	      //       }
+	      //     }
+	      //     else if(filter.toUpperCase() === 'ALPINE'){
+	      //       if(layer.feature.properties.customAlpineCt > 0){
+	      //         var routeCt = getLocationSizeBucket(layer.feature.properties.customAlpineCt);
+	      //         layer.setRadius(routeCt);
+	      //       }
+	      //     }
+	      //   }
+	      //
+	      // });
+
 
 	      this.setTimeSlider = function () {
 	        var allTickArr = [];
@@ -33770,6 +33763,12 @@
 	        }
 	      }
 
+	      function resizeLocations(rtCount) {
+	        console.log('rtCount', rtCount);
+	        var newSize = getLocationSizeBucket(rtCount);
+	        console.log('newSize', newSize);
+	      }
+
 	      ////
 	      // click event for areas
 	      ////
@@ -34002,6 +34001,7 @@
 	        console.log(tradRouteCount);
 	        toDoAreaPts = Object.assign(toDoAreaPts, tradRouteCount);
 	        console.log(toDoAreaPts);
+	        resizeLocations(toDoAreaPts);
 	      }
 
 	      return _react3.default.createElement(
@@ -34031,11 +34031,12 @@
 	            _reactLeaflet.LayersControl.Overlay,
 	            { name: 'To-Do Areas', checked: true },
 	            _react3.default.createElement(_GeoJsonUpdatable2.default, {
+	              ref: 'map',
 	              data: toDoAreaPts,
 	              style: this.state.todoLayerStyle,
 	              onEachFeature: onEachTodoFeature.bind(null, this),
-	              pointToLayer: areaTodoPtsPointToLayer,
-	              getLocationSizeBucket: getLocationSizeBucket.bind(this) })
+	              pointToLayer: areaTodoPtsPointToLayer
+	            })
 	          ),
 	          _react3.default.createElement(
 	            _reactLeaflet.LayersControl.Overlay,
@@ -55978,6 +55979,8 @@
 	    }, {
 	        key: "componentDidUpdate",
 	        value: function componentDidUpdate(prevProps) {
+	            var _this2 = this;
+
 	            if (prevProps.data !== this.props.data) {
 	                this.leafletElement.addData(this.props.data);
 	            }
@@ -55986,14 +55989,14 @@
 	                this.leafletElement.setStyle(this.props.style);
 	            }
 
-	            // if (prevProps.data !== this.props.data) {
-	            //   console.log('newprops',this.props.data)
-	            //   map.eachLayer((layer) => {
-	            //     const newSize = this.props.getLocationSizeBucket(this.props.data.features.properties.customTradCt)
-	            //     console.log('newsize', newSize)
-	            //     layer.setRadius(newSize)
-	            // })
-	            // }
+	            if (prevProps.data !== this.props.data) {
+	                console.log('newprops', this.props.data);
+	                map.eachLayer(function (layer) {
+	                    var newSize = _this2.props.getLocationSizeBucket(_this2.props.data.features.properties.customTradCt);
+	                    console.log('newsize', newSize);
+	                    layer.setRadius(newSize);
+	                });
+	            }
 	        }
 	    }]);
 
