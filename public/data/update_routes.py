@@ -1,6 +1,9 @@
 import json, requests, psycopg2, collections, sys, os
 
-class MPData:
+#TODO 	- break MPData into its own parent that Update Routes inherits
+#			* This would allow us to customize diffirent climbing app data
+#		- use try/except for data requests
+class MPData_Routes:
 	
 	def __init__(self, dbConnectParams):
 		
@@ -19,43 +22,32 @@ class MPData:
 
 		self.cur = self.conn.cursor()  ## open a cursor
 		
-		
 		#cur.execute("SELECT a.id as areaId, a.name as areaName FROM area a;")	
 		self.cur.execute("""SELECT a.id as areaId, a.name as areaName, c.name AS country, s.name AS state FROM area a
 							INNER JOIN countries c ON st_within(a.geo_point, c.geo_poly)
 							LEFT JOIN usa_states s ON st_within(a.geo_point, s.geo_poly)
 							ORDER BY a.id;""")
-							global areaLookup
 		
-		self.areaLookup = cur.fetchall()	
+		self.areaLookup = self.cur.fetchall()	
 
 		self.cur.execute("""SELECT a.id as areaId, a.name as areaName, c.id as cragId, c.name as cragName 
 							FROM area a 
 							INNER JOIN crag c ON a.id = c.area;""")
 
 		# global cragLookup
-		self.cragLookup = cur.fetchall()	
+		self.cragLookup = self.cur.fetchall()	
 		
 		self.cur.execute("SELECT id, area, crag, locationstr FROM route;")		
 		
 		# global routeLookup
-		self.routeLookup = cur.fetchall()
-		
-		#self.conn.close()
+		self.routeLookup = self.cur.fetchall()
+
 
 	def __del__(self):
 		self.conn.close()
 		
-	def updateRoutes(self, changedAreaId, areaType):
-		# dbHost = dbConnectParams['dbHost']
-		# dbPort = dbConnectParams['dbPort']
-		# dbUser = dbConnectParams['dbUser']
-		# dbPass = dbConnectParams['dbPass']
-		# dbName = dbConnectParams['dbName']
 
-		# #DB connection properties
-		# conn = psycopg2.connect(database = dbName, host= dbHost, port= dbPort, user = dbUser,password= dbPass)
-		# cur = conn.cursor()  ## open a cursor
+	def updateRoutes(self, changedAreaId, areaType):
 		
 		for rt in self.routeLookup:
 			routeId = rt[0]
@@ -168,6 +160,7 @@ class MPData:
 		#no match found
 		return -1
 	
+
 	def existingRouteLocationExists(self, inRouteId):
 		for route in self.routeLookup:
 			if str(route[0]) == str(inRouteId):
@@ -175,7 +168,8 @@ class MPData:
 					return True
 				
 		return False
-		
+	
+
 	def routeExists(self, inRouteId):
 		for route in self.routeLookup:
 			if str(route[0]) == str(inRouteId):
@@ -197,8 +191,8 @@ if __name__ == '__main__':
 	
 	dbConnectParams = { 'dbHost':dbHost, 'dbPort':dbPort, 'dbUser':dbUser, 'dbPass':dbPass, 'dbName':dbName }
 
-	
-	MPData = MPData(dbConnectParams)
+	# Initialize MPData
+	MPData = MPData_Routes(dbConnectParams)
 	
 	MPData.updateRoutes(dbConnectParams, changedAreaId, areaType)
 	
