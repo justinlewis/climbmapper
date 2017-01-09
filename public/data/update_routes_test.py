@@ -24,15 +24,14 @@ class MPData_Routes_Test(unittest.TestCase):
                                 'dbUser':self.dbUser,\
                                 'dbPass':self.dbPass,\
                                 'dbName':self.dbName }
-        self.MPData_ToDo_Test = MPData_Routes(self.dbConnectParams)
+        self.MPData_Routes_Test = MPData_Routes(self.dbConnectParams)
 
     def tearDown(self):
 
-        del self.MPData_ToDo_Test
+        del self.MPData_Routes_Test
 
     def test_UpdateRoutes(self):
-        #TODO
-        pass
+        self.MPData_Routes_Test.updateRoutes(None, None)
 
     def test_GetAreaMatchId(self):
         #TODO
