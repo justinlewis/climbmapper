@@ -1,0 +1,9 @@
+Instructions on how to run the tests.
+
+RUN THE FOLLOWING COMMANDS:
+
+# Change directory to data
+cd climbmapper/data
+
+#
+python -B -m unittest tests.update_routes_test tests.mp_data_test

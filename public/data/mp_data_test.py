@@ -17,6 +17,7 @@ class MPData_ToDo_Test(unittest.TestCase):
         # Database initialization
         self.dbHost = os.getenv('OPENSHIFT_POSTGRESQL_DB_HOST', 'localhost')
         self.dbPort = os.getenv('OPENSHIFT_POSTGRESQL_DB_PORT', 5432)
+        # app_user doesn't have correct privileges, switch user with rw access
         self.dbUser = os.getenv('OPENSHIFT_POSTGRESQL_DB_USERNAME', "app_user")
         self.dbPass = os.getenv('OPENSHIFT_POSTGRESQL_DB_PASSWORD', "reader")
         self.dbName = os.getenv('OPENSHIFT_APP_NAME', 'climbmapper')
@@ -50,18 +51,18 @@ class MPData_ToDo_Test(unittest.TestCase):
 
     def test_GetToDos(self):
         # returns list tDoLst
-        assertIsNot(not MPData_ToDo_Test.getToDos(self,\
-                                                mpUserKey,\
-                                                mpUserEmail,\
-                                                appUserId), True,\
+        self.assertIsNot(not self.MPData_ToDo_Test.getToDos(\
+                                                self.mpUserKey,\
+                                                self.mpUserEmail,\
+                                                self.appUserId), True,\
                                                         msg="ToDo list is empty.")
 
 
     def test_GetTicks(self):
-        assertIsNot(not MPData_ToDo_Test.getTicks(self,\
-                                                mpUserKey,\
-                                                mpUserEmail,\
-                                                appUserId), True,\
+        self.assertIsNot(not self.MPData_ToDo_Test.getTicks(\
+                                                self.mpUserKey,\
+                                                self.mpUserEmail,\
+                                                self.appUserId), True,\
                                                         msg="Ticks list is empty.")
 
 
@@ -126,7 +127,7 @@ class MPData_ToDo_Test(unittest.TestCase):
 
 
     def test_GetBoulderGrade(self):
-        #TODO
+        TODO
         pass
 
 if __name__ == '__main__':
