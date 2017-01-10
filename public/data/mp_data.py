@@ -217,6 +217,8 @@ class MPData_ToDo:
 						# Locations from MP are arrays of location names
 						# will search from crag to area (more discrete location to less discrete)
 						thisLocArr = rt["location"]
+						# !debug 
+						print thisLocArr
 						thisAreaId = self.getAreaMatchId(thisLocArr)
 
 						if thisAreaId >= 0:
@@ -479,13 +481,13 @@ class MPData_ToDo:
 
 if __name__ == '__main__':
 
-	mpUserKey = sys.argv[1]
-	mpUserEmail = sys.argv[2]
-	appUserId = sys.argv[3]
+	# mpUserKey = sys.argv[1]
+	# mpUserEmail = sys.argv[2]
+	# appUserId = sys.argv[3]
 
-	# mpUserKey = "106251374-a0e6d43518505bec412a547956f25216"
-	# mpUserEmail = "j.mapping@gmail.com"
-	# appUserId = 1
+	mpUserKey = "106251374-a0e6d43518505bec412a547956f25216"
+	mpUserEmail = "j.mapping@gmail.com"
+	appUserId = 1
 
 	print "Getting Mountain Project Todo and Tick Routes..."
 
@@ -498,7 +500,7 @@ if __name__ == '__main__':
 	dbConnectParams = { 'dbHost':dbHost, 'dbPort':dbPort, 'dbUser':dbUser, 'dbPass':dbPass, 'dbName':dbName }
 
 	# Unitialize MPData
-	MPData = MPData_Todo(appUserId, dbConnectParams)
+	MPData = MPData_ToDo(appUserId, dbConnectParams)
 
 	toDoIdList = MPData.getToDos(mpUserKey, mpUserEmail, appUserId)
 	idTracking = MPData.getRoutes(toDoIdList, 'todo', mpUserKey, [])
