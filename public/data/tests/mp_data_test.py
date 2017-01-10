@@ -15,6 +15,7 @@ class MPData_ToDo_Test(unittest.TestCase):
         self.appUserId = 1
 
         # Database initialization
+        # mp_data.py requires write access so change dbHost accordingly
         self.dbHost = os.getenv('OPENSHIFT_POSTGRESQL_DB_HOST', 'localhost')
         self.dbPort = os.getenv('OPENSHIFT_POSTGRESQL_DB_PORT', 5432)
         # app_user doesn't have correct privileges, switch user with rw access
