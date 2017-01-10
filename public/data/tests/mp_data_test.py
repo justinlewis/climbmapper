@@ -43,10 +43,10 @@ class MPData_ToDo_Test(unittest.TestCase):
     #                         msg="Could not connect DB cursor")
 
 
-    # def mPData_ToDo_Class_Init_Test(self):
-    #     self.MPData_ToDo = MPData_ToDo()
-    #     self.assertIsInstance(ovbject, MPData_ToDo,
-    #         msg="Class could not be initialized")
+    def mPData_ToDo_Class_Init_Test(self):
+        self.MPData_ToDo = MPData_ToDo()
+        self.assertIsInstance(ovbject, MPData_ToDo,
+            msg="Class could not be initialized")
 
 
     def test_GetToDos(self):
@@ -55,7 +55,7 @@ class MPData_ToDo_Test(unittest.TestCase):
                                                 self.mpUserKey,\
                                                 self.mpUserEmail,\
                                                 self.appUserId), True,\
-                                                        msg="ToDo list is empty.")
+                                                msg="ToDo list is empty.")
 
 
     def test_GetTicks(self):
@@ -63,72 +63,85 @@ class MPData_ToDo_Test(unittest.TestCase):
                                                 self.mpUserKey,\
                                                 self.mpUserEmail,\
                                                 self.appUserId), True,\
-                                                        msg="Ticks list is empty.")
+                                                msg="Ticks list is empty.")
 
 
     def test_GetRoutes(self):
-        #TODO
-        pass
+        self.assertIsNot(not self.MPData_ToDo_Test.getRoutes(\
+                                                self.toDoIdList,\
+                                                'todo',\
+                                                self.mpUserKey,\
+                                                []), True,\
+                                                msg="Routes")
 
 
     def test_GetAreaMatchId(self):
-        #TODO
-        pass
+        # Using a random array for now
+        locationArr = [u'International',\
+                    u'North America',\
+                    u'Canada',\
+                    u'British Columbia',\
+                    u'Squamish',\
+                    u'The Chief',\
+                    u'Grand Wall Boulders']
+        self.assertNotEqual(self.MPData_ToDo_Test.getAreaMatchId(\
+                            locationArr),\
+                            -1, msg="getAreaMatchId failed")
 
 
-    def test_GetContainingGeographyForArea(self):
-        #TODO
-        pass
+    # def test_GetContainingGeographyForArea(self):
+    #     #TODO
+    #     pass
 
 
-    def test_GetCragMatchId(self):
-        #TODO
-        pass
+    # def test_GetCragMatchId(self):
+    #     #TODO
+    #     pass
 
 
-    def test_ExistingRouteLocationExists(self):
-        #TODO
-        pass
+    # def test_ExistingRouteLocationExists(self):
+    #     #TODO
+    #     pass
 
 
-    def test_RouteExists(self):
-        #TODO
-        pass
+    # def test_RouteExists(self):
+    #     #TODO
+    #     pass
 
 
-    def test_TodoExists(self):
-        #TODO
-        pass
+    # def test_TodoExists(self):
+    #     #TODO
+    #     pass
 
 
-    def test_TickExists(self):
-        #TODO
-        pass
+    # def test_TickExists(self):
+    #     #TODO
+    #     pass
 
 
-    def test_GetCleanRating(self):
-        #TODO
-        pass
+    # def test_GetCleanRating(self):
+    #     #TODO
+    #     pass
 
 
-    def test_GetCleanTypeName(self):
-        #TODO
-        pass
+    # def test_GetCleanTypeName(self):
+    #     #TODO
+    #     pass
 
 
-    def test_GetRouteType(self):
-        #TODO
-        pass
+    # def test_GetRouteType(self):
+    #     #TODO
+    #     pass
 
 
-    def test_GetYDSGrade(self):
-        #TODO
-        pass
+    # def test_GetYDSGrade(self):
+    #     #TODO
+    #     pass
 
 
-    def test_GetBoulderGrade(self):
-        TODO
-        pass
+    # def test_GetBoulderGrade(self):
+    #     TODO
+    #     pass
 
 if __name__ == '__main__':
     unittest.main()
