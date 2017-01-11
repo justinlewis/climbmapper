@@ -6,7 +6,7 @@ import LeftSidebar from '../LeftSidebar.jsx';
 
 const mapStateToProps = (state) => {
   return {
-    info: "test"
+    header: state.featureInfo.heading
   }
 }
 

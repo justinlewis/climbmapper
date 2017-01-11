@@ -12,7 +12,7 @@ import { Map,
   GeoJSON,
   ZoomControl } from 'react-leaflet';
 import GeoJsonUpdatable from "./GeoJsonUpdatable.jsx"
-import { setFeatureInfo } from './actions/MapActions.js';
+import { setFeatureInfo, hoverFeatureInfo } from './actions/MapActions.js';
 
 import BarChart from './BarChart.jsx';
 // import LineChart from './charts/LineChart.js';
@@ -973,7 +973,7 @@ class MapComponent extends React.Component {
         // action to perform when mousing over a feature
         function todoHoverAction(e) {
             var layer = e.target;
-            store.dispatch(setFeatureInfo(layer))
+            store.dispatch(hoverFeatureInfo(layer))
             console.log("dispatched")
             // removeAllCharts();
 

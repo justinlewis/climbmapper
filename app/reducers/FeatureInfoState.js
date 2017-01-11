@@ -22,7 +22,7 @@ export default function featureInfo(state = initialState, action) {
       const test = state.heading;
 
       return {
-        heading : test
+        heading : action.info.feature.properties.area
       }
 
     default:

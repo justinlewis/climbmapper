@@ -10,8 +10,7 @@ class LeftSidebar extends React.Component {
     		return(
           <div className="col-xs-6 col-lg-4" id="left-sidebar">
             <div id="left-sidebar-heading-info-container">
-                <h2 id="left-sidebar-heading" className="text-center"></h2>
-
+                <h2 id="left-sidebar-heading" className="text-center">{this.props.header}</h2>
                 <div id="hover-text-info-container"></div>
             </div>
             <BarChart  ></BarChart>

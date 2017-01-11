@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "db5560528bb2764053a2"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "822f946592ab862b1e45"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -32581,7 +32581,7 @@
 	      var test = state.heading;
 
 	      return {
-	        heading: test
+	        heading: action.info.feature.properties.area
 	      };
 
 	    default:
@@ -33891,7 +33891,7 @@
 	      // action to perform when mousing over a feature
 	      function todoHoverAction(e) {
 	        var layer = e.target;
-	        store.dispatch((0, _MapActions.setFeatureInfo)(layer));
+	        store.dispatch((0, _MapActions.hoverFeatureInfo)(layer));
 	        console.log("dispatched");
 	        // removeAllCharts();
 
@@ -57176,7 +57176,7 @@
 
 	var mapStateToProps = function mapStateToProps(state) {
 	  return {
-	    info: "test"
+	    header: state.featureInfo.heading
 	  };
 	};
 
@@ -57269,7 +57269,11 @@
 	          'div',
 	          { id: 'left-sidebar-heading-info-container' },
 	          _react3.default.createElement('h2', { id: 'left-sidebar-heading', className: 'text-center' }),
-	          _react3.default.createElement('div', { id: 'hover-text-info-container' })
+	          _react3.default.createElement(
+	            'div',
+	            { id: 'hover-text-info-container' },
+	            this.props.header
+	          )
 	        ),
 	        _react3.default.createElement(_BarChart2.default, null),
 	        _react3.default.createElement(
