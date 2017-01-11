@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "7e95ac9995a25ad5d19e"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "db5560528bb2764053a2"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -32651,7 +32651,7 @@
 
 	var _MapContainer2 = _interopRequireDefault(_MapContainer);
 
-	var _NavBarContainer = __webpack_require__(627);
+	var _NavBarContainer = __webpack_require__(629);
 
 	var _NavBarContainer2 = _interopRequireDefault(_NavBarContainer);
 
@@ -32806,6 +32806,10 @@
 
 	var _BarChart2 = _interopRequireDefault(_BarChart);
 
+	var _LeftSideBarContainer = __webpack_require__(627);
+
+	var _LeftSideBarContainer2 = _interopRequireDefault(_LeftSideBarContainer);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -32862,30 +32866,7 @@
 	        _react3.default.createElement(
 	          'div',
 	          { className: 'row' },
-	          _react3.default.createElement(
-	            'div',
-	            { className: 'col-xs-6 col-lg-4', id: 'left-sidebar' },
-	            _react3.default.createElement(
-	              'div',
-	              { id: 'left-sidebar-heading-info-container' },
-	              _react3.default.createElement('h2', { id: 'left-sidebar-heading', className: 'text-center' }),
-	              _react3.default.createElement('div', { id: 'hover-text-info-container' })
-	            ),
-	            _react3.default.createElement(_BarChart2.default, null),
-	            _react3.default.createElement(
-	              'div',
-	              { className: 'row slider-row' },
-	              _react3.default.createElement(
-	                'div',
-	                { id: 'tick-slider' },
-	                _react3.default.createElement(
-	                  'div',
-	                  { id: 'time-slider-label-container' },
-	                  _react3.default.createElement('p', { id: 'time-slider-label' })
-	                )
-	              )
-	            )
-	          ),
+	          _react3.default.createElement(_LeftSideBarContainer2.default, null),
 	          _react3.default.createElement(
 	            'div',
 	            { className: 'col-xs-12 col-sm-6 col-lg-8 right-main-panel' },
@@ -33397,7 +33378,6 @@
 
 	          cachedTodoAreaPts.features[n].properties.customRouteCt = cachedTodoAreaPts.features[n].properties.count;
 	        }
-
 	        this.setState({
 	          todoAreaPts: cachedTodoAreaPts,
 	          todoLayerStyle: getModifiedStyle.bind(null, this, 'ALL', areaTodoPtsDefaultStyle)
@@ -33995,12 +33975,9 @@
 	      var toDoAreaPts = this.state.todoAreaPts;
 	      if (this.props.routeType.routeType === 'ALL') {
 	        toDoAreaPts = this.state.todoAreaPts;
-	        console.log(toDoAreaPts);
 	      } else if (this.props.routeType.routeType === 'TRAD') {
 	        var tradRouteCount = { features: this.state.todoAreaPts.features.filter(filterByRouteType) };
-	        console.log(tradRouteCount);
 	        toDoAreaPts = Object.assign(toDoAreaPts, tradRouteCount);
-	        console.log(toDoAreaPts);
 	        resizeLocations(toDoAreaPts);
 	      }
 
@@ -34035,7 +34012,8 @@
 	              data: toDoAreaPts,
 	              style: this.state.todoLayerStyle,
 	              onEachFeature: onEachTodoFeature.bind(null, this),
-	              pointToLayer: areaTodoPtsPointToLayer
+	              pointToLayer: areaTodoPtsPointToLayer,
+	              getLocationSizeBucket: getLocationSizeBucket
 	            })
 	          ),
 	          _react3.default.createElement(
@@ -55979,24 +55957,24 @@
 	    }, {
 	        key: "componentDidUpdate",
 	        value: function componentDidUpdate(prevProps) {
-	            var _this2 = this;
-
 	            if (prevProps.data !== this.props.data) {
 	                this.leafletElement.addData(this.props.data);
 	            }
 
 	            if (prevProps.style !== this.props.style) {
+	                console.log('style', this.props.style);
+	                console.log('getlocationsize', this.props.getLocationSizeBucket);
 	                this.leafletElement.setStyle(this.props.style);
 	            }
 
-	            if (prevProps.data !== this.props.data) {
-	                console.log('newprops', this.props.data);
-	                map.eachLayer(function (layer) {
-	                    var newSize = _this2.props.getLocationSizeBucket(_this2.props.data.features.properties.customTradCt);
-	                    console.log('newsize', newSize);
-	                    layer.setRadius(newSize);
-	                });
-	            }
+	            // if (prevProps.data !== this.props.data) {
+	            //   map.eachLayer((layer) => {
+	            //     debugger;
+	            //     const newSize = this.props.getLocationSizeBucket(this.props.data.features[layer].properties.customTradCt)
+	            //     console.log('newsize', newSize)
+	            //     layer.setRadius(newSize)
+	            //   })
+	            // }
 	        }
 	    }]);
 
@@ -57190,9 +57168,154 @@
 
 	var _reactRedux = __webpack_require__(376);
 
-	var _UserActions = __webpack_require__(628);
+	var _LeftSidebar = __webpack_require__(628);
 
-	var _NavBar = __webpack_require__(629);
+	var _LeftSidebar2 = _interopRequireDefault(_LeftSidebar);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var mapStateToProps = function mapStateToProps(state) {
+	  return {
+	    info: "test"
+	  };
+	};
+
+	var LeftSideBarContainer = (0, _reactRedux.connect)(mapStateToProps)(_LeftSidebar2.default);
+
+	exports.default = LeftSideBarContainer;
+
+/***/ },
+/* 628 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _redboxReact2 = __webpack_require__(13);
+
+	var _redboxReact3 = _interopRequireDefault(_redboxReact2);
+
+	var _reactTransformCatchErrors3 = __webpack_require__(201);
+
+	var _reactTransformCatchErrors4 = _interopRequireDefault(_reactTransformCatchErrors3);
+
+	var _react2 = __webpack_require__(14);
+
+	var _react3 = _interopRequireDefault(_react2);
+
+	var _reactTransformHmr3 = __webpack_require__(202);
+
+	var _reactTransformHmr4 = _interopRequireDefault(_reactTransformHmr3);
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _BarChart = __webpack_require__(622);
+
+	var _BarChart2 = _interopRequireDefault(_BarChart);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _components = {
+	  LeftSidebar: {
+	    displayName: 'LeftSidebar'
+	  }
+	};
+
+	var _reactTransformHmr2 = (0, _reactTransformHmr4.default)({
+	  filename: '/Users/nicholaschambers/Desktop/Turing/mod3/projects/climbmapper_dependency_hell/climbmapper/app/LeftSidebar.jsx',
+	  components: _components,
+	  locals: [module],
+	  imports: [_react3.default]
+	});
+
+	var _reactTransformCatchErrors2 = (0, _reactTransformCatchErrors4.default)({
+	  filename: '/Users/nicholaschambers/Desktop/Turing/mod3/projects/climbmapper_dependency_hell/climbmapper/app/LeftSidebar.jsx',
+	  components: _components,
+	  locals: [],
+	  imports: [_react3.default, _redboxReact3.default]
+	});
+
+	function _wrapComponent(id) {
+	  return function (Component) {
+	    return _reactTransformHmr2(_reactTransformCatchErrors2(Component, id), id);
+	  };
+	}
+
+	var LeftSidebar = _wrapComponent('LeftSidebar')(function (_React$Component) {
+	  _inherits(LeftSidebar, _React$Component);
+
+	  function LeftSidebar(props) {
+	    _classCallCheck(this, LeftSidebar);
+
+	    return _possibleConstructorReturn(this, (LeftSidebar.__proto__ || Object.getPrototypeOf(LeftSidebar)).call(this, props));
+	  }
+
+	  _createClass(LeftSidebar, [{
+	    key: 'render',
+	    value: function render() {
+	      return _react3.default.createElement(
+	        'div',
+	        { className: 'col-xs-6 col-lg-4', id: 'left-sidebar' },
+	        _react3.default.createElement(
+	          'div',
+	          { id: 'left-sidebar-heading-info-container' },
+	          _react3.default.createElement('h2', { id: 'left-sidebar-heading', className: 'text-center' }),
+	          _react3.default.createElement('div', { id: 'hover-text-info-container' })
+	        ),
+	        _react3.default.createElement(_BarChart2.default, null),
+	        _react3.default.createElement(
+	          'div',
+	          { className: 'row slider-row' },
+	          _react3.default.createElement(
+	            'div',
+	            { id: 'tick-slider' },
+	            _react3.default.createElement(
+	              'div',
+	              { id: 'time-slider-label-container' },
+	              _react3.default.createElement('p', { id: 'time-slider-label' })
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return LeftSidebar;
+	}(_react3.default.Component));
+
+	exports.default = LeftSidebar;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
+
+/***/ },
+/* 629 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(14);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _redux = __webpack_require__(356);
+
+	var _reactRedux = __webpack_require__(376);
+
+	var _UserActions = __webpack_require__(630);
+
+	var _NavBar = __webpack_require__(631);
 
 	var _NavBar2 = _interopRequireDefault(_NavBar);
 
@@ -57215,7 +57338,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_NavBar2.default);
 
 /***/ },
-/* 628 */
+/* 630 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57246,7 +57369,7 @@
 	};
 
 /***/ },
-/* 629 */
+/* 631 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {'use strict';
@@ -57273,11 +57396,11 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _NavBarButtons = __webpack_require__(630);
+	var _NavBarButtons = __webpack_require__(632);
 
 	var _NavBarButtons2 = _interopRequireDefault(_NavBarButtons);
 
-	var _NavBarTools = __webpack_require__(636);
+	var _NavBarTools = __webpack_require__(638);
 
 	var _NavBarTools2 = _interopRequireDefault(_NavBarTools);
 
@@ -57348,7 +57471,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 630 */
+/* 632 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {'use strict';
@@ -57375,23 +57498,23 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _NavBarAboutButton = __webpack_require__(631);
+	var _NavBarAboutButton = __webpack_require__(633);
 
 	var _NavBarAboutButton2 = _interopRequireDefault(_NavBarAboutButton);
 
-	var _NavBarSignUpButton = __webpack_require__(632);
+	var _NavBarSignUpButton = __webpack_require__(634);
 
 	var _NavBarSignUpButton2 = _interopRequireDefault(_NavBarSignUpButton);
 
-	var _NavBarLoginButton = __webpack_require__(633);
+	var _NavBarLoginButton = __webpack_require__(635);
 
 	var _NavBarLoginButton2 = _interopRequireDefault(_NavBarLoginButton);
 
-	var _NavBarProfileButton = __webpack_require__(634);
+	var _NavBarProfileButton = __webpack_require__(636);
 
 	var _NavBarProfileButton2 = _interopRequireDefault(_NavBarProfileButton);
 
-	var _NavBarDataIssuesButton = __webpack_require__(635);
+	var _NavBarDataIssuesButton = __webpack_require__(637);
 
 	var _NavBarDataIssuesButton2 = _interopRequireDefault(_NavBarDataIssuesButton);
 
@@ -57480,7 +57603,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 631 */
+/* 633 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {"use strict";
@@ -57572,7 +57695,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 632 */
+/* 634 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {"use strict";
@@ -57667,7 +57790,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 633 */
+/* 635 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {"use strict";
@@ -57762,7 +57885,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 634 */
+/* 636 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {"use strict";
@@ -57855,7 +57978,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 635 */
+/* 637 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {"use strict";
@@ -57947,7 +58070,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 636 */
+/* 638 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {"use strict";

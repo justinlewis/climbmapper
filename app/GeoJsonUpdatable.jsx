@@ -15,17 +15,19 @@ export default class GeoJsonUpdatable extends GeoJSON {
         }
 
         if (prevProps.style !== this.props.style) {
+          console.log('style', this.props.style)
+          console.log('getlocationsize', this.props.getLocationSizeBucket)
             this.leafletElement.setStyle(this.props.style);
         }
 
-        if (prevProps.data !== this.props.data) {
-          console.log('newprops',this.props.data)
-          map.eachLayer((layer) => {
-            const newSize = this.props.getLocationSizeBucket(this.props.data.features.properties.customTradCt)
-            console.log('newsize', newSize)
-            layer.setRadius(newSize)
-          })
-        }
+        // if (prevProps.data !== this.props.data) {
+        //   map.eachLayer((layer) => {
+        //     debugger;
+        //     const newSize = this.props.getLocationSizeBucket(this.props.data.features[layer].properties.customTradCt)
+        //     console.log('newsize', newSize)
+        //     layer.setRadius(newSize)
+        //   })
+        // }
     }
 }
 

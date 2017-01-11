@@ -449,7 +449,6 @@ class MapComponent extends React.Component {
 
     				cachedTodoAreaPts.features[n].properties.customRouteCt = cachedTodoAreaPts.features[n].properties.count;
     			}
-
           this.setState({
             todoAreaPts: cachedTodoAreaPts,
             todoLayerStyle : getModifiedStyle.bind(null, this, 'ALL', areaTodoPtsDefaultStyle)
@@ -1059,12 +1058,9 @@ class MapComponent extends React.Component {
         let toDoAreaPts = this.state.todoAreaPts
         if (this.props.routeType.routeType === 'ALL') {
           toDoAreaPts = this.state.todoAreaPts
-          console.log(toDoAreaPts)
         } else if (this.props.routeType.routeType === 'TRAD') {
           let tradRouteCount = { features: this.state.todoAreaPts.features.filter(filterByRouteType) }
-          console.log(tradRouteCount)
           toDoAreaPts = Object.assign(toDoAreaPts, tradRouteCount)
-          console.log(toDoAreaPts)
           resizeLocations(toDoAreaPts)
         }
 
@@ -1094,6 +1090,7 @@ class MapComponent extends React.Component {
                 style={this.state.todoLayerStyle}
                 onEachFeature={onEachTodoFeature.bind(null, this)}
                 pointToLayer={areaTodoPtsPointToLayer}
+                getLocationSizeBucket={getLocationSizeBucket}
               >
               </GeoJsonUpdatable>
             </LayersControl.Overlay>
