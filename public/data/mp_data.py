@@ -498,7 +498,7 @@ if __name__ == '__main__':
 	dbConnectParams = { 'dbHost':dbHost, 'dbPort':dbPort, 'dbUser':dbUser, 'dbPass':dbPass, 'dbName':dbName }
 
 	# Unitialize MPData
-	MPData = MPData_Todo(appUserId, dbConnectParams)
+	MPData = MPData_ToDo(appUserId, dbConnectParams)
 
 	toDoIdList = MPData.getToDos(mpUserKey, mpUserEmail, appUserId)
 	idTracking = MPData.getRoutes(toDoIdList, 'todo', mpUserKey, [])
