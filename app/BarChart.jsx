@@ -292,6 +292,7 @@ class BarChartComponent extends React.Component {
     }
 
     componentDidMount() {
+      this.setState({routeArr: this.props.areaInfo})
 
      }
 
@@ -313,7 +314,7 @@ class BarChartComponent extends React.Component {
         // <BarChart></BarChart>
 
         // <div id="chart-row-2" className="row chart-row" style={hideStyle}></div>
-        this.state.routeArr.length > 0 ? <div id="chart-row-1" className="row chart-row"></div> : null
+        this.state.routeArray ? <div id="chart-row-1" className="row chart-row"></div> : null
   		);
     }
 }

@@ -19,10 +19,9 @@ export default function featureInfo(state = initialState, action) {
         body : newBody
       }
     case types.HOVER_FEATURE_INFO:
-      const test = state.heading;
-
       return {
-        heading : action.info.feature.properties.area
+        heading : action.info.feature.properties.area,
+        areaInfo : action.info.feature.properties
       }
 
     default:

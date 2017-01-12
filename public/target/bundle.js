@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "822f946592ab862b1e45"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "3221e6efb8114dfcba48"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -32578,10 +32578,9 @@
 	        body: newBody
 	      };
 	    case types.HOVER_FEATURE_INFO:
-	      var test = state.heading;
-
 	      return {
-	        heading: action.info.feature.properties.area
+	        heading: action.info.feature.properties.area,
+	        areaInfo: action.info.feature.properties
 	      };
 
 	    default:
@@ -56352,7 +56351,10 @@
 	    value: function componentWillReceiveProps() {}
 	  }, {
 	    key: 'componentDidMount',
-	    value: function componentDidMount() {}
+	    value: function componentDidMount() {
+	      debugger;
+	      this.setState({ routeArr: this.props.areaInfo });
+	    }
 	  }, {
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {}
@@ -56368,7 +56370,7 @@
 	        // <BarChart></BarChart>
 
 	        // <div id="chart-row-2" className="row chart-row" style={hideStyle}></div>
-	        this.state.routeArr.length > 0 ? _react3.default.createElement('div', { id: 'chart-row-1', className: 'row chart-row' }) : null
+	        this.state.routeArray ? _react3.default.createElement('div', { id: 'chart-row-1', className: 'row chart-row' }) : null
 	      );
 	    }
 	  }]);
@@ -57176,7 +57178,8 @@
 
 	var mapStateToProps = function mapStateToProps(state) {
 	  return {
-	    header: state.featureInfo.heading
+	    header: state.featureInfo.heading,
+	    areaInfo: state.featureInfo.areaInfo
 	  };
 	};
 
@@ -57275,7 +57278,7 @@
 	            this.props.header
 	          )
 	        ),
-	        _react3.default.createElement(_BarChart2.default, null),
+	        _react3.default.createElement(_BarChart2.default, { areaInfo: this.props.areaInfo }),
 	        _react3.default.createElement(
 	          'div',
 	          { className: 'row slider-row' },
