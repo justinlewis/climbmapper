@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "0b6ae6f21d737b62ca1b"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "22ff506439a23d57b923"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -33450,46 +33450,6 @@
 	      // @param filter - a filter keyword that filters the radius by route type.
 	      ////
 
-	      var resetLocations = function resetLocations(filter) {
-	        map.eachLayer(function (layer) {
-	          if (layer.feature) {
-	            layer.setRadius(0);
-
-	            if (filter.toUpperCase() === 'ALL') {
-	              // customRouteCt is currently ToDo frequency and will take priority over existing area points
-	              if (layer.feature.properties.customRouteCt > 0) {
-	                var routeCt = getLocationSizeBucket(layer.feature.properties.customRouteCt);
-	                layer.setRadius(routeCt);
-	              }
-
-	              if (layer.feature.properties.customTicksCt > 0) {
-	                var ticksCt = getLocationSizeBucket(layer.feature.properties.customTicksCt);
-	                layer.setRadius(ticksCt);
-	              }
-	            } else if (filter.toUpperCase() === 'TRAD') {
-	              if (layer.feature.properties.customTradCt > 0) {
-	                var routeCt = getLocationSizeBucket(layer.feature.properties.customTradCt);
-	                layer.setRadius(routeCt);
-	              }
-	            } else if (filter.toUpperCase() === 'SPORT') {
-	              if (layer.feature.properties.customSportCt > 0) {
-	                var routeCt = getLocationSizeBucket(layer.feature.properties.customSportCt);
-	                layer.setRadius(routeCt);
-	              }
-	            } else if (filter.toUpperCase() === 'BOULDER') {
-	              if (layer.feature.properties.customBoulderCt > 0) {
-	                var routeCt = getLocationSizeBucket(layer.feature.properties.customBoulderCt);
-	                layer.setRadius(routeCt);
-	              }
-	            } else if (filter.toUpperCase() === 'ALPINE') {
-	              if (layer.feature.properties.customAlpineCt > 0) {
-	                var routeCt = getLocationSizeBucket(layer.feature.properties.customAlpineCt);
-	                layer.setRadius(routeCt);
-	              }
-	            }
-	          }
-	        });
-	      };
 
 	      this.setTimeSlider = function () {
 	        var allTickArr = [];
@@ -33696,6 +33656,8 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _this2 = this;
+
 	      var store = this.context.store;
 
 	      var that = this;
@@ -33964,14 +33926,13 @@
 	        }
 	      }
 
-	      var toDoAreaPts = this.state.todoAreaPts;
-	      if (this.props.routeType.routeType === 'ALL') {
-	        toDoAreaPts = this.state.todoAreaPts;
-	      } else if (this.props.routeType.routeType === 'TRAD') {
-	        var tradRouteCount = { features: this.state.todoAreaPts.features.filter(filterByRouteType) };
-	        toDoAreaPts = Object.assign(toDoAreaPts, tradRouteCount);
-	        // resizeLocations(toDoAreaPts)
-	      }
+	      // let toDoAreaPts = this.state.todoAreaPts
+	      // if (this.props.routeType.routeType === 'ALL') {
+	      //   toDoAreaPts = this.state.todoAreaPts
+	      // } else if (this.props.routeType.routeType === 'TRAD') {
+	      //   let tradRouteCount = { features: this.state.todoAreaPts.features.filter(filterByRouteType) }
+	      //   toDoAreaPts = Object.assign(toDoAreaPts, tradRouteCount)
+	      // }
 
 	      return _react3.default.createElement(
 	        _reactLeaflet.Map,
@@ -34000,9 +33961,13 @@
 	            _reactLeaflet.LayersControl.Overlay,
 	            { name: 'To-Do Areas', checked: true },
 	            _react3.default.createElement(_GeoJsonUpdatable2.default, {
-	              ref: 'map',
-	              data: toDoAreaPts,
+	              ref: 'map' //TODO: remove if we use props
+	              , data: this.state.todoAreaPts,
 	              style: this.state.todoLayerStyle,
+	              resizeLocation: function resizeLocation() {
+	                return _this2.resizeLocations().bind(_this2);
+	              },
+	              routeType: this.props.routeType,
 	              onEachFeature: onEachTodoFeature.bind(null, this),
 	              pointToLayer: areaTodoPtsPointToLayer,
 	              getLocationSizeBucket: getLocationSizeBucket
@@ -34014,6 +33979,10 @@
 	            _react3.default.createElement(_GeoJsonUpdatable2.default, {
 	              data: this.state.tickAreaPts,
 	              style: this.state.tickLayerStyle,
+	              resizeLocation: function resizeLocation() {
+	                return _this2.resizeLocations().bind(_this2);
+	              },
+	              routeType: this.props.routeType,
 	              onEachFeature: onEachTickFeature.bind(null, this),
 	              pointToLayer: areaTickPtsPointToLayer })
 	          )
@@ -55911,7 +55880,7 @@
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	  value: true
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -55931,54 +55900,106 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var GeoJsonUpdatable = function (_GeoJSON) {
-	    _inherits(GeoJsonUpdatable, _GeoJSON);
+	  _inherits(GeoJsonUpdatable, _GeoJSON);
 
-	    function GeoJsonUpdatable() {
-	        _classCallCheck(this, GeoJsonUpdatable);
+	  function GeoJsonUpdatable() {
+	    _classCallCheck(this, GeoJsonUpdatable);
 
-	        return _possibleConstructorReturn(this, (GeoJsonUpdatable.__proto__ || Object.getPrototypeOf(GeoJsonUpdatable)).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (GeoJsonUpdatable.__proto__ || Object.getPrototypeOf(GeoJsonUpdatable)).apply(this, arguments));
+	  }
+
+	  _createClass(GeoJsonUpdatable, [{
+	    key: "componentWillReceiveProps",
+	    value: function componentWillReceiveProps(prevProps) {
+	      if (prevProps.data !== this.props.data) {
+	        this.leafletElement.clearLayers();
+	      }
 	    }
+	  }, {
+	    key: "componentDidUpdate",
+	    value: function componentDidUpdate(prevProps) {
+	      var that = this;
 
-	    _createClass(GeoJsonUpdatable, [{
-	        key: "componentWillReceiveProps",
-	        value: function componentWillReceiveProps(prevProps) {
-	            if (prevProps.data !== this.props.data) {
-	                this.leafletElement.clearLayers();
+	      var map = this.leafletElement;
+
+	      if (typeof this.props.style === 'function') {}
+	      if (prevProps.data !== this.props.data) {
+	        map.addData(this.props.data);
+	      }
+
+	      if (prevProps.style !== this.props.style) {
+	        map.setStyle(this.props.style);
+	      }
+	      if (prevProps.routeType !== this.props.routeType) {
+	        this.resizeLocations(this.props.routeType.routeType);
+	      }
+
+	      // if (prevProps.data !== this.props.data) {
+	      //   if(map){
+	      //     map.eachLayer((layer) => {
+	      //       if(layer.feature){
+	      //         const newSize = that.props.this.props.getLocationSizeBucket(layer.feature.properties.customTradCt)
+	      //         console.log('newsize', newSize)
+	      //         layer.setRadius(newSize)
+	      //       }
+	      //     });
+	      //   }
+	      // }
+	    }
+	  }, {
+	    key: "resizeLocations",
+	    value: function resizeLocations(filter) {
+	      var _this2 = this;
+
+	      this.leafletElement.eachLayer(function (layer) {
+	        if (layer.feature) {
+	          layer.setRadius(0);
+	          if (filter === 'ALL') {
+	            // customRouteCt is currently ToDo frequency and will take priority over existing area points
+	            if (layer.feature.properties.customRouteCt > 0) {
+	              var routeCt = _this2.props.getLocationSizeBucket(layer.feature.properties.customRouteCt);
+	              console.log(routeCt);
+	              layer.setRadius(routeCt);
 	            }
+
+	            if (layer.feature.properties.customTicksCt > 0) {
+	              var ticksCt = _this2.props.getLocationSizeBucket(layer.feature.properties.customTicksCt);
+	              layer.setRadius(ticksCt);
+	            }
+	          } else if (filter === 'TRAD') {
+	            if (layer.feature.properties.customTradCt > 0) {
+	              var routeCt = _this2.props.getLocationSizeBucket(layer.feature.properties.customTradCt);
+	              layer.setRadius(routeCt);
+	            }
+	          } else if (filter === 'SPORT') {
+	            if (layer.feature.properties.customSportCt > 0) {
+	              var routeCt = _this2.props.getLocationSizeBucket(layer.feature.properties.customSportCt);
+	              layer.setRadius(routeCt);
+	            }
+	          } else if (filter === 'BOULDER') {
+	            if (layer.feature.properties.customBoulderCt > 0) {
+	              var routeCt = _this2.props.getLocationSizeBucket(layer.feature.properties.customBoulderCt);
+	              layer.setRadius(routeCt);
+	            }
+	          } else if (filter === 'ALPINE') {
+	            if (layer.feature.properties.customAlpineCt > 0) {
+	              var routeCt = _this2.props.getLocationSizeBucket(layer.feature.properties.customAlpineCt);
+	              layer.setRadius(routeCt);
+	            }
+	          }
 	        }
-	    }, {
-	        key: "componentDidUpdate",
-	        value: function componentDidUpdate(prevProps) {
-	            if (typeof this.props.style === 'function') {}
-	            if (prevProps.data !== this.props.data) {
-	                this.leafletElement.addData(this.props.data);
-	            }
+	      });
+	    }
+	  }]);
 
-	            if (prevProps.style !== this.props.style) {
-	                console.log('style', this.props.style);
-	                console.log('getlocationsize', this.props.getLocationSizeBucket);
-	                this.leafletElement.setStyle(this.props.style);
-	            }
-
-	            // if (prevProps.data !== this.props.data) {
-	            //   map.eachLayer((layer) => {
-	            //     debugger;
-	            //     const newSize = this.props.getLocationSizeBucket(this.props.data.features[layer].properties.customTradCt)
-	            //     console.log('newsize', newSize)
-	            //     layer.setRadius(newSize)
-	            //   })
-	            // }
-	        }
-	    }]);
-
-	    return GeoJsonUpdatable;
+	  return GeoJsonUpdatable;
 	}(_reactLeaflet.GeoJSON);
 
 	exports.default = GeoJsonUpdatable;
 
 
 	GeoJsonUpdatable.propTypes = {
-	    data: _react2.default.PropTypes.object.isRequired
+	  data: _react2.default.PropTypes.object.isRequired
 	};
 
 /***/ },
@@ -57163,9 +57184,9 @@
 
 	var _reactRedux = __webpack_require__(376);
 
-	var _LeftSidebar = __webpack_require__(628);
+	var _LeftSideBar = __webpack_require__(628);
 
-	var _LeftSidebar2 = _interopRequireDefault(_LeftSidebar);
+	var _LeftSideBar2 = _interopRequireDefault(_LeftSideBar);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -57176,7 +57197,7 @@
 	  };
 	};
 
-	var LeftSideBarContainer = (0, _reactRedux.connect)(mapStateToProps)(_LeftSidebar2.default);
+	var LeftSideBarContainer = (0, _reactRedux.connect)(mapStateToProps)(_LeftSideBar2.default);
 
 	exports.default = LeftSideBarContainer;
 
@@ -57227,14 +57248,14 @@
 	};
 
 	var _reactTransformHmr2 = (0, _reactTransformHmr4.default)({
-	  filename: '/Users/nicholaschambers/Desktop/Turing/mod3/projects/climbmapper_dependency_hell/climbmapper/app/LeftSidebar.jsx',
+	  filename: '/Users/nicholaschambers/Desktop/Turing/mod3/projects/climbmapper_dependency_hell/climbmapper/app/LeftSideBar.jsx',
 	  components: _components,
 	  locals: [module],
 	  imports: [_react3.default]
 	});
 
 	var _reactTransformCatchErrors2 = (0, _reactTransformCatchErrors4.default)({
-	  filename: '/Users/nicholaschambers/Desktop/Turing/mod3/projects/climbmapper_dependency_hell/climbmapper/app/LeftSidebar.jsx',
+	  filename: '/Users/nicholaschambers/Desktop/Turing/mod3/projects/climbmapper_dependency_hell/climbmapper/app/LeftSideBar.jsx',
 	  components: _components,
 	  locals: [],
 	  imports: [_react3.default, _redboxReact3.default]
