@@ -1085,7 +1085,7 @@ class MapComponent extends React.Component {
 
             <LayersControl.Overlay name='To-Do Areas' checked={true}>
               <GeoJsonUpdatable
-                ref='map'
+                ref={'map'} //TODO: remove if we use props
                 data={toDoAreaPts}
                 resizeLocation={() =>this.resizeLocations().bind(this)}
                 style={this.state.todoLayerStyle}

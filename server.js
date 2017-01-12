@@ -17,10 +17,6 @@ var compiler = webpack(webpackConfig);
 require('./config/passport')(passport);
 
 
-var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080
-var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
-
-
 var app = express();
 
 app.use(require("webpack-dev-middleware")(compiler,{
@@ -44,9 +40,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+var server_port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 8080;
+var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 
-app.set('port', process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 8080);
-app.set('ip', process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1");
+app.set('port', server_port);
+app.set('ip', server_ip_address);
 
 app.listen(server_port, server_ip_address, function () {
   console.log( "Listening on " + server_ip_address + ", server_port " + server_port )
