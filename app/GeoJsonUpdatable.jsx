@@ -22,14 +22,14 @@ export default class GeoJsonUpdatable extends GeoJSON {
             this.leafletElement.setStyle(this.props.style);
         }
 
-        // if (prevProps.data !== this.props.data) {
-        //   map.eachLayer((layer) => {
-        //     debugger;
-        //     const newSize = this.props.getLocationSizeBucket(this.props.data.features[layer].properties.customTradCt)
-        //     console.log('newsize', newSize)
-        //     layer.setRadius(newSize)
-        //   })
-        // }
+        if (prevProps.data !== this.props.data) {
+          map.eachLayer((layer) => {
+            debugger;
+            const newSize = this.props.getLocationSizeBucket(this.props.data.features[layer].properties.customTradCt)
+            console.log('newsize', newSize)
+            layer.setRadius(newSize)
+          })
+        }
     }
 }
 

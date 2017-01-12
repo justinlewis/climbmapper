@@ -458,7 +458,6 @@ class MapComponent extends React.Component {
 
         // getModifiedStyle.bind(null, this, 'ALL')
         function getModifiedStyle(thisRef, filter, currentStyleObj, feature) {
-          debugger;
             var radiusForType = 10;
             switch (filter.toUpperCase()) {
               case 'ALL':
@@ -527,51 +526,6 @@ class MapComponent extends React.Component {
         ////
 
 
-
-            // map.eachLayer(function(layer){
-            //   if(layer.feature){
-            //     layer.setRadius(0);
-            //
-            //     if(filter.toUpperCase() === 'ALL'){
-            //       // customRouteCt is currently ToDo frequency and will take priority over existing area points
-            //       if(layer.feature.properties.customRouteCt > 0){
-            //         var routeCt = getLocationSizeBucket(layer.feature.properties.customRouteCt);
-            //         layer.setRadius(routeCt);
-            //       }
-            //
-            //       if(layer.feature.properties.customTicksCt > 0){
-            //         var ticksCt = getLocationSizeBucket(layer.feature.properties.customTicksCt);
-            //         layer.setRadius(ticksCt);
-            //       }
-            //
-            //     }
-            //     else if(filter.toUpperCase() === 'TRAD'){
-            //       if(layer.feature.properties.customTradCt > 0){
-            //         var routeCt = getLocationSizeBucket(layer.feature.properties.customTradCt);
-            //         layer.setRadius(routeCt);
-            //       }
-            //     }
-            //     else if(filter.toUpperCase() === 'SPORT'){
-            //       if(layer.feature.properties.customSportCt > 0){
-            //         var routeCt = getLocationSizeBucket(layer.feature.properties.customSportCt);
-            //         layer.setRadius(routeCt);
-            //       }
-            //     }
-            //     else if(filter.toUpperCase() === 'BOULDER'){
-            //       if(layer.feature.properties.customBoulderCt > 0){
-            //         var routeCt = getLocationSizeBucket(layer.feature.properties.customBoulderCt);
-            //         layer.setRadius(routeCt);
-            //       }
-            //     }
-            //     else if(filter.toUpperCase() === 'ALPINE'){
-            //       if(layer.feature.properties.customAlpineCt > 0){
-            //         var routeCt = getLocationSizeBucket(layer.feature.properties.customAlpineCt);
-            //         layer.setRadius(routeCt);
-            //       }
-            //     }
-            //   }
-            //
-            // });
 
 
         this.setTimeSlider = function() {
@@ -780,6 +734,53 @@ class MapComponent extends React.Component {
 
         console.log("map has been clicked")
      }
+      resizeLocations(filter) {
+         map.eachLayer((layer) => {
+           if(layer.feature){
+             layer.setRadius(0);
+
+             if(filter.toUpperCase() === 'ALL'){
+               // customRouteCt is currently ToDo frequency and will take priority over existing area points
+               if(layer.feature.properties.customRouteCt > 0){
+                 var routeCt = getLocationSizeBucket(layer.feature.properties.customRouteCt);
+                 layer.setRadius(routeCt);
+               }
+
+               if(layer.feature.properties.customTicksCt > 0){
+                 var ticksCt = getLocationSizeBucket(layer.feature.properties.customTicksCt);
+                 layer.setRadius(ticksCt);
+               }
+
+             }
+             else if(filter.toUpperCase() === 'TRAD'){
+               if(layer.feature.properties.customTradCt > 0){
+                 var routeCt = getLocationSizeBucket(layer.feature.properties.customTradCt);
+                 layer.setRadius(routeCt);
+               }
+             }
+             else if(filter.toUpperCase() === 'SPORT'){
+               if(layer.feature.properties.customSportCt > 0){
+                 var routeCt = getLocationSizeBucket(layer.feature.properties.customSportCt);
+                 layer.setRadius(routeCt);
+               }
+             }
+             else if(filter.toUpperCase() === 'BOULDER'){
+               if(layer.feature.properties.customBoulderCt > 0){
+                 var routeCt = getLocationSizeBucket(layer.feature.properties.customBoulderCt);
+                 layer.setRadius(routeCt);
+               }
+             }
+             else if(filter.toUpperCase() === 'ALPINE'){
+               if(layer.feature.properties.customAlpineCt > 0){
+                 var routeCt = getLocationSizeBucket(layer.feature.properties.customAlpineCt);
+                 layer.setRadius(routeCt);
+               }
+             }
+           }
+
+         })
+
+       }
 
     render () {
         const { store } = this.context;
@@ -821,11 +822,11 @@ class MapComponent extends React.Component {
             }
         }
 
-        function resizeLocations(rtCount) {
-              console.log('rtCount', rtCount)
-              const newSize = getLocationSizeBucket(rtCount)
-              console.log('newSize', newSize)
-        }
+        // function resizeLocations(rtCount) {
+        //       console.log('rtCount', rtCount)
+        //       const newSize = getLocationSizeBucket(rtCount)
+        //       console.log('newSize', newSize)
+        // }
 
 
         ////
@@ -1060,7 +1061,7 @@ class MapComponent extends React.Component {
         } else if (this.props.routeType.routeType === 'TRAD') {
           let tradRouteCount = { features: this.state.todoAreaPts.features.filter(filterByRouteType) }
           toDoAreaPts = Object.assign(toDoAreaPts, tradRouteCount)
-          resizeLocations(toDoAreaPts)
+          // resizeLocations(toDoAreaPts)
         }
 
   		return(
@@ -1086,6 +1087,7 @@ class MapComponent extends React.Component {
               <GeoJsonUpdatable
                 ref='map'
                 data={toDoAreaPts}
+                resizeLocation={() =>this.resizeLocations().bind(this)}
                 style={this.state.todoLayerStyle}
                 onEachFeature={onEachTodoFeature.bind(null, this)}
                 pointToLayer={areaTodoPtsPointToLayer}

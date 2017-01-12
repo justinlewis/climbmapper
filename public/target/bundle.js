@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "f47a0509d1305220b6b3"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "0b6ae6f21d737b62ca1b"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -33385,7 +33385,6 @@
 
 	      // getModifiedStyle.bind(null, this, 'ALL')
 	      function getModifiedStyle(thisRef, filter, currentStyleObj, feature) {
-	        debugger;
 	        var radiusForType = 10;
 	        switch (filter.toUpperCase()) {
 	          case 'ALL':
@@ -33451,52 +33450,46 @@
 	      // @param filter - a filter keyword that filters the radius by route type.
 	      ////
 
+	      var resetLocations = function resetLocations(filter) {
+	        map.eachLayer(function (layer) {
+	          if (layer.feature) {
+	            layer.setRadius(0);
 
-	      // map.eachLayer(function(layer){
-	      //   if(layer.feature){
-	      //     layer.setRadius(0);
-	      //
-	      //     if(filter.toUpperCase() === 'ALL'){
-	      //       // customRouteCt is currently ToDo frequency and will take priority over existing area points
-	      //       if(layer.feature.properties.customRouteCt > 0){
-	      //         var routeCt = getLocationSizeBucket(layer.feature.properties.customRouteCt);
-	      //         layer.setRadius(routeCt);
-	      //       }
-	      //
-	      //       if(layer.feature.properties.customTicksCt > 0){
-	      //         var ticksCt = getLocationSizeBucket(layer.feature.properties.customTicksCt);
-	      //         layer.setRadius(ticksCt);
-	      //       }
-	      //
-	      //     }
-	      //     else if(filter.toUpperCase() === 'TRAD'){
-	      //       if(layer.feature.properties.customTradCt > 0){
-	      //         var routeCt = getLocationSizeBucket(layer.feature.properties.customTradCt);
-	      //         layer.setRadius(routeCt);
-	      //       }
-	      //     }
-	      //     else if(filter.toUpperCase() === 'SPORT'){
-	      //       if(layer.feature.properties.customSportCt > 0){
-	      //         var routeCt = getLocationSizeBucket(layer.feature.properties.customSportCt);
-	      //         layer.setRadius(routeCt);
-	      //       }
-	      //     }
-	      //     else if(filter.toUpperCase() === 'BOULDER'){
-	      //       if(layer.feature.properties.customBoulderCt > 0){
-	      //         var routeCt = getLocationSizeBucket(layer.feature.properties.customBoulderCt);
-	      //         layer.setRadius(routeCt);
-	      //       }
-	      //     }
-	      //     else if(filter.toUpperCase() === 'ALPINE'){
-	      //       if(layer.feature.properties.customAlpineCt > 0){
-	      //         var routeCt = getLocationSizeBucket(layer.feature.properties.customAlpineCt);
-	      //         layer.setRadius(routeCt);
-	      //       }
-	      //     }
-	      //   }
-	      //
-	      // });
+	            if (filter.toUpperCase() === 'ALL') {
+	              // customRouteCt is currently ToDo frequency and will take priority over existing area points
+	              if (layer.feature.properties.customRouteCt > 0) {
+	                var routeCt = getLocationSizeBucket(layer.feature.properties.customRouteCt);
+	                layer.setRadius(routeCt);
+	              }
 
+	              if (layer.feature.properties.customTicksCt > 0) {
+	                var ticksCt = getLocationSizeBucket(layer.feature.properties.customTicksCt);
+	                layer.setRadius(ticksCt);
+	              }
+	            } else if (filter.toUpperCase() === 'TRAD') {
+	              if (layer.feature.properties.customTradCt > 0) {
+	                var routeCt = getLocationSizeBucket(layer.feature.properties.customTradCt);
+	                layer.setRadius(routeCt);
+	              }
+	            } else if (filter.toUpperCase() === 'SPORT') {
+	              if (layer.feature.properties.customSportCt > 0) {
+	                var routeCt = getLocationSizeBucket(layer.feature.properties.customSportCt);
+	                layer.setRadius(routeCt);
+	              }
+	            } else if (filter.toUpperCase() === 'BOULDER') {
+	              if (layer.feature.properties.customBoulderCt > 0) {
+	                var routeCt = getLocationSizeBucket(layer.feature.properties.customBoulderCt);
+	                layer.setRadius(routeCt);
+	              }
+	            } else if (filter.toUpperCase() === 'ALPINE') {
+	              if (layer.feature.properties.customAlpineCt > 0) {
+	                var routeCt = getLocationSizeBucket(layer.feature.properties.customAlpineCt);
+	                layer.setRadius(routeCt);
+	              }
+	            }
+	          }
+	        });
+	      };
 
 	      this.setTimeSlider = function () {
 	        var allTickArr = [];
@@ -33741,11 +33734,12 @@
 	        }
 	      }
 
-	      function resizeLocations(rtCount) {
-	        console.log('rtCount', rtCount);
-	        var newSize = getLocationSizeBucket(rtCount);
-	        console.log('newSize', newSize);
-	      }
+	      // function resizeLocations(rtCount) {
+	      //       console.log('rtCount', rtCount)
+	      //       const newSize = getLocationSizeBucket(rtCount)
+	      //       console.log('newSize', newSize)
+	      // }
+
 
 	      ////
 	      // click event for areas
@@ -33976,7 +33970,7 @@
 	      } else if (this.props.routeType.routeType === 'TRAD') {
 	        var tradRouteCount = { features: this.state.todoAreaPts.features.filter(filterByRouteType) };
 	        toDoAreaPts = Object.assign(toDoAreaPts, tradRouteCount);
-	        resizeLocations(toDoAreaPts);
+	        // resizeLocations(toDoAreaPts)
 	      }
 
 	      return _react3.default.createElement(
@@ -57277,7 +57271,6 @@
 	            this.props.header
 	          )
 	        ),
-	        _react3.default.createElement(_BarChart2.default, { areaInfo: this.props.areaInfo }),
 	        _react3.default.createElement(
 	          'div',
 	          { className: 'row slider-row' },
