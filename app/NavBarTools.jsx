@@ -8,7 +8,6 @@ class NavBarTools extends React.Component {
     }
 
     handleClick(routeType) {
-      console.log(routeType)
         this.props.filterByType(routeType)
     }
 

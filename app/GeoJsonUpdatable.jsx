@@ -26,18 +26,6 @@ export default class GeoJsonUpdatable extends GeoJSON {
         if (prevProps.routeType !== this.props.routeType) {
           this.resizeLocations(this.props.routeType.routeType)
         }
-
-        // if (prevProps.data !== this.props.data) {
-        //   if(map){
-        //     map.eachLayer((layer) => {
-        //       if(layer.feature){
-        //         const newSize = that.props.this.props.getLocationSizeBucket(layer.feature.properties.customTradCt)
-        //         console.log('newsize', newSize)
-        //         layer.setRadius(newSize)
-        //       }
-        //     });
-        //   }
-        // }
     }
     resizeLocations(filter) {
        this.leafletElement.eachLayer((layer) => {
@@ -47,7 +35,6 @@ export default class GeoJsonUpdatable extends GeoJSON {
              // customRouteCt is currently ToDo frequency and will take priority over existing area points
              if(layer.feature.properties.customRouteCt > 0){
                var routeCt = this.props.getLocationSizeBucket(layer.feature.properties.customRouteCt);
-               console.log(routeCt)
                layer.setRadius(routeCt);
              }
 
