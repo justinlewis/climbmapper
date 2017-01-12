@@ -10,8 +10,6 @@ const mapStateToProps = (state) => {
   }
 }
 
-
-
 const MapContainer = connect(
   mapStateToProps
 )(MapContainerComponent)

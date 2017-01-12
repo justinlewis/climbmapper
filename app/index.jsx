@@ -19,7 +19,6 @@ const store = createStore(reducer, enhancers);
 
 import AppContainerComponent from './AppContainer.jsx';
 
-console.log(routeType)
 class App extends React.Component {
   render () {
     return <AppContainerComponent/>

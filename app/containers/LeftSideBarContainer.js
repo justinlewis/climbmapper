@@ -11,8 +11,6 @@ const mapStateToProps = (state) => {
   }
 }
 
-
-
 const LeftSideBarContainer = connect(
   mapStateToProps
 )(LeftSidebar)

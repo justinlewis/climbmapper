@@ -5,8 +5,6 @@ const initialState = {
   body : ""
 }
 
-
-
 export default function featureInfo(state = initialState, action) {
   switch (action.type) {
 
