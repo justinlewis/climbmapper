@@ -13,7 +13,7 @@ class LeftSidebar extends React.Component {
                 <h2 id="left-sidebar-heading" className="text-center"></h2>
                 <div id="hover-text-info-container">{this.props.header}</div>
             </div>
-            <BarChart areaInfo={this.props.areaInfo}  ></BarChart>
+            {/* <BarChart areaInfo={this.props.areaInfo}  ></BarChart> */}
             {/* <div id="chart-row-2" className="row chart-row" style={hideStyle}></div>
             <div id="chart-row-1" className="row chart-row" style={hideStyle}></div> */}
 

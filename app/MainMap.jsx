@@ -458,7 +458,7 @@ class MapComponent extends React.Component {
 
         // getModifiedStyle.bind(null, this, 'ALL')
         function getModifiedStyle(thisRef, filter, currentStyleObj, feature) {
-          debugger;
+
             var radiusForType = 10;
             switch (filter.toUpperCase()) {
               case 'ALL':
@@ -1084,7 +1084,7 @@ class MapComponent extends React.Component {
 
             <LayersControl.Overlay name='To-Do Areas' checked={true}>
               <GeoJsonUpdatable
-                ref='map'
+                ref={'map'} //TODO: remove if we use props
                 data={toDoAreaPts}
                 style={this.state.todoLayerStyle}
                 onEachFeature={onEachTodoFeature.bind(null, this)}
