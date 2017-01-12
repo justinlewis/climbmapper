@@ -753,12 +753,6 @@ class MapComponent extends React.Component {
             }
         }
 
-        // function resizeLocations(rtCount) {
-        //       console.log('rtCount', rtCount)
-        //       const newSize = getLocationSizeBucket(rtCount)
-        //       console.log('newSize', newSize)
-        // }
-
 
         ////
         // click event for areas
