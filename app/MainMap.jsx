@@ -458,8 +458,8 @@ class MapComponent extends React.Component {
 
         // getModifiedStyle.bind(null, this, 'ALL')
         function getModifiedStyle(thisRef, filter, currentStyleObj, feature) {
+          debugger;
             var radiusForType = 10;
-
             switch (filter.toUpperCase()) {
               case 'ALL':
                 // customRouteCt is currently ToDo frequency and will take priority over existing area points
@@ -724,7 +724,6 @@ class MapComponent extends React.Component {
         // TODO: THIS IS WHERE WE ARE WORKING
 
         this.getRouteArrayByType = function(routeArr){
-          debugger;
           let routeType = this.props.routeType
           console.log(routeType)
           var newTypeArr = [];

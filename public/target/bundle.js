@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "c687480fd147db90d8d3"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "f47a0509d1305220b6b3"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -33385,8 +33385,8 @@
 
 	      // getModifiedStyle.bind(null, this, 'ALL')
 	      function getModifiedStyle(thisRef, filter, currentStyleObj, feature) {
+	        debugger;
 	        var radiusForType = 10;
-
 	        switch (filter.toUpperCase()) {
 	          case 'ALL':
 	            // customRouteCt is currently ToDo frequency and will take priority over existing area points
@@ -33643,7 +33643,6 @@
 	      // TODO: THIS IS WHERE WE ARE WORKING
 
 	      this.getRouteArrayByType = function (routeArr) {
-	        debugger;
 	        var routeType = this.props.routeType;
 	        console.log(routeType);
 	        var newTypeArr = [];
@@ -55956,6 +55955,7 @@
 	    }, {
 	        key: "componentDidUpdate",
 	        value: function componentDidUpdate(prevProps) {
+	            if (typeof this.props.style === 'function') {}
 	            if (prevProps.data !== this.props.data) {
 	                this.leafletElement.addData(this.props.data);
 	            }

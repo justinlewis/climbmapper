@@ -10,6 +10,8 @@ export default class GeoJsonUpdatable extends GeoJSON {
     }
 
     componentDidUpdate(prevProps) {
+      if (typeof this.props.style === 'function'){
+      }
         if (prevProps.data !== this.props.data) {
             this.leafletElement.addData(this.props.data);
         }
