@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "3221e6efb8114dfcba48"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "c687480fd147db90d8d3"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -56352,7 +56352,6 @@
 	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      debugger;
 	      this.setState({ routeArr: this.props.areaInfo });
 	    }
 	  }, {
