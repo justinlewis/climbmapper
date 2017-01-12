@@ -4,17 +4,22 @@ import { combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 
 import { createStore, renderDevTools } from './utils/devTools';
+const enhancers = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 
-import * as mapReducers from './reducers/MapState';
-import * as feautureInfoReducers from './reducers/FeatureInfoState';
+import map from './reducers/MapState';
+import featureInfo from './reducers/FeatureInfoState';
+import routeType from './reducers/TypeReducer';
 
-const allReducers = Object.assign({}, mapReducers, feautureInfoReducers);
-const reducer = combineReducers(allReducers);
-const store = createStore(reducer);
+const reducer = combineReducers({
+  map,
+  featureInfo,
+  routeType
+});
+const store = createStore(reducer, enhancers);
 
 import AppContainerComponent from './AppContainer.jsx';
 
-
+console.log(routeType)
 class App extends React.Component {
   render () {
     return <AppContainerComponent/>
@@ -22,7 +27,7 @@ class App extends React.Component {
 }
 
 render(
-  <Provider store={createStore(reducer)}>
+  <Provider store={store}>
     <App/>
   </Provider>,
   document.getElementById('app')

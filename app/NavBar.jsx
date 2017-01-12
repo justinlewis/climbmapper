@@ -3,6 +3,7 @@ import React from 'react';
 import NavBarButtons from './NavBarButtons.jsx';
 import NavBarTools from './NavBarTools.jsx';
 
+
 class NavBarComponent extends React.Component {
     constructor(props){
 	     super(props);
@@ -14,7 +15,7 @@ class NavBarComponent extends React.Component {
     		    <div className="navbar-header"></div>
         		<div className="navbar-collapse collapse">
         			<NavBarButtons />
-        			<NavBarTools />
+        			<NavBarTools filterByType={this.props.filterByType}/>
         		</div>
     	    </div>
     	 );
