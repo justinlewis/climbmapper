@@ -10,12 +10,20 @@ var geo = require('./routes/geo');
 var passport = require('passport');
 var flash    = require('connect-flash');
 var session = require('express-session');
-
+var webpack = require('webpack');
+var webpackConfig = require('./webpack.config');
+var compiler = webpack(webpackConfig);
 
 require('./config/passport')(passport);
 
 
 var app = express();
+
+app.use(require("webpack-dev-middleware")(compiler,{
+    noInfo: true,
+    publicPath: webpackConfig.output.publicPath
+}));
+app.use(require("webpack-hot-middleware")(compiler));
 
 // required for passport
 //app.use(session({ secret: 'mysecret' })); // session secret

@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 //import AboutButtonComponent from './AboutButtonComponent.jsx';
 
 class NavBarTools extends React.Component {
@@ -8,7 +7,14 @@ class NavBarTools extends React.Component {
 	super(props);
     }
 
+    handleClick(routeType) {
+      console.log(routeType)
+        this.props.filterByType(routeType)
+    }
+
     render () {
+
+
 
       	//TODO: This is a bad way to pass data to a component.
       	var username = document.getElementById("app-config-el").dataset.username;
@@ -26,12 +32,12 @@ class NavBarTools extends React.Component {
                              <span className="caret"></span>
                          </a>
                          <ul className="dropdown-menu">
-                             <li><a id="trad-btn" href="#" data-type="TRAD">Trad </a></li>
-                             <li><a id="sport-btn" href="#" data-type="SPORT">Sport</a></li>
-                             <li><a id="boulder-btn" href="#" data-type="BOULDER">Boulder</a></li>
-                             <li><a id="alpine-btn" href="#" data-type="ALPINE">Alpine</a></li>
+                             <li><a id="trad-btn" href="#" data-type="TRAD" onClick={() => this.handleClick('TRAD')}>Trad </a></li>
+                             <li><a id="sport-btn" href="#" data-type="SPORT" onClick={() => this.handleClick('SPORT')}>Sport</a></li>
+                             <li><a id="boulder-btn" href="#" data-type="BOULDER" onClick={() => this.handleClick('BOULDER')}>Boulder</a></li>
+                             <li><a id="alpine-btn" href="#" data-type="ALPINE" onClick={() => this.handleClick('ALPINE')}>Alpine</a></li>
                              <li role="separator" className="divider"></li>
-                             <li><a id="all-btn" href="#" data-type="ALL">All Types</a></li>
+                             <li><a id="all-btn" href="#" data-type="ALL" onClick={() => this.handleClick('ALL')}>All Types</a></li>
                          </ul>
                      </li>
                      <li>

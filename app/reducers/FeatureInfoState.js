@@ -7,7 +7,7 @@ const initialState = {
 
 
 
-export default function map(state = initialState, action) {
+export default function featureInfo(state = initialState, action) {
   switch (action.type) {
 
     case types.SET_FEATURE_INFO:
@@ -19,10 +19,9 @@ export default function map(state = initialState, action) {
         body : newBody
       }
     case types.HOVER_FEATURE_INFO:
-      const test = state.heading;
-
       return {
-        heading : test
+        heading : action.info.feature.properties.area,
+        areaInfo : action.info.feature.properties
       }
 
     default:

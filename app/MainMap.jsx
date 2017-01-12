@@ -12,7 +12,7 @@ import { Map,
   GeoJSON,
   ZoomControl } from 'react-leaflet';
 import GeoJsonUpdatable from "./GeoJsonUpdatable.jsx"
-import { setFeatureInfo } from './actions/MapActions.js';
+import { setFeatureInfo, hoverFeatureInfo } from './actions/MapActions.js';
 
 import BarChart from './BarChart.jsx';
 // import LineChart from './charts/LineChart.js';
@@ -115,7 +115,6 @@ const allCragPtsDefaultStyle = {
     fillOpacity: 0.8
 };
 
-
 class MapComponent extends React.Component {
     constructor(props){
 		    super(props);
@@ -161,7 +160,6 @@ class MapComponent extends React.Component {
     }
 
     componentDidMount() {
-
     		this.toDoAreaReq = $.get("todoareas", function (result) {
     			this.setTodoAreaPtsCache(result);
     		}.bind(this), "json");
@@ -413,7 +411,6 @@ class MapComponent extends React.Component {
     			}
     		}
 
-
     		////
     		// Set the frequency of ticks on locations that will dictate the point size.
     		//
@@ -452,7 +449,6 @@ class MapComponent extends React.Component {
 
     				cachedTodoAreaPts.features[n].properties.customRouteCt = cachedTodoAreaPts.features[n].properties.count;
     			}
-
           this.setState({
             todoAreaPts: cachedTodoAreaPts,
             todoLayerStyle : getModifiedStyle.bind(null, this, 'ALL', areaTodoPtsDefaultStyle)
@@ -462,8 +458,8 @@ class MapComponent extends React.Component {
 
         // getModifiedStyle.bind(null, this, 'ALL')
         function getModifiedStyle(thisRef, filter, currentStyleObj, feature) {
+          debugger;
             var radiusForType = 10;
-
             switch (filter.toUpperCase()) {
               case 'ALL':
                 // customRouteCt is currently ToDo frequency and will take priority over existing area points
@@ -496,7 +492,6 @@ class MapComponent extends React.Component {
                 }
                 break;
             }
-
             currentStyleObj.radius = radiusForType;
 
             return currentStyleObj;
@@ -530,7 +525,9 @@ class MapComponent extends React.Component {
         //
         // @param filter - a filter keyword that filters the radius by route type.
         ////
-        this.resizeLocations = function(filter) {
+
+
+
             // map.eachLayer(function(layer){
             //   if(layer.feature){
             //     layer.setRadius(0);
@@ -575,7 +572,6 @@ class MapComponent extends React.Component {
             //   }
             //
             // });
-        }
 
 
         this.setTimeSlider = function() {
@@ -651,7 +647,7 @@ class MapComponent extends React.Component {
                     if(layer.feature && layer.feature.properties.customTicksCt){
                       var mapLayerId = layer.feature.properties.id;
                       if(thisLoc.properties.id === mapLayerId){
-                         layer.setRadius(newRadius);
+                        layer.setRadius(newRadius);
                       }
                    }
                 });
@@ -725,11 +721,14 @@ class MapComponent extends React.Component {
             });
         }
 
+        // TODO: THIS IS WHERE WE ARE WORKING
 
-        this.getRouteArrayByType = function(routeArr, routeTyoe){
+        this.getRouteArrayByType = function(routeArr){
+          let routeType = this.props.routeType
+          console.log(routeType)
           var newTypeArr = [];
 
-          if(routeTyoe.toUpperCase() === "ALL"){
+          if(routeType.toUpperCase() === "ALL"){
             return routeArr;
           }
           else{
@@ -740,11 +739,9 @@ class MapComponent extends React.Component {
               }
             }
           }
-
           return newTypeArr;
         }
-     }
-
+      }
      componentWillMount() {
 
      }
@@ -812,6 +809,7 @@ class MapComponent extends React.Component {
         }
 
         function resetFeatureColor(layer) {
+          console.log(layer.feature.properties)
           if(layer.feature.properties.areatype === "TODO") {
               layer.setStyle({"fillColor": TODOFILL});
             }
@@ -821,6 +819,12 @@ class MapComponent extends React.Component {
             else if(layer.feature.properties.areatype === "TICK"){
               layer.setStyle({"fillColor": TICKFILL});
             }
+        }
+
+        function resizeLocations(rtCount) {
+              console.log('rtCount', rtCount)
+              const newSize = getLocationSizeBucket(rtCount)
+              console.log('newSize', newSize)
         }
 
 
@@ -968,7 +972,7 @@ class MapComponent extends React.Component {
         // action to perform when mousing over a feature
         function todoHoverAction(e) {
             var layer = e.target;
-            store.dispatch(setFeatureInfo(layer))
+            store.dispatch(hoverFeatureInfo(layer))
             console.log("dispatched")
             // removeAllCharts();
 
@@ -991,7 +995,7 @@ class MapComponent extends React.Component {
           //     routeCountPropertyName = "customRouteCt";
           //   }
           //   else if(routeTypeFilter === "TRAD"){
-          //     routeCountPropertyName = "customTradCt";
+          //     routeCountPropertyName = "                       Ct";
           //   }
           //   else if(routeTypeFilter === "SPORT"){
           //     routeCountPropertyName = "customSportCt";
@@ -1042,10 +1046,22 @@ class MapComponent extends React.Component {
         function cragPtsPointToLayer (feature, latlng) {
             return L.circleMarker(latlng, allCragPtsDefaultStyle);
         }
+         function filterByRouteType(feature) {
+           if (feature.properties.customTradCt === 0) {
+             return false
+           } else if (feature.properties.customTradCt > 0) {
+             return true
+           }
+         }
 
-
-
-
+        let toDoAreaPts = this.state.todoAreaPts
+        if (this.props.routeType.routeType === 'ALL') {
+          toDoAreaPts = this.state.todoAreaPts
+        } else if (this.props.routeType.routeType === 'TRAD') {
+          let tradRouteCount = { features: this.state.todoAreaPts.features.filter(filterByRouteType) }
+          toDoAreaPts = Object.assign(toDoAreaPts, tradRouteCount)
+          resizeLocations(toDoAreaPts)
+        }
 
   		return(
         <Map center={position} zoom={this.state.zoom} zoomControl={false} >
@@ -1068,10 +1084,13 @@ class MapComponent extends React.Component {
 
             <LayersControl.Overlay name='To-Do Areas' checked={true}>
               <GeoJsonUpdatable
-                data={this.state.todoAreaPts}
+                ref='map'
+                data={toDoAreaPts}
                 style={this.state.todoLayerStyle}
                 onEachFeature={onEachTodoFeature.bind(null, this)}
-                pointToLayer={areaTodoPtsPointToLayer} >
+                pointToLayer={areaTodoPtsPointToLayer}
+                getLocationSizeBucket={getLocationSizeBucket}
+              >
               </GeoJsonUpdatable>
             </LayersControl.Overlay>
 
