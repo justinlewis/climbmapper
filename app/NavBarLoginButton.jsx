@@ -9,10 +9,10 @@ class NavBarLoginButton extends React.Component {
     }
 
     render () {
-	
+
 	return(
 	    <li className="active"><a href="/login">Login</a></li>
-	);  
+	);
     }
 }
 

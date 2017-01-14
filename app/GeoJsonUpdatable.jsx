@@ -32,7 +32,6 @@ export default class GeoJsonUpdatable extends GeoJSON {
          if(layer.feature){
            layer.setRadius(0);
            if(filter === 'ALL'){
-             // customRouteCt is currently ToDo frequency and will take priority over existing area points
              if(layer.feature.properties.customRouteCt > 0){
                var routeCt = this.props.getLocationSizeBucket(layer.feature.properties.customRouteCt);
                layer.setRadius(routeCt);
