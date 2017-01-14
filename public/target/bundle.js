@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "2e0c7b15cab44c25cbdd"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "dae19f738bfe11013213"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -33082,9 +33082,6 @@
 	  }
 
 	  _createClass(MapComponent, [{
-	    key: 'componentWillReceiveProps',
-	    value: function componentWillReceiveProps() {}
-	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
 	      this.toDoAreaReq = $.get("todoareas", function (result) {
@@ -33679,13 +33676,6 @@
 	          layer.setStyle({ "fillColor": TICKFILL });
 	        }
 	      }
-
-	      // function resizeLocations(rtCount) {
-	      //       console.log('rtCount', rtCount)
-	      //       const newSize = getLocationSizeBucket(rtCount)
-	      //       console.log('newSize', newSize)
-	      // }
-
 
 	      ////
 	      // click event for areas
@@ -55931,7 +55921,6 @@
 	        if (layer.feature) {
 	          layer.setRadius(0);
 	          if (filter === 'ALL') {
-	            // customRouteCt is currently ToDo frequency and will take priority over existing area points
 	            if (layer.feature.properties.customRouteCt > 0) {
 	              var routeCt = _this2.props.getLocationSizeBucket(layer.feature.properties.customRouteCt);
 	              layer.setRadius(routeCt);
@@ -57284,10 +57273,10 @@
 	var LeftSidebar = _wrapComponent('LeftSidebar')(function (_React$Component) {
 	  _inherits(LeftSidebar, _React$Component);
 
-	  function LeftSidebar(props) {
+	  function LeftSidebar() {
 	    _classCallCheck(this, LeftSidebar);
 
-	    return _possibleConstructorReturn(this, (LeftSidebar.__proto__ || Object.getPrototypeOf(LeftSidebar)).call(this, props));
+	    return _possibleConstructorReturn(this, (LeftSidebar.__proto__ || Object.getPrototypeOf(LeftSidebar)).apply(this, arguments));
 	  }
 
 	  _createClass(LeftSidebar, [{
@@ -57830,7 +57819,7 @@
 	/* WEBPACK VAR INJECTION */(function(module) {"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-				value: true
+	   value: true
 	});
 
 	var _redboxReact2 = __webpack_require__(13);
@@ -57860,59 +57849,59 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var _components = {
-				NavBarLoginButton: {
-							displayName: "NavBarLoginButton"
-				}
+	   NavBarLoginButton: {
+	      displayName: "NavBarLoginButton"
+	   }
 	};
 
 	var _reactTransformHmr2 = (0, _reactTransformHmr4.default)({
-				filename: "/Users/nicholaschambers/Desktop/Turing/mod3/projects/climbmapper_dependency_hell/climbmapper/app/NavBarLoginButton.jsx",
-				components: _components,
-				locals: [module],
-				imports: [_react3.default]
+	   filename: "/Users/nicholaschambers/Desktop/Turing/mod3/projects/climbmapper_dependency_hell/climbmapper/app/NavBarLoginButton.jsx",
+	   components: _components,
+	   locals: [module],
+	   imports: [_react3.default]
 	});
 
 	var _reactTransformCatchErrors2 = (0, _reactTransformCatchErrors4.default)({
-				filename: "/Users/nicholaschambers/Desktop/Turing/mod3/projects/climbmapper_dependency_hell/climbmapper/app/NavBarLoginButton.jsx",
-				components: _components,
-				locals: [],
-				imports: [_react3.default, _redboxReact3.default]
+	   filename: "/Users/nicholaschambers/Desktop/Turing/mod3/projects/climbmapper_dependency_hell/climbmapper/app/NavBarLoginButton.jsx",
+	   components: _components,
+	   locals: [],
+	   imports: [_react3.default, _redboxReact3.default]
 	});
 
 	function _wrapComponent(id) {
-				return function (Component) {
-							return _reactTransformHmr2(_reactTransformCatchErrors2(Component, id), id);
-				};
+	   return function (Component) {
+	      return _reactTransformHmr2(_reactTransformCatchErrors2(Component, id), id);
+	   };
 	}
 
 	//import AboutButtonComponent from './AboutButtonComponent.jsx';
 
 	var NavBarLoginButton = _wrapComponent("NavBarLoginButton")(function (_React$Component) {
-				_inherits(NavBarLoginButton, _React$Component);
+	   _inherits(NavBarLoginButton, _React$Component);
 
-				function NavBarLoginButton(props) {
-							_classCallCheck(this, NavBarLoginButton);
+	   function NavBarLoginButton(props) {
+	      _classCallCheck(this, NavBarLoginButton);
 
-							return _possibleConstructorReturn(this, (NavBarLoginButton.__proto__ || Object.getPrototypeOf(NavBarLoginButton)).call(this, props));
-				}
+	      return _possibleConstructorReturn(this, (NavBarLoginButton.__proto__ || Object.getPrototypeOf(NavBarLoginButton)).call(this, props));
+	   }
 
-				_createClass(NavBarLoginButton, [{
-							key: "render",
-							value: function render() {
+	   _createClass(NavBarLoginButton, [{
+	      key: "render",
+	      value: function render() {
 
-										return _react3.default.createElement(
-													"li",
-													{ className: "active" },
-													_react3.default.createElement(
-																"a",
-																{ href: "/login" },
-																"Login"
-													)
-										);
-							}
-				}]);
+	         return _react3.default.createElement(
+	            "li",
+	            { className: "active" },
+	            _react3.default.createElement(
+	               "a",
+	               { href: "/login" },
+	               "Login"
+	            )
+	         );
+	      }
+	   }]);
 
-				return NavBarLoginButton;
+	   return NavBarLoginButton;
 	}(_react3.default.Component));
 
 	exports.default = NavBarLoginButton;

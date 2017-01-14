@@ -114,10 +114,6 @@ class MapComponent extends React.Component {
         }
     }
 
-    componentWillReceiveProps() {
-
-    }
-
     componentDidMount() {
     		this.toDoAreaReq = $.get("todoareas", function (result) {
     			this.setTodoAreaPtsCache(result);

@@ -2,9 +2,6 @@ import React from 'react';
 import BarChart from './BarChart.jsx';
 
 class LeftSidebar extends React.Component {
-    constructor(props){
-		    super(props);
-    }
 
     render () {
     		return(
@@ -13,10 +10,6 @@ class LeftSidebar extends React.Component {
                 <h2 id="left-sidebar-heading" className="text-center"></h2>
                 <div id="hover-text-info-container">{this.props.header}</div>
             </div>
-            {/* <BarChart areaInfo={this.props.areaInfo}  ></BarChart> */}
-            {/* <div id="chart-row-2" className="row chart-row" style={hideStyle}></div>
-            <div id="chart-row-1" className="row chart-row" style={hideStyle}></div> */}
-
             <div className="row slider-row">
               <div id="tick-slider">
                 <div id="time-slider-label-container">
