@@ -10,9 +10,9 @@ var geo = require('./routes/geo');
 var passport = require('passport');
 var flash    = require('connect-flash');
 var session = require('express-session');
-var morgan       = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser   = require('body-parser');
+// var morgan       = require('morgan');
+// var cookieParser = require('cookie-parser');
+// var bodyParser   = require('body-parser');
 
 
 require('./config/passport')(passport);

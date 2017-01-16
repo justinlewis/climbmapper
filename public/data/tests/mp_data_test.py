@@ -42,7 +42,7 @@ class MPData_ToDo_Test(unittest.TestCase):
 
     def mPData_ToDo_Class_Init_Test(self):
         self.MPData_ToDo = MPData_ToDo()
-        self.assertIsInstance(ovbject, MPData_ToDos,\
+        self.assertIsInstance(ovbject, MPData_ToDo_Test,\
             msg="Class could not be initialized")
 
 
