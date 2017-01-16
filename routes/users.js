@@ -15,10 +15,10 @@ var conString = dbUrl || 'postgres://'+config.user_name+':'+config.password+'@lo
 
 exports.createUser = function(username, password, cb, req) {
 
-	// Has the password
+	// Hash the password
 	bcrypt.hash(password, saltRounds, function(err, hash) {
    
-	  	// Store hash in your password DB. 
+	  	// Store hash in password DB. 
 	   	pg.connect(conString, function(err, client, done) {
 		   console.log("creating user")
 		   var query = client.query("INSERT INTO appuser(username, password, displayname, email) VALUES ('"+username+"','"+hash+"','"+username+"',null);");
@@ -44,7 +44,7 @@ exports.createUser = function(username, password, cb, req) {
 
 exports.updateProfile = function(res, user, mpuserkey, email, password, getnotifications) {
    
-	// Has the password
+	// Hash the password
 	bcrypt.hash(password, saltRounds, function(err, hash) {
 	   pg.connect(conString, function(err, client, done) {
 
@@ -72,11 +72,12 @@ exports.updateProfile = function(res, user, mpuserkey, email, password, getnotif
 
 
 exports.verifyPassword = function (password) {
+	// TODO - make this work
 	// Load hash from your password DB. 
 	bcrypt.compare(password, hash, function(err, res) {
 	    res == true 
 	});
-	bcrypt.compare(someOtherPlaintextPassword, hash, function(err, res) { // SET UP PW COMPARISON
+	bcrypt.compare(password, hash, function(err, res) {
 	    res == false 
 	});
 }
