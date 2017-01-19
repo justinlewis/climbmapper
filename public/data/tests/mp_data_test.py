@@ -18,23 +18,20 @@ class MPData_ToDo_Test(unittest.TestCase):
         # mp_data.py requires write access so change dbHost accordingly
         self.dbHost = os.getenv('OPENSHIFT_POSTGRESQL_DB_HOST', 'localhost')
         self.dbPort = os.getenv('OPENSHIFT_POSTGRESQL_DB_PORT', 5432)
-        # app_user doesn't have correct privileges, switch user with rw access
-        self.dbUser = os.getenv('OPENSHIFT_POSTGRESQL_DB_USERNAME', "app_user")
+        self.dbUser = os.getenv('OPENSHIFT_POSTGRESQL_DB_USERNAME', "test")
         self.dbPass = os.getenv('OPENSHIFT_POSTGRESQL_DB_PASSWORD', "reader")
-        self.dbName = os.getenv('OPENSHIFT_APP_NAME', 'climbmapper')
+        self.dbName = os.getenv('OPENSHIFT_APP_NAME', 'climbmapper_test')
         self.dbConnectParams = { 'dbHost':self.dbHost,\
                                 'dbPort':self.dbPort,\
                                 'dbUser':self.dbUser,\
                                 'dbPass':self.dbPass,\
                                 'dbName':self.dbName }
 
-        # Initialize
         self.MPData_ToDo_Test = MPData_ToDo(self.appUserId, self.dbConnectParams)
 
 
     def tearDown(self):
         del self.MPData_ToDo_Test
-
 
     # IDK that these are useful...
     #
@@ -43,61 +40,91 @@ class MPData_ToDo_Test(unittest.TestCase):
     #     self.assertRaises(psycopg2.Error, self.conn.cursor(),\
     #                         msg="Could not connect DB cursor")
 
-
     def mPData_ToDo_Class_Init_Test(self):
         self.MPData_ToDo = MPData_ToDo()
-        self.assertIsInstance(ovbject, MPData_ToDo,
+        self.assertIsInstance(ovbject, MPData_ToDo_Test,\
             msg="Class could not be initialized")
 
 
     def test_GetToDos(self):
         # returns list tDoLst
-        self.assertIsNot(not self.MPData_ToDo_Test.getToDos(\
-                                                self.mpUserKey,\
+        self.assertIsNot(not self.MPData_ToDo_Test\
+                                    .getToDos(self.mpUserKey,\
                                                 self.mpUserEmail,\
-                                                self.appUserId), True,\
-                                                msg="ToDo list is empty.")
+                                                self.appUserId),\
+                        True, msg="ToDo list is empty.")
 
 
     def test_GetTicks(self):
-        self.assertIsNot(not self.MPData_ToDo_Test.getTicks(\
-                                                self.mpUserKey,\
+
+        self.assertIsNot(not self.MPData_ToDo_Test\
+                                    .getTicks(self.mpUserKey,\
                                                 self.mpUserEmail,\
-                                                self.appUserId), True,\
-                                                msg="Ticks list is empty.")
+                                                self.appUserId),\
+                        True, msg="Ticks list is empty.")
 
 
     def test_GetRoutes(self):
-        self.assertIsNot(not self.MPData_ToDo_Test.getRoutes(\
-                                                self.toDoIdList,\
+
+        self.toDoIdList = self.MPData_ToDo_Test\
+                                    .getToDos(self.mpUserKey,\
+                                                self.mpUserEmail,\
+                                                self.appUserId)
+
+        self.assertIsNot(not self.MPData_ToDo_Test\
+                                    .getRoutes(self.toDoIdList,\
                                                 'todo',\
                                                 self.mpUserKey,\
-                                                []), True,\
-                                                msg="Routes")
+                                                []), \
+                        True, msg="getRoutes failed")
 
 
     def test_GetAreaMatchId(self):
         # Using a random array for now
-        locationArr = [u'International',\
+        self.locationArr = [u'International',\
                     u'North America',\
                     u'Canada',\
                     u'British Columbia',\
                     u'Squamish',\
                     u'The Chief',\
                     u'Grand Wall Boulders']
-        self.assertNotEqual(self.MPData_ToDo_Test.getAreaMatchId(\
-                            locationArr),\
+
+        self.assertNotEqual(self.MPData_ToDo_Test\
+                                    .getAreaMatchId(\
+                                        self.locationArr),\
                             -1, msg="getAreaMatchId failed")
 
 
-    # def test_GetContainingGeographyForArea(self):
-    #     #TODO
-    #     pass
+    def test_GetContainingGeographyForArea(self):
+        # Using a random array for now
+        self.locationArr = [u'International',\
+                    u'North America',\
+                    u'Canada',\
+                    u'British Columbia',\
+                    u'Squamish',\
+                    u'The Chief',\
+                    u'Grand Wall Boulders']
+
+        self.assertNotEqual(self.MPData_ToDo_Test\
+                                    .getContainingGeographyForArea(\
+                                            self.locationArr),\
+                            -1, msg="getContainingGeographyForArea failed")
 
 
-    # def test_GetCragMatchId(self):
-    #     #TODO
-    #     pass
+    def test_GetCragMatchId(self):
+        # Using a random array for now
+        self.locationArr = [u'International',\
+                    u'North America',\
+                    u'Canada',\
+                    u'British Columbia',\
+                    u'Squamish',\
+                    u'The Chief',\
+                    u'Grand Wall Boulders']
+
+        self.assertNotEqual(self.MPData_ToDo_Test\
+                                    .getCragMatchId(\
+                                            self.locationArr),\
+                            -1, msg="getCragMatchId failed")
 
 
     # def test_ExistingRouteLocationExists(self):
@@ -143,6 +170,7 @@ class MPData_ToDo_Test(unittest.TestCase):
     # def test_GetBoulderGrade(self):
     #     TODO
     #     pass
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -16,39 +16,41 @@ class MPData_Routes_Test(unittest.TestCase):
 
         self.dbHost = os.getenv('OPENSHIFT_POSTGRESQL_DB_HOST', 'localhost')
         self.dbPort = os.getenv('OPENSHIFT_POSTGRESQL_DB_PORT', 5432)
-        self.dbUser = os.getenv('OPENSHIFT_POSTGRESQL_DB_USERNAME', "app_user")
+        self.dbUser = os.getenv('OPENSHIFT_POSTGRESQL_DB_USERNAME', "test")
         self.dbPass = os.getenv('OPENSHIFT_POSTGRESQL_DB_PASSWORD', "reader")
-        self.dbName = os.getenv('OPENSHIFT_APP_NAME', 'climbmapper')
+        self.dbName = os.getenv('OPENSHIFT_APP_NAME', 'climbmapper_test')
         self.dbConnectParams = { 'dbHost':self.dbHost,\
                                 'dbPort':self.dbPort,\
                                 'dbUser':self.dbUser,\
                                 'dbPass':self.dbPass,\
                                 'dbName':self.dbName }
+
+        # Initialize
         self.MPData_Routes_Test = MPData_Routes(self.dbConnectParams)
 
     def tearDown(self):
 
         del self.MPData_Routes_Test
 
-    def test_UpdateRoutes(self):
-        # self.MPData_Routes_Test.updateRoutes(None, None)
-        pass
+    # def test_UpdateRoutes(self):
+    #     # self.MPData_Routes_Test.updateRoutes(None, None)
+    #     pass
 
-    def test_GetAreaMatchId(self):
-        #TODO
-        pass
+    # def test_GetAreaMatchId(self):
+    #     #TODO
+    #     pass
 
-    def test_GetContainingGeographyForArea(self):
-        #TODO
-        pass
+    # def test_GetContainingGeographyForArea(self):
+    #     #TODO
+    #     pass
 
-    def test_GetCragMatchId(self):
-        #TODO
-        pass
+    # def test_GetCragMatchId(self):
+    #     #TODO
+    #     pass
 
-    def test_ExistingRouteLocationExists(self):
-        #TODO
-        pass
+    # def test_ExistingRouteLocationExists(self):
+    #     #TODO
+    #     pass
 
 
 if __name__ == '__main__':
