@@ -2,8 +2,12 @@ import featureInfo from '../../app/reducers/FeatureInfoState.js';
 import * as types from '../../app/constants/ActionTypes';
 
 
-describe('the route type reducer', () => {
-  xit('set a heading and areaInfo when passed a HOVER_FEATURE_INFO action', () => {
+describe('the featureInfo reducer', () => {
+  it('set a heading and areaInfo when passed a HOVER_FEATURE_INFO action', () => {
+    const state = {
+      heading : "",
+      body: ""
+    }
     const action = {
       info: {
         feature: {
@@ -18,18 +22,41 @@ describe('the route type reducer', () => {
 
     const hoverAction = {
       type: 'HOVER_FEATURE_INFO',
-      heading: action.info.feature.properties.area,
-      areaInfo: action.info.feature.properties,
+        info: {
+          feature: {
+            properties: {
+              area: "Lumpy Ridge",
+              pitches: 20,
+              difficulty: 5.11
+            },
+          },
+        },
     }
     const expected = {
-      heading: "Lumpy Ride",
+      heading: "Lumpy Ridge",
       areaInfo: {
         area: "Lumpy Ridge",
         pitches: 20,
-        difficulty: 5.10
+        difficulty: 5.11
       },
     }
+    expect(featureInfo(state, hoverAction)).toEqual(expected)
+  })
 
-    expect(featureInfo({}, hoverAction)).toEqual(expected)
+  it('should return the initial state', () => {
+    const state = {
+      heading : "",
+      body : ""
+    }
+
+    const action = {
+      type: null
+    }
+
+    const expected = {
+      heading : "",
+      body : ""
+    }
+    expect(featureInfo(state, action)).toEqual(expected)
   })
 })
