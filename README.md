@@ -78,16 +78,16 @@ Awesome!
 </ol>
 
 <h4> Setting up Python Virtual Environment </h4>
+From the project root...
 <ol>
-<li> From the project root...
-<li> Use Python 2.7
-<li><code>virtualenv -p /usr/bin/python2.7 venv</code>
-<li>
+<li><p> Use Python 2.7
+<code>virtualenv -p /usr/bin/python2.7 venv</code>
+
 <li> Activate the environment
-<li><code>. venv/bin/activate</code>
-<li>
-<li> # install requirements
-<li><code>pip install -r requirements.txt</code>
+<code>. venv/bin/activate</code>
+
+<li> Install requirements
+<code>pip install -r requirements.txt</code>
 </ol>
 
 <h4>General Needs</h4>
