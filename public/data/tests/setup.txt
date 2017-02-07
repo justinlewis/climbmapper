@@ -3,15 +3,22 @@ Instructions on how to run unit tests for Python data files.
 Running the tests as a module:
 
     # Change directory to data
-    cd climbmapper/data
+    cd public/data
 
     # Explicit is better than implicit.
-    python -B -m unittest -v tests.update_routes_test tests.mp_data_test
+    python2.7 -B -v -m unittest discover tests/
 
 
-Prerequisites...
+Setting up Python virtual environment
+    
+    # Change directory to data
+    cd public/data
+    
+    # use Python 2.7
+    virtualenv -p /usr/bin/python2.7 venv
 
-Setup Test database:
+    # activate the environment
+    . venv/bin/activate
 
-    # Run PostgreSQL script
-    psql public/data/tests/sql/template_prod_db.sql
+    # install requirements
+    pip install -r requirements.txt 
