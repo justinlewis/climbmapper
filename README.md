@@ -77,6 +77,19 @@ Awesome!
 <li> Use the 'issues' tab in GitHub for reporting or accepting tickets.
 </ol>
 
+<h4> Setting up Python Virtual Environment </h4>
+<ol>
+<li> From the project root...
+<li> Use Python 2.7
+<li><code>virtualenv -p /usr/bin/python2.7 venv</code>
+<li>
+<li> Activate the environment
+<li><code>. venv/bin/activate</code>
+<li>
+<li> # install requirements
+<li><code>pip install -r requirements.txt</code>
+</ol>
+
 <h4>General Needs</h4>
 See the issues tab for more details.
 

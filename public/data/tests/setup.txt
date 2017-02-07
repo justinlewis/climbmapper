@@ -7,18 +7,3 @@ Running the tests as a module:
 
     # Explicit is better than implicit.
     python2.7 -B -v -m unittest discover tests/
-
-
-Setting up Python virtual environment
-    
-    # Change directory to data
-    cd public/data
-    
-    # use Python 2.7
-    virtualenv -p /usr/bin/python2.7 venv
-
-    # activate the environment
-    . venv/bin/activate
-
-    # install requirements
-    pip install -r requirements.txt 
