@@ -1,0 +1,5 @@
+# TODO setup.py
+
+# data files module requirements
+requests
+psycopg2
