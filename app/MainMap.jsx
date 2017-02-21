@@ -86,9 +86,9 @@ class MapComponent extends React.Component {
           lat : 39.73,
           lng : -105,
           zoom : 3,
-          todoAreaPts : toDoAreaPts,
-          todoCragPts : toDoCragPts,
-          tickAreaPts : tickAreaPts,
+          todoAreaPts : toDoAreaPts, // setting to a default state
+          todoCragPts : toDoCragPts, // setting to a default state
+          tickAreaPts : tickAreaPts, // setting to a default state
           crags : null,
           areas : null,
           ticks : null,
@@ -131,7 +131,6 @@ class MapComponent extends React.Component {
 
     		this.tickAreaReq = $.get("tickareas", function (result) {
     			this.setTickAreaPtsCache(result);
-    			this.setTimeSlider();
     		}.bind(this), "json");
 
 
@@ -388,6 +387,8 @@ class MapComponent extends React.Component {
             tickAreaPts: cachedTickAreaPts,
             tickLayerStyle : getModifiedStyle.bind(this, 'ALL', areaTickPtsDefaultStyle)
           });
+
+          this.setTimeSlider();
     		}
 
 
@@ -474,22 +475,11 @@ class MapComponent extends React.Component {
     		}
 
 
-        ////
-        // Sets the size of the location points respective to the amount of climbs in that area
-        // TODO: better check for ticks vs. todos
-        //
-        // NOTE: only resizes areas that are currently added to the map.
-        //
-        // @param filter - a filter keyword that filters the radius by route type.
-        ////
-
-
-
-
         this.setTimeSlider = function() {
           var allTickArr = [];
-          for(var n=0; n<this.state.tickAreaPts.features.length; n++){
-            var tickArr = this.state.tickAreaPts.features[n].properties.customTicksArr;
+          var tickPts = this.getTickAreaPtsCache();
+          for(var n=0; n<tickPts.features.length; n++){
+            var tickArr = tickPts.features[n].properties.customTicksArr;
 
             if(tickArr){
               for(var d=0; d<tickArr.length; d++){
@@ -849,10 +839,7 @@ class MapComponent extends React.Component {
 
         function tickHoverAction(e) {
               var layer = e.target;
-
-              // if($("#tick-time-chart")){
-              //   $("#tick-time-chart").remove()
-              // }
+              store.dispatch(hoverFeatureInfo(layer));
 
               layer.setStyle({"fillColor":TICKFILLHOVER});
 
@@ -902,10 +889,6 @@ class MapComponent extends React.Component {
             store.dispatch(hoverFeatureInfo(layer));
             // removeAllCharts();
 
-          //   if($("#tick-time-chart")){
-          //       $("#tick-time-chart").remove()
-          //     }
-          //
             if(layer.feature.properties.areatype === "TODO") {
               layer.setStyle({"fillColor": TODOFILLHOVER});
             }
