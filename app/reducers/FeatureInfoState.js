@@ -17,9 +17,16 @@ export default function featureInfo(state = initialState, action) {
         body : newBody
       }
     case types.HOVER_FEATURE_INFO:
+      var info = "";
+      var areaInfo = {};
+      if(action.info){
+        info = action.info.feature.properties.area;
+        areaInfo = action.info.feature.properties;
+      }
+
       return {
-        heading : action.info.feature.properties.area,
-        areaInfo : action.info.feature.properties
+        heading : info,
+        areaInfo : areaInfo
       }
 
     default:

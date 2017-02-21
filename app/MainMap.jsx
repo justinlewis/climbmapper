@@ -15,7 +15,7 @@ import GeoJsonUpdatable from "./GeoJsonUpdatable.jsx";
 import toDoAreaPts from './utils/GeoJsonToDoArea.js';
 import toDoCragPts from './utils/GeoJsonToDoCrag.js';
 import tickAreaPts from './utils/GeoJsonTick.js';
-import { setFeatureInfo, hoverFeatureInfo } from './actions/MapActions.js';
+import { setFeatureInfo, hoverFeatureInfo, loadMap } from './actions/MapActions.js';
 
 
 import BarChart from './BarChart.jsx';
@@ -115,6 +115,8 @@ class MapComponent extends React.Component {
     }
 
     componentDidMount() {
+        const { store } = this.context;
+
     		this.toDoAreaReq = $.get("todoareas", function (result) {
     			this.setTodoAreaPtsCache(result);
     		}.bind(this), "json");
@@ -408,6 +410,7 @@ class MapComponent extends React.Component {
             todoAreaPts: cachedTodoAreaPts,
             todoLayerStyle : getModifiedStyle.bind('ALL', areaTodoPtsDefaultStyle)
           });
+
     		}
 
 
@@ -733,6 +736,8 @@ class MapComponent extends React.Component {
 
         function resetAreaHover(e) {
           var layer = e.target;
+
+          store.dispatch(hoverFeatureInfo(null));
           resetFeatureColor(layer);
           // removeAllCharts();
         }
@@ -894,7 +899,7 @@ class MapComponent extends React.Component {
         // action to perform when mousing over a feature
         function todoHoverAction(e) {
             var layer = e.target;
-            store.dispatch(hoverFeatureInfo(layer))
+            store.dispatch(hoverFeatureInfo(layer));
             // removeAllCharts();
 
           //   if($("#tick-time-chart")){
@@ -984,7 +989,7 @@ class MapComponent extends React.Component {
         // }
 
   		return(
-        <Map center={position} zoom={this.state.zoom} zoomControl={false} >
+        <Map center={position} zoom={this.state.zoom} zoomControl={false}>
 
           <ZoomControl position={"topright"}></ZoomControl>
 
@@ -1008,7 +1013,7 @@ class MapComponent extends React.Component {
                 data={this.state.todoAreaPts}
                 style={this.state.todoLayerStyle}
                 routeType={this.props.routeType}
-                resizeLocation={() =>this.resizeLocations().bind(this)}
+                // resizeLocation={() =>this.resizeLocations("ALL").bind(this)}
                 getLocationSizeBucket={(filter) => this.getLocationSizeBucket(filter)}
                 onEachFeature={onEachTodoFeature.bind(null, this)}
                 pointToLayer={areaTodoPtsPointToLayer}
@@ -1025,7 +1030,7 @@ class MapComponent extends React.Component {
                 data={this.state.tickAreaPts}
                 style={this.state.tickLayerStyle}
                 routeType={this.props.routeType}
-                resizeLocation={() =>this.resizeLocations().bind(this)}
+                // resizeLocation={() =>this.resizeLocations("ALL").bind(this)}
                 getLocationSizeBucket={(filter) => this.getLocationSizeBucket(filter)}
                 onEachFeature={onEachTickFeature.bind(null, this)}
                 pointToLayer={areaTickPtsPointToLayer} >

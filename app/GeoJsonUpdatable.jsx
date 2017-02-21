@@ -23,10 +23,16 @@ export default class GeoJsonUpdatable extends GeoJSON {
         if (prevProps.style !== this.props.style) {
             map.setStyle(this.props.style);
         }
-        if (prevProps.routeType !== this.props.routeType) {
+
+        // if prev and new routeType === "ALL" we will assume it's the initial map load
+        if(prevProps.routeType.routeType === "ALL" && this.props.routeType.routeType === "ALL"){
+          this.resizeLocations(this.props.routeType.routeType)
+        }
+        else if (prevProps.routeType !== this.props.routeType) {
           this.resizeLocations(this.props.routeType.routeType)
         }
     }
+
     resizeLocations(filter) {
        this.leafletElement.eachLayer((layer) => {
          if(layer.feature){
@@ -68,9 +74,7 @@ export default class GeoJsonUpdatable extends GeoJSON {
              }
            }
          }
-
        })
-
      }
 }
 

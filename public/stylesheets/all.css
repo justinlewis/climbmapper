@@ -107,6 +107,7 @@ body{
 
 	#left-sidebar-heading{
 		font-weight: bolder;
+		margin: 0;
 	}
 
 	#left-sidebar-heading-info-container{

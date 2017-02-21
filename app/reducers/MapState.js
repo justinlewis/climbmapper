@@ -7,8 +7,8 @@ const initialState = {
 
 
 export default function map(state = initialState, action) {
-  switch (action.type) {
 
+  switch (action.type) {
     case types.LOAD_MAP:
       const newMapCenter = [1, 1]; // TODO: this should be the extent of the data
       return {
