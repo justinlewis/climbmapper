@@ -6,7 +6,7 @@ import MapContainerComponent from '../MapContainer.jsx';
 
 const mapStateToProps = (state) => {
   return {
-    info: "test"
+    //info: "test"
   }
 }
 

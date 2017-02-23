@@ -8,7 +8,7 @@ import NavBarComponent from '../NavBar.jsx';
 
 const mapStateToProps = (state) => {
   return {
-    info: "test"
+    //info: "test"
   }
 }
 

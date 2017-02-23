@@ -19,6 +19,13 @@ export function setFeatureInfo(info) {
   };
 }
 
+export function clickFeatureInfo(info) {
+  return {
+    type: types.CLICK_FEATURE_INFO,
+    info
+  };
+}
+
 export function hoverFeatureInfo(info) {
   return {
     type: types.HOVER_FEATURE_INFO,

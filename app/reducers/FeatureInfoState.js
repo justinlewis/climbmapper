@@ -8,6 +8,7 @@ const initialState = {
 export default function featureInfo(state = initialState, action) {
   switch (action.type) {
 
+    // TODO: I think SET_FEATURE_INFO and HOVER_FEATURE_INFO do the same thing. check and consolidate if possible
     case types.SET_FEATURE_INFO:
       const newHeading = state.heading;
       const newBody = state.body;
@@ -27,6 +28,16 @@ export default function featureInfo(state = initialState, action) {
       return {
         heading : info,
         areaInfo : areaInfo
+      }
+    case types.CLICK_FEATURE_INFO:
+      var layers = [];
+      if(action.info){
+        layers = action.info;
+      }
+
+      return {
+        showAreaRoutesPreviewPanel : true,
+        layers : layers
       }
 
     default:

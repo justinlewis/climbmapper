@@ -15,7 +15,7 @@ import GeoJsonUpdatable from "./GeoJsonUpdatable.jsx";
 import toDoAreaPts from './utils/GeoJsonToDoArea.js';
 import toDoCragPts from './utils/GeoJsonToDoCrag.js';
 import tickAreaPts from './utils/GeoJsonTick.js';
-import { setFeatureInfo, hoverFeatureInfo, loadMap } from './actions/MapActions.js';
+import { setFeatureInfo, hoverFeatureInfo, loadMap, clickFeatureInfo } from './actions/MapActions.js';
 
 
 import BarChart from './BarChart.jsx';
@@ -94,7 +94,8 @@ class MapComponent extends React.Component {
           ticks : null,
           todos : null,
           todoLayerStyle : areaTodoPtsDefaultStyle,
-          tickLayerStyle : areaTickPtsDefaultStyle
+          tickLayerStyle : areaTickPtsDefaultStyle,
+          showAreaRoutesPreviewPanel : false
         };
 
         this.setTodoAreaPtsCache = function(areas) {
@@ -112,6 +113,11 @@ class MapComponent extends React.Component {
         this.getTickAreaPtsCache = function() {
           return this.tickAreaPtsCache;
         }
+    }
+
+    onFeatureClick(feature){
+      // calling method on parent component to propogate state
+      this.props.onFeatureClick(feature);
     }
 
     componentDidMount() {
@@ -640,6 +646,9 @@ class MapComponent extends React.Component {
      }
 
      onMapClick() {
+
+       this.onFeatureClick(null); // TODO: UN-TESTED. test if this actually works.
+
          // Clear the info box
         //  if($("#info-box-content").text().length > 0){
         //    $("#info-box-content").html("");
@@ -749,91 +758,22 @@ class MapComponent extends React.Component {
         // click event for areas
         ////
         function featureClickEvent(e) {
-
           var layer = e.target;
 
-          // if(!$("#info-container").is(':visible')){
-          //   $("#info-container").show();
-          // }
-          //
-          // if($(".info-ul").length > 0){
-          //   $(".info-ul").remove();
-          // }
-          //
-          // if($(".info-area-title").text().length > 0){
-          //   $(".info-area-title").remove();
-          // }
-          //
-          // // This is a really weak check. we need to make sure this is
-          // var subHeading = "";
-          // if(layer.feature.properties.customTicksArr){
-          //   var layers = layer.feature.properties.customTicksArr;
-          //   subHeading = "Ticks";
-          // }
-          // else {
-          //   var layers = layer.feature.properties.customRouteArr;
-          //   subHeading = "ToDo";
-          // }
-          //
-          // // Sort the array by the orderIndex property
-          // function compare(a,b) {
-          //   if (a.difficultyindex < b.difficultyindex)
-          //      return -1;
-          //   if (a.difficultyindex > b.difficultyindex)
-          //     return 1;
-          //   return 0;
-          // }
-          // layers.sort(compare);
-          //
-          // $("#info-area-title").text(subHeading+": "+layer.feature.properties.area);
-          //
-          // for(var l=0; l<layers.length; l++){
-          //
-          //     if(routeTypeFilter === "ALL" || layers[l].type.toUpperCase() === routeTypeFilter ){
-          //     var name = String(layers[l].name ? layers[l].name : 'n/a');
-          //     var type = String(layers[l].type ? layers[l].type :"n/a");
-          //     if(type.toUpperCase() === "TRAD" || type.toUpperCase() === "SPORT" || type.toUpperCase() === "ALPINE"){
-          //       var rating = String(layers[l].ropegrade ? layers[l].ropegrade : 'n/a');
-          //     }
-          //     else{
-          //       var rating = String(layers[l].bouldergrade ? layers[l].bouldergrade : 'n/a');
-          //     }
-          //     var pitches = String(layers[l].pitches ? layers[l].pitches :"n/a");
-          //     var stars = String(layers[l].stars ? layers[l].stars :"n/a");
-          //     var starVotes = String(layers[l].starVotes ? layers[l].starVotes :"n/a");
-          //     var url = String(layers[l].url ? layers[l].url :"n/a");
-          //     var geoLoc = String(layers[l].location ? layers[l].location :"n/a");
-          //     var crag = getLocationName(layers[l].area) ;
-          //     var imgMed = String(layers[l].imgMed ? layers[l].imgMed :"n/a");
-          //     var imgMed = String(layers[l].imgMed ? layers[l].imgMed :"n/a");
-          //
-          //     var routeHTMLStr = "<ul class='info-ul'>";
-          //     routeHTMLStr += "<li class='info-text'><h3 class='info-header'><u>" +  name + "</u></h3></li>";
-          //     routeHTMLStr += "<li class='info-text'><i>Rating:  </i>" +  rating + "</li>";
-          //     routeHTMLStr += "<li class='info-text'><i>Type:  </i>" +  type + "</li>";
-          //     routeHTMLStr += "<li class='info-text'><i>Pitches:  </i>" +  pitches + "</li>";
-          //     routeHTMLStr += "<li class='info-text'><i>Stars:  </i>" +  stars + " out of "+ starVotes + " votes</li>";
-          //     routeHTMLStr += "<li class='info-text'><i>Crag:  </i>" +  crag + "</li>";
-          //     routeHTMLStr += "<li class='info-text'><a class='info-link' target='_blank' href='"+  url + "'>See it on Mountain Project</a></li>";
-          //     // routeHTMLStr += "<li class='info-link'> <img class='info-image' src=http://mountainproject.com"+ imgMed +" alt='Climbing Img'> </li>";
-          //     routeHTMLStr += "</ul>";
-          //
-          //     $("#info-box").append(routeHTMLStr);
-          //   }
-          //
-          // }
+          // This is a really weak check. we need to make sure this is
+          var subHeading = "";
+          if(layer.feature.properties.customTicksArr){
+            var layers = layer.feature.properties.customTicksArr;
+            subHeading = "Ticks";
+          }
+          else {
+            var layers = layer.feature.properties.customRouteArr;
+            subHeading = "ToDo";
+          }
 
-          // function getLocationName(areaId) {
-          //   var areaName = "";
-          //   for(var n=0; n<todoAreaPts.features.length; n++){
-          //     var thisAreaId = todoAreaPts.features[n].properties.id;
-          //     if(areaId === thisAreaId){
-          //       areaName = todoAreaPts.features[n].properties.area;
-          //     }
-          //   }
-          //
-          //   return areaName;
-          // }
+          store.dispatch(clickFeatureInfo(layers));
+
+          that.onFeatureClick(layer);
         }
 
 
