@@ -582,6 +582,7 @@ class MapComponent extends React.Component {
 
 
         this.setSearchBar = function(areas) {
+            var that = this;
             var substringMatcher = function(strs) {
               return function findMatches(q, cb) {
                 var matches, substringRegex;
@@ -590,7 +591,7 @@ class MapComponent extends React.Component {
                 matches = [];
 
                 // regex used to determine if a string contains the substring `q`
-                substrRegex = new RegExp(q, 'i');
+                var substrRegex = new RegExp(q, 'i');
 
                 // iterate through the pool of strings and for any string that
                 // contains the substring `q`, add it to the `matches` array
@@ -625,6 +626,7 @@ class MapComponent extends React.Component {
               },
             }).bind('typeahead:select', function(e, suggestion) {
                 var sugObj = JSON.parse(suggestion);
+                var map = that.refs.map.context.map;
                 map.setView(L.latLng(sugObj.geom[1],sugObj.geom[0]), 14);
             });
         }
@@ -646,8 +648,7 @@ class MapComponent extends React.Component {
      }
 
      onMapClick() {
-
-       this.onFeatureClick(null); // TODO: UN-TESTED. test if this actually works.
+       //TODO: I don't think this method is needed.
 
          // Clear the info box
         //  if($("#info-box-content").text().length > 0){
