@@ -36,7 +36,6 @@ export default function featureInfo(state = initialState, action) {
       }
 
       return {
-        showAreaRoutesPreviewPanel : true,
         layers : layers
       }
 

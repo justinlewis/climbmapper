@@ -20,7 +20,8 @@ class MapContainerComponent extends React.Component {
           showAreaRoutesPreviewPanel : false
         }
 
-        this.onFeatureClick = this.onFeatureClick.bind(this)
+        this.onFeatureClick = this.onFeatureClick.bind(this);
+        this.onModalCloseButtonClick = this.onModalCloseButtonClick.bind(this);
     }
 
     onFeatureClick(feature){
@@ -29,6 +30,10 @@ class MapContainerComponent extends React.Component {
         showPanel = true;
       }
       this.setState({showAreaRoutesPreviewPanel : showPanel});
+    }
+
+    onModalCloseButtonClick(toClose){
+      this.setState({showAreaRoutesPreviewPanel : false});
     }
 
     render () {
@@ -41,9 +46,8 @@ class MapContainerComponent extends React.Component {
     	         <LeftSidebarContainer />
     				    <div className="col-xs-12 col-sm-6 col-lg-8 right-main-panel">
     				          <div className="row">
-    					               {/* <FeatureInfoComponent /> */}
-                             {/* { this.state.showAreaRoutesPreviewPanel ? <AreaRoutesPreviewPanelComponent areaInfo={this.props.featureInfo.areaInfo} routeType={this.props.routeType.routeType} /> : null } */}
-                            <AreaRoutesPreviewPanelComponent layers={this.props.featureInfo.layers} routeType={this.props.routeType.routeType} />
+    					               {/* <FeatureInfoComponent />  */}   {/*TODO: Remove this and the associated class if not used elsewhere */}
+                             { this.state.showAreaRoutesPreviewPanel ? <AreaRoutesPreviewPanelComponent layers={this.props.featureInfo.layers} routeType={this.props.routeType.routeType} onModalCloseButtonClick={this.onModalCloseButtonClick} /> : null }
                       </div>
     				    </div>
     				</div>

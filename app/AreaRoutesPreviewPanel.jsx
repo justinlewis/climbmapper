@@ -1,12 +1,35 @@
 import React from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { closeModal } from './actions/AppActions.js';
+import CloseButtonComponent from './CloseModalButton.jsx';
 
 class AreaRoutesPreviewPanelComponent extends React.Component {
     constructor(props){
 		    super(props);
+
+        this.onModalCloseButtonClick = this.onModalCloseButtonClick.bind(this);
     }
+
+
+    onModalCloseButtonClick(toClose){
+      this.props.onModalCloseButtonClick(toClose);
+    }
+
+
+    shouldComponentUpdate(nextProps, nextState) {
+      // if nextProps has layers a feature was clicked on
+      if(nextProps.layers){
+        return true;
+      }
+
+      return false;
+    }
+
 
     render () {
       var hideStyle = {display:'none'};
+
       var layers =this.props.layers;
       if(layers){
         var routeTypeFilter = this.props.routeType;
@@ -25,7 +48,7 @@ class AreaRoutesPreviewPanelComponent extends React.Component {
         var areaCards = [];
         for(var l=0; l<layers.length; l++){
 
-            if(routeTypeFilter === "ALL" || layers[l].type.toUpperCase() === routeTypeFilter ){
+          if(routeTypeFilter.routeType === "ALL" || layers[l].type.toUpperCase() === routeTypeFilter ){
             var name = String(layers[l].name ? layers[l].name : 'n/a');
             var type = String(layers[l].type ? layers[l].type :"n/a");
             if(type.toUpperCase() === "TRAD" || type.toUpperCase() === "SPORT" || type.toUpperCase() === "ALPINE"){
@@ -73,6 +96,7 @@ class AreaRoutesPreviewPanelComponent extends React.Component {
 
   		return(
           <div id="info-container">
+            <CloseButtonComponent onClick={this.onModalCloseButtonClick}/>
 				   	<h4 id="info-area-title"></h4>
 				   	<div id="info-box">
 							<div id="click-chart-panel"></div>
@@ -81,7 +105,12 @@ class AreaRoutesPreviewPanelComponent extends React.Component {
 				   </div>
   		);
     }
-
 }
 
-export default AreaRoutesPreviewPanelComponent;
+AreaRoutesPreviewPanelComponent.contextTypes = {
+  store: React.PropTypes.object
+}
+const mapStateToProps = (state) => {
+  return state
+}
+export default connect(mapStateToProps)(AreaRoutesPreviewPanelComponent);

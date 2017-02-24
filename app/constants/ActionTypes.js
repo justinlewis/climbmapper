@@ -15,3 +15,6 @@ export const CLICK_FEATURE_INFO = 'CLICK_FEATURE_INFO';
 // user actions
 export const CLICK_FEATURE = 'CLICK_FEATURE';
 export const SET_FILTER = 'SET_FILTER'
+
+// app actions
+export const CLOSE_MODAL = 'CLOSE_MODAL';

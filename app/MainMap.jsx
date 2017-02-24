@@ -666,6 +666,7 @@ class MapComponent extends React.Component {
         //    disableEditModeInToolbar();
         //  }
      }
+
      getLocationSizeBucket(rtCount) {
        if(rtCount < 1){
          return 0
