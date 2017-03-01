@@ -313,7 +313,7 @@ body{
 		overflow-y: auto;
 	}
 
-	#issues-modal .modal-dialog{
+	#issues-modal .modal-dialog, #issues-modal .modal-dialog{
 	    width: 800px;
 	}
 

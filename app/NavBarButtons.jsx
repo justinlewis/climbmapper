@@ -39,7 +39,7 @@ class NavBarButtons extends React.Component {
             <NavBarAboutButton />
     	    	{signUp}
             {login}
-    		    {profile}
+    		    <NavBarProfileButton /> 
             {dataIssues}
           </ul>
     	);

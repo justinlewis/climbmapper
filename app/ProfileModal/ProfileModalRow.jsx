@@ -35,4 +35,4 @@ class ProfileHeaderComponent extends React.Component {
     }
 }
 
-export default ProfileModalComponent;
+export default ProfileModalRow;
