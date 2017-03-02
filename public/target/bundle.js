@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "e2bf975ba9884cb2e22e"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "6d421d47526f2d6f394c"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -51908,9 +51908,8 @@
 	              _react3.default.createElement(
 	                'h2',
 	                { className: 'modal-title' },
-	                'username'
-	              ),
-	              ' //TODO add username placeholder'
+	                'Profile Page'
+	              )
 	            ),
 	            _react3.default.createElement(
 	              'div',
@@ -52016,25 +52015,27 @@
 	    _createClass(ProfileModalHeader, [{
 	        key: "render",
 	        value: function render() {
+	            //TODO: This is a bad way to pass data to a component.
+	            var username = document.getElementById("app-config-el").dataset.username;
+
 	            return _react3.default.createElement(
 	                "div",
-	                { "class": "page-header text-center" },
+	                { className: "page-header text-center" },
+	                _react3.default.createElement(
+	                    "span",
+	                    null,
+	                    _react3.default.createElement("a", { href: "/updateprofile", id: "edit-profile-btn", className: "fa fa-pencil fa-2x pull-right", title: "Edit your profile" })
+	                ),
 	                _react3.default.createElement(
 	                    "h1",
 	                    null,
-	                    _react3.default.createElement("span", { "class": "fa fa-asterisk" }),
-	                    " Profile Page"
-	                ),
-	                _react3.default.createElement(
-	                    "a",
-	                    { href: "/", "class": "btn btn-primary btn-sm" },
+	                    _react3.default.createElement("span", { className: "fa fa-asterisk" }),
 	                    " ",
-	                    _react3.default.createElement("i", { "class": "fa fa-globe" }),
-	                    " Back To Your Map"
+	                    username
 	                ),
 	                _react3.default.createElement(
 	                    "a",
-	                    { href: "/logout", "class": "btn btn-default btn-sm" },
+	                    { href: "/logout", className: "btn btn-default btn-sm" },
 	                    "Logout"
 	                )
 	            );
@@ -52121,73 +52122,52 @@
 	    _createClass(ProfileModalRow, [{
 	        key: "render",
 	        value: function render() {
+	            //TODO: This is a bad way to pass data to a component.
+	            var email = document.getElementById("app-config-el").dataset.email;
+	            var key = document.getElementById("app-config-el").dataset.key;
+
 	            return (
 	                // TODO This whole thing right here...
 	                _react3.default.createElement(
 	                    "div",
-	                    { "class": "row" },
-	                    _react3.default.createElement("div", { "class": "col-sm-3 col-m-3" }),
+	                    { className: "row" },
 	                    _react3.default.createElement(
 	                        "div",
-	                        { "class": "col-sm-6 col-m-6" },
+	                        null,
 	                        _react3.default.createElement(
-	                            "h3",
-	                            { "class": "error-message" },
-	                            "message"
+	                            "strong",
+	                            null,
+	                            "Email"
 	                        ),
+	                        ": ",
+	                        email,
+	                        " "
+	                    ),
+	                    _react3.default.createElement(
+	                        "div",
+	                        null,
 	                        _react3.default.createElement(
-	                            "div",
-	                            { "class": "well" },
+	                            "strong",
+	                            null,
+	                            "Mountain Project User Key"
+	                        ),
+	                        ": ",
+	                        key,
+	                        " "
+	                    ),
+	                    _react3.default.createElement(
+	                        "div",
+	                        null,
+	                        _react3.default.createElement(
+	                            "label",
+	                            null,
 	                            _react3.default.createElement(
-	                                "span",
+	                                "strong",
 	                                null,
-	                                _react3.default.createElement("a", { href: "/updateprofile", id: "edit-profile-btn", "class": "fa fa-pencil fa-2x pull-right", title: "Edit your profile" })
-	                            ),
-	                            _react3.default.createElement(
-	                                "h3",
-	                                null,
-	                                _react3.default.createElement("span", { "class": "fa fa-user" }),
-	                                " username"
-	                            ),
-	                            "//TODO add username placeholder",
-	                            _react3.default.createElement(
-	                                "p",
-	                                null,
-	                                _react3.default.createElement(
-	                                    "strong",
-	                                    null,
-	                                    "User Name"
-	                                ),
-	                                ": username //TODO add username placeholder",
-	                                _react3.default.createElement(
-	                                    "strong",
-	                                    null,
-	                                    "Email"
-	                                ),
-	                                ": email //TODO add email placeholder",
-	                                _react3.default.createElement(
-	                                    "strong",
-	                                    null,
-	                                    "Mountain Project User Key"
-	                                ),
-	                                ": key //TODO add key placeholder",
-	                                _react3.default.createElement(
-	                                    "div",
-	                                    { "class": "form-group checkbox disabled" },
-	                                    _react3.default.createElement(
-	                                        "label",
-	                                        null,
-	                                        _react3.default.createElement(
-	                                            "strong",
-	                                            null,
-	                                            "Get updates and notifications via Email"
-	                                        )
-	                                    )
-	                                )
+	                                "Get updates and notifications via Email"
 	                            )
 	                        )
-	                    ),
-	                    _react3.default.createElement("div", { "class": "col-sm-3 col-m-3" })
+	                    )
 	                )
 	            );
 	        }

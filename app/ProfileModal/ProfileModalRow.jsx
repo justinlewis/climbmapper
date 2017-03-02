@@ -6,30 +6,20 @@ class ProfileModalRow extends React.Component {
     }
 
     render () {
+        //TODO: Get email and MP key info
+
         return(
             // TODO This whole thing right here...
-            <div class="row">
-            <div class="col-sm-3 col-m-3"></div>
-            <div class="col-sm-6 col-m-6">
-            
-                <h3 class="error-message">message</h3>
-            
-                <div class="well">
-                    <span><a href="/updateprofile" id="edit-profile-btn" class="fa fa-pencil fa-2x pull-right" title="Edit your profile"></a></span>
-                    <h3><span class="fa fa-user"></span> username</h3>//TODO add username placeholder
-
-                    <p>
-                        <strong>User Name</strong>: username //TODO add username placeholder
-                        <strong>Email</strong>: email //TODO add email placeholder
-                        <strong>Mountain Project User Key</strong>: key //TODO add key placeholder
-                        <div class="form-group checkbox disabled">
-                        <label><strong>Get updates and notifications via Email</strong></label>
-                     </div>
-                    </p>
-
+            <div className="row">
+                <div class="col-sm-3 col-m-3"></div>
+                <div class="col-sm-6 col-m-6">
+                    <div class="well">
+                        <div><strong>Email</strong>: </div>
+                        <div><strong>Mountain Project User Key</strong>: </div>
+                        <div><label><strong>Get updates and notifications via Email</strong></label></div>
+                        <div><input type="checkbox" name="getnotifications" disabled="true"></input></div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-sm-3 col-m-3"></div>
             </div>
         );
     }

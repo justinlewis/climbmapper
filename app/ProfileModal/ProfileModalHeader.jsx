@@ -6,11 +6,14 @@ class ProfileModalHeader extends React.Component {
     }
 
     render () {
+        //TODO: This is a bad way to pass data to a component.
+        var username = document.getElementById("app-config-el").dataset.username;
+
         return(
-            <div class="page-header text-center">
-                <h1><span class="fa fa-asterisk"></span> Profile Page</h1>
-                <a href="/" class="btn btn-primary btn-sm"> <i class="fa fa-globe"></i> Back To Your Map</a>
-                <a href="/logout" class="btn btn-default btn-sm">Logout</a>
+            <div className="page-header text-center">
+                <span><a href="/updateprofile" id="edit-profile-btn" className="fa fa-pencil fa-2x pull-right" title="Edit your profile"></a></span>
+                <h1><span className="fa fa-asterisk"></span> {username}</h1>
+                <a href="/logout" className="btn btn-default btn-sm">Logout</a>
             </div>
         );
     }

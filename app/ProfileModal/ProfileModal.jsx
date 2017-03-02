@@ -9,9 +9,6 @@ class ProfileModalComponent extends React.Component {
      super(props);
   }
 
-  //TODO
-  // if isAuthenticated === true ... else ...
-
   render () {
     return(
         <div className="modal fade" id="profile-modal" role="dialog">
@@ -19,7 +16,7 @@ class ProfileModalComponent extends React.Component {
               <div className="modal-content">
                 <div className="modal-header">
                   <button type="button" className="close" data-dismiss="modal">&times;</button>
-                  <h2 className="modal-title">username</h2> //TODO add username placeholder
+                  <h2 className="modal-title">Profile Page</h2> 
                 </div>
                 <div className="modal-body">
                   <ProfileModalHeader />
