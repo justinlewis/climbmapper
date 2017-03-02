@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import MapComponent from './MainMap.jsx';
 import AboutModalComponent from './AboutModal.jsx';
 import IssuesModalComponent from './IssuesModal.jsx';
+import ProfileModalComponent from './ProfileModal/ProfileModal.jsx';
 import WelcomeModalComponent from './WelcomeModal.jsx';
 import FeatureInfoComponent from './FeatureInfo.jsx';
 import AreaRoutesPreviewPanelComponent from './AreaRoutesPreviewPanel.jsx'
@@ -53,6 +54,7 @@ class MapContainerComponent extends React.Component {
     				</div>
   			  	<MapComponent routeType={this.props.routeType} onFeatureClick={this.onFeatureClick} />
   			  	<AboutModalComponent />
+            <ProfileModalComponent />
             <IssuesModalComponent />
             <WelcomeModalComponent />
   		  </div>

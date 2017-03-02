@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "afbb44281754c9817855"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "e2bf975ba9884cb2e22e"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -31800,7 +31800,7 @@
 
 	var _MapContainer2 = _interopRequireDefault(_MapContainer);
 
-	var _NavBarContainer = __webpack_require__(483);
+	var _NavBarContainer = __webpack_require__(486);
 
 	var _NavBarContainer2 = _interopRequireDefault(_NavBarContainer);
 
@@ -31943,15 +31943,19 @@
 
 	var _IssuesModal2 = _interopRequireDefault(_IssuesModal);
 
-	var _WelcomeModal = __webpack_require__(476);
+	var _ProfileModal = __webpack_require__(476);
+
+	var _ProfileModal2 = _interopRequireDefault(_ProfileModal);
+
+	var _WelcomeModal = __webpack_require__(479);
 
 	var _WelcomeModal2 = _interopRequireDefault(_WelcomeModal);
 
-	var _FeatureInfo = __webpack_require__(477);
+	var _FeatureInfo = __webpack_require__(480);
 
 	var _FeatureInfo2 = _interopRequireDefault(_FeatureInfo);
 
-	var _AreaRoutesPreviewPanel = __webpack_require__(478);
+	var _AreaRoutesPreviewPanel = __webpack_require__(481);
 
 	var _AreaRoutesPreviewPanel2 = _interopRequireDefault(_AreaRoutesPreviewPanel);
 
@@ -31959,7 +31963,7 @@
 
 	var _BarChart2 = _interopRequireDefault(_BarChart);
 
-	var _LeftSideBarContainer = __webpack_require__(481);
+	var _LeftSideBarContainer = __webpack_require__(484);
 
 	var _LeftSideBarContainer2 = _interopRequireDefault(_LeftSideBarContainer);
 
@@ -32055,6 +32059,7 @@
 	        ),
 	        _react3.default.createElement(_MainMap2.default, { routeType: this.props.routeType, onFeatureClick: this.onFeatureClick }),
 	        _react3.default.createElement(_AboutModal2.default, null),
+	        _react3.default.createElement(_ProfileModal2.default, null),
 	        _react3.default.createElement(_IssuesModal2.default, null),
 	        _react3.default.createElement(_WelcomeModal2.default, null)
 	      );
@@ -51799,6 +51804,405 @@
 /* 476 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* WEBPACK VAR INJECTION */(function(module) {'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _redboxReact2 = __webpack_require__(13);
+
+	var _redboxReact3 = _interopRequireDefault(_redboxReact2);
+
+	var _reactTransformCatchErrors3 = __webpack_require__(195);
+
+	var _reactTransformCatchErrors4 = _interopRequireDefault(_reactTransformCatchErrors3);
+
+	var _react2 = __webpack_require__(14);
+
+	var _react3 = _interopRequireDefault(_react2);
+
+	var _reactTransformHmr3 = __webpack_require__(196);
+
+	var _reactTransformHmr4 = _interopRequireDefault(_reactTransformHmr3);
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _ProfileModalHeader = __webpack_require__(477);
+
+	var _ProfileModalHeader2 = _interopRequireDefault(_ProfileModalHeader);
+
+	var _ProfileModalRow = __webpack_require__(478);
+
+	var _ProfileModalRow2 = _interopRequireDefault(_ProfileModalRow);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _components = {
+	  ProfileModalComponent: {
+	    displayName: 'ProfileModalComponent'
+	  }
+	};
+
+	var _reactTransformHmr2 = (0, _reactTransformHmr4.default)({
+	  filename: '/Users/MAChine/GitHub-Projects/climbmapper/app/ProfileModal/ProfileModal.jsx',
+	  components: _components,
+	  locals: [module],
+	  imports: [_react3.default]
+	});
+
+	var _reactTransformCatchErrors2 = (0, _reactTransformCatchErrors4.default)({
+	  filename: '/Users/MAChine/GitHub-Projects/climbmapper/app/ProfileModal/ProfileModal.jsx',
+	  components: _components,
+	  locals: [],
+	  imports: [_react3.default, _redboxReact3.default]
+	});
+
+	function _wrapComponent(id) {
+	  return function (Component) {
+	    return _reactTransformHmr2(_reactTransformCatchErrors2(Component, id), id);
+	  };
+	}
+
+	//TODO Profile Modal Child Compontents
+
+
+	var ProfileModalComponent = _wrapComponent('ProfileModalComponent')(function (_React$Component) {
+	  _inherits(ProfileModalComponent, _React$Component);
+
+	  function ProfileModalComponent(props) {
+	    _classCallCheck(this, ProfileModalComponent);
+
+	    return _possibleConstructorReturn(this, (ProfileModalComponent.__proto__ || Object.getPrototypeOf(ProfileModalComponent)).call(this, props));
+	  }
+
+	  //TODO
+	  // if isAuthenticated === true ... else ...
+
+	  _createClass(ProfileModalComponent, [{
+	    key: 'render',
+	    value: function render() {
+	      return _react3.default.createElement(
+	        'div',
+	        { className: 'modal fade', id: 'profile-modal', role: 'dialog' },
+	        _react3.default.createElement(
+	          'div',
+	          { className: 'modal-dialog' },
+	          _react3.default.createElement(
+	            'div',
+	            { className: 'modal-content' },
+	            _react3.default.createElement(
+	              'div',
+	              { className: 'modal-header' },
+	              _react3.default.createElement(
+	                'button',
+	                { type: 'button', className: 'close', 'data-dismiss': 'modal' },
+	                '\xD7'
+	              ),
+	              _react3.default.createElement(
+	                'h2',
+	                { className: 'modal-title' },
+	                'username'
+	              ),
+	              ' //TODO add username placeholder'
+	            ),
+	            _react3.default.createElement(
+	              'div',
+	              { className: 'modal-body' },
+	              _react3.default.createElement(_ProfileModalHeader2.default, null),
+	              _react3.default.createElement(_ProfileModalRow2.default, null)
+	            ),
+	            _react3.default.createElement(
+	              'div',
+	              { className: 'modal-footer' },
+	              _react3.default.createElement(
+	                'button',
+	                { type: 'button', className: 'btn btn-default', 'data-dismiss': 'modal' },
+	                'Close'
+	              )
+	            )
+	          ),
+	          ' // end modal-content'
+	        ),
+	        ' // end modal-dialog'
+	      ) // end profile-modal
+	      ;
+	    }
+	  }]);
+
+	  return ProfileModalComponent;
+	}(_react3.default.Component));
+
+	exports.default = ProfileModalComponent;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
+
+/***/ },
+/* 477 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _redboxReact2 = __webpack_require__(13);
+
+	var _redboxReact3 = _interopRequireDefault(_redboxReact2);
+
+	var _reactTransformCatchErrors3 = __webpack_require__(195);
+
+	var _reactTransformCatchErrors4 = _interopRequireDefault(_reactTransformCatchErrors3);
+
+	var _react2 = __webpack_require__(14);
+
+	var _react3 = _interopRequireDefault(_react2);
+
+	var _reactTransformHmr3 = __webpack_require__(196);
+
+	var _reactTransformHmr4 = _interopRequireDefault(_reactTransformHmr3);
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _components = {
+	    ProfileModalHeader: {
+	        displayName: "ProfileModalHeader"
+	    }
+	};
+
+	var _reactTransformHmr2 = (0, _reactTransformHmr4.default)({
+	    filename: "/Users/MAChine/GitHub-Projects/climbmapper/app/ProfileModal/ProfileModalHeader.jsx",
+	    components: _components,
+	    locals: [module],
+	    imports: [_react3.default]
+	});
+
+	var _reactTransformCatchErrors2 = (0, _reactTransformCatchErrors4.default)({
+	    filename: "/Users/MAChine/GitHub-Projects/climbmapper/app/ProfileModal/ProfileModalHeader.jsx",
+	    components: _components,
+	    locals: [],
+	    imports: [_react3.default, _redboxReact3.default]
+	});
+
+	function _wrapComponent(id) {
+	    return function (Component) {
+	        return _reactTransformHmr2(_reactTransformCatchErrors2(Component, id), id);
+	    };
+	}
+
+	var ProfileModalHeader = _wrapComponent("ProfileModalHeader")(function (_React$Component) {
+	    _inherits(ProfileModalHeader, _React$Component);
+
+	    function ProfileModalHeader(props) {
+	        _classCallCheck(this, ProfileModalHeader);
+
+	        return _possibleConstructorReturn(this, (ProfileModalHeader.__proto__ || Object.getPrototypeOf(ProfileModalHeader)).call(this, props));
+	    }
+
+	    _createClass(ProfileModalHeader, [{
+	        key: "render",
+	        value: function render() {
+	            return _react3.default.createElement(
+	                "div",
+	                { "class": "page-header text-center" },
+	                _react3.default.createElement(
+	                    "h1",
+	                    null,
+	                    _react3.default.createElement("span", { "class": "fa fa-asterisk" }),
+	                    " Profile Page"
+	                ),
+	                _react3.default.createElement(
+	                    "a",
+	                    { href: "/", "class": "btn btn-primary btn-sm" },
+	                    " ",
+	                    _react3.default.createElement("i", { "class": "fa fa-globe" }),
+	                    " Back To Your Map"
+	                ),
+	                _react3.default.createElement(
+	                    "a",
+	                    { href: "/logout", "class": "btn btn-default btn-sm" },
+	                    "Logout"
+	                )
+	            );
+	        }
+	    }]);
+
+	    return ProfileModalHeader;
+	}(_react3.default.Component));
+
+	exports.default = ProfileModalHeader;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
+
+/***/ },
+/* 478 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _redboxReact2 = __webpack_require__(13);
+
+	var _redboxReact3 = _interopRequireDefault(_redboxReact2);
+
+	var _reactTransformCatchErrors3 = __webpack_require__(195);
+
+	var _reactTransformCatchErrors4 = _interopRequireDefault(_reactTransformCatchErrors3);
+
+	var _react2 = __webpack_require__(14);
+
+	var _react3 = _interopRequireDefault(_react2);
+
+	var _reactTransformHmr3 = __webpack_require__(196);
+
+	var _reactTransformHmr4 = _interopRequireDefault(_reactTransformHmr3);
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _components = {
+	    ProfileModalRow: {
+	        displayName: "ProfileModalRow"
+	    }
+	};
+
+	var _reactTransformHmr2 = (0, _reactTransformHmr4.default)({
+	    filename: "/Users/MAChine/GitHub-Projects/climbmapper/app/ProfileModal/ProfileModalRow.jsx",
+	    components: _components,
+	    locals: [module],
+	    imports: [_react3.default]
+	});
+
+	var _reactTransformCatchErrors2 = (0, _reactTransformCatchErrors4.default)({
+	    filename: "/Users/MAChine/GitHub-Projects/climbmapper/app/ProfileModal/ProfileModalRow.jsx",
+	    components: _components,
+	    locals: [],
+	    imports: [_react3.default, _redboxReact3.default]
+	});
+
+	function _wrapComponent(id) {
+	    return function (Component) {
+	        return _reactTransformHmr2(_reactTransformCatchErrors2(Component, id), id);
+	    };
+	}
+
+	var ProfileModalRow = _wrapComponent("ProfileModalRow")(function (_React$Component) {
+	    _inherits(ProfileModalRow, _React$Component);
+
+	    function ProfileModalRow(props) {
+	        _classCallCheck(this, ProfileModalRow);
+
+	        return _possibleConstructorReturn(this, (ProfileModalRow.__proto__ || Object.getPrototypeOf(ProfileModalRow)).call(this, props));
+	    }
+
+	    _createClass(ProfileModalRow, [{
+	        key: "render",
+	        value: function render() {
+	            return (
+	                // TODO This whole thing right here...
+	                _react3.default.createElement(
+	                    "div",
+	                    { "class": "row" },
+	                    _react3.default.createElement("div", { "class": "col-sm-3 col-m-3" }),
+	                    _react3.default.createElement(
+	                        "div",
+	                        { "class": "col-sm-6 col-m-6" },
+	                        _react3.default.createElement(
+	                            "h3",
+	                            { "class": "error-message" },
+	                            "message"
+	                        ),
+	                        _react3.default.createElement(
+	                            "div",
+	                            { "class": "well" },
+	                            _react3.default.createElement(
+	                                "span",
+	                                null,
+	                                _react3.default.createElement("a", { href: "/updateprofile", id: "edit-profile-btn", "class": "fa fa-pencil fa-2x pull-right", title: "Edit your profile" })
+	                            ),
+	                            _react3.default.createElement(
+	                                "h3",
+	                                null,
+	                                _react3.default.createElement("span", { "class": "fa fa-user" }),
+	                                " username"
+	                            ),
+	                            "//TODO add username placeholder",
+	                            _react3.default.createElement(
+	                                "p",
+	                                null,
+	                                _react3.default.createElement(
+	                                    "strong",
+	                                    null,
+	                                    "User Name"
+	                                ),
+	                                ": username //TODO add username placeholder",
+	                                _react3.default.createElement(
+	                                    "strong",
+	                                    null,
+	                                    "Email"
+	                                ),
+	                                ": email //TODO add email placeholder",
+	                                _react3.default.createElement(
+	                                    "strong",
+	                                    null,
+	                                    "Mountain Project User Key"
+	                                ),
+	                                ": key //TODO add key placeholder",
+	                                _react3.default.createElement(
+	                                    "div",
+	                                    { "class": "form-group checkbox disabled" },
+	                                    _react3.default.createElement(
+	                                        "label",
+	                                        null,
+	                                        _react3.default.createElement(
+	                                            "strong",
+	                                            null,
+	                                            "Get updates and notifications via Email"
+	                                        )
+	                                    )
+	                                )
+	                            )
+	                        )
+	                    ),
+	                    _react3.default.createElement("div", { "class": "col-sm-3 col-m-3" })
+	                )
+	            );
+	        }
+	    }]);
+
+	    return ProfileModalRow;
+	}(_react3.default.Component));
+
+	exports.default = ProfileModalRow;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
+
+/***/ },
+/* 479 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/* WEBPACK VAR INJECTION */(function(module) {"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
@@ -52046,7 +52450,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 477 */
+/* 480 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {'use strict';
@@ -52142,7 +52546,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 478 */
+/* 481 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {'use strict';
@@ -52173,9 +52577,9 @@
 
 	var _reactRedux = __webpack_require__(362);
 
-	var _AppActions = __webpack_require__(479);
+	var _AppActions = __webpack_require__(482);
 
-	var _CloseModalButton = __webpack_require__(480);
+	var _CloseModalButton = __webpack_require__(483);
 
 	var _CloseModalButton2 = _interopRequireDefault(_CloseModalButton);
 
@@ -52413,7 +52817,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 479 */
+/* 482 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52436,7 +52840,7 @@
 	}
 
 /***/ },
-/* 480 */
+/* 483 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {"use strict";
@@ -52520,7 +52924,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 481 */
+/* 484 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52537,7 +52941,7 @@
 
 	var _reactRedux = __webpack_require__(362);
 
-	var _LeftSideBar = __webpack_require__(482);
+	var _LeftSideBar = __webpack_require__(485);
 
 	var _LeftSideBar2 = _interopRequireDefault(_LeftSideBar);
 
@@ -52555,7 +52959,7 @@
 	exports.default = LeftSideBarContainer;
 
 /***/ },
-/* 482 */
+/* 485 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {'use strict';
@@ -52668,7 +53072,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 483 */
+/* 486 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52685,9 +53089,9 @@
 
 	var _reactRedux = __webpack_require__(362);
 
-	var _UserActions = __webpack_require__(484);
+	var _UserActions = __webpack_require__(487);
 
-	var _NavBar = __webpack_require__(485);
+	var _NavBar = __webpack_require__(488);
 
 	var _NavBar2 = _interopRequireDefault(_NavBar);
 
@@ -52710,7 +53114,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_NavBar2.default);
 
 /***/ },
-/* 484 */
+/* 487 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52741,7 +53145,7 @@
 	};
 
 /***/ },
-/* 485 */
+/* 488 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {'use strict';
@@ -52768,11 +53172,11 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _NavBarButtons = __webpack_require__(486);
+	var _NavBarButtons = __webpack_require__(489);
 
 	var _NavBarButtons2 = _interopRequireDefault(_NavBarButtons);
 
-	var _NavBarTools = __webpack_require__(492);
+	var _NavBarTools = __webpack_require__(495);
 
 	var _NavBarTools2 = _interopRequireDefault(_NavBarTools);
 
@@ -52843,7 +53247,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 486 */
+/* 489 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {'use strict';
@@ -52870,23 +53274,23 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _NavBarAboutButton = __webpack_require__(487);
+	var _NavBarAboutButton = __webpack_require__(490);
 
 	var _NavBarAboutButton2 = _interopRequireDefault(_NavBarAboutButton);
 
-	var _NavBarSignUpButton = __webpack_require__(488);
+	var _NavBarSignUpButton = __webpack_require__(491);
 
 	var _NavBarSignUpButton2 = _interopRequireDefault(_NavBarSignUpButton);
 
-	var _NavBarLoginButton = __webpack_require__(489);
+	var _NavBarLoginButton = __webpack_require__(492);
 
 	var _NavBarLoginButton2 = _interopRequireDefault(_NavBarLoginButton);
 
-	var _NavBarProfileButton = __webpack_require__(490);
+	var _NavBarProfileButton = __webpack_require__(493);
 
 	var _NavBarProfileButton2 = _interopRequireDefault(_NavBarProfileButton);
 
-	var _NavBarDataIssuesButton = __webpack_require__(491);
+	var _NavBarDataIssuesButton = __webpack_require__(494);
 
 	var _NavBarDataIssuesButton2 = _interopRequireDefault(_NavBarDataIssuesButton);
 
@@ -52975,7 +53379,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 487 */
+/* 490 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {"use strict";
@@ -53067,7 +53471,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 488 */
+/* 491 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {"use strict";
@@ -53162,7 +53566,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 489 */
+/* 492 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {"use strict";
@@ -53257,7 +53661,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 490 */
+/* 493 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {"use strict";
@@ -53350,7 +53754,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 491 */
+/* 494 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {"use strict";
@@ -53442,7 +53846,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
-/* 492 */
+/* 495 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {"use strict";

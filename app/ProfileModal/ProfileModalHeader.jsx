@@ -1,6 +1,6 @@
 import React from 'react';
 
-class ProfileHeaderComponent extends React.Component {
+class ProfileModalHeader extends React.Component {
     constructor(props){
             super(props);
     }

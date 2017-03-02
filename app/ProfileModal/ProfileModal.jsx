@@ -12,14 +12,14 @@ class ProfileModalComponent extends React.Component {
   //TODO
   // if isAuthenticated === true ... else ...
 
-  render () (
+  render () {
     return(
         <div className="modal fade" id="profile-modal" role="dialog">
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-header">
                   <button type="button" className="close" data-dismiss="modal">&times;</button>
-                  <h2 className="modal-title">{{user.username}}</h2>
+                  <h2 className="modal-title">username</h2> //TODO add username placeholder
                 </div>
                 <div className="modal-body">
                   <ProfileModalHeader />
@@ -32,7 +32,7 @@ class ProfileModalComponent extends React.Component {
             </div> // end modal-dialog
           </div> // end profile-modal
     );
-  );
+  }
 }
 
 export default ProfileModalComponent;
