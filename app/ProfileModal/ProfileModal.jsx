@@ -25,9 +25,9 @@ class ProfileModalComponent extends React.Component {
                 <div className="modal-footer">
                   <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
-              </div> // end modal-content
-            </div> // end modal-dialog
-          </div> // end profile-modal
+              </div> 
+            </div>
+          </div> 
     );
   }
 }
