@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "6d421d47526f2d6f394c"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "66b2995860d1b0a3c43a"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -51785,12 +51785,9 @@
 	                                'Close'
 	                            )
 	                        )
-	                    ),
-	                    ' // end modal-content'
-	                ),
-	                ' // end modal-dialog'
-	            ) // end issues-modal
-	            ;
+	                    )
+	                )
+	            );
 	        }
 	    }]);
 
@@ -51882,9 +51879,6 @@
 	    return _possibleConstructorReturn(this, (ProfileModalComponent.__proto__ || Object.getPrototypeOf(ProfileModalComponent)).call(this, props));
 	  }
 
-	  //TODO
-	  // if isAuthenticated === true ... else ...
-
 	  _createClass(ProfileModalComponent, [{
 	    key: 'render',
 	    value: function render() {
@@ -51926,12 +51920,9 @@
 	                'Close'
 	              )
 	            )
-	          ),
-	          ' // end modal-content'
-	        ),
-	        ' // end modal-dialog'
-	      ) // end profile-modal
-	      ;
+	          )
+	        )
+	      );
 	    }
 	  }]);
 
@@ -52122,49 +52113,57 @@
 	    _createClass(ProfileModalRow, [{
 	        key: "render",
 	        value: function render() {
-	            //TODO: This is a bad way to pass data to a component.
-	            var email = document.getElementById("app-config-el").dataset.email;
-	            var key = document.getElementById("app-config-el").dataset.key;
+	            //TODO: Get email and MP key info
 
 	            return (
 	                // TODO This whole thing right here...
 	                _react3.default.createElement(
 	                    "div",
 	                    { className: "row" },
+	                    _react3.default.createElement("div", { className: "col-sm-3 col-m-3" }),
 	                    _react3.default.createElement(
 	                        "div",
-	                        null,
+	                        { className: "col-sm-6 col-m-6" },
 	                        _react3.default.createElement(
-	                            "strong",
-	                            null,
-	                            "Email"
-	                        ),
-	                        ": ",
-	                        email,
-	                        " "
-	                    ),
-	                    _react3.default.createElement(
-	                        "div",
-	                        null,
-	                        _react3.default.createElement(
-	                            "strong",
-	                            null,
-	                            "Mountain Project User Key"
-	                        ),
-	                        ": ",
-	                        key,
-	                        " "
-	                    ),
-	                    _react3.default.createElement(
-	                        "div",
-	                        null,
-	                        _react3.default.createElement(
-	                            "label",
-	                            null,
+	                            "div",
+	                            { className: "well" },
 	                            _react3.default.createElement(
-	                                "strong",
+	                                "div",
 	                                null,
-	                                "Get updates and notifications via Email"
+	                                _react3.default.createElement(
+	                                    "strong",
+	                                    null,
+	                                    "Email"
+	                                ),
+	                                ": "
+	                            ),
+	                            _react3.default.createElement(
+	                                "div",
+	                                null,
+	                                _react3.default.createElement(
+	                                    "strong",
+	                                    null,
+	                                    "Mountain Project User Key"
+	                                ),
+	                                ": "
+	                            ),
+	                            _react3.default.createElement(
+	                                "div",
+	                                null,
+	                                _react3.default.createElement(
+	                                    "label",
+	                                    null,
+	                                    _react3.default.createElement(
+	                                        "strong",
+	                                        null,
+	                                        "Get updates and notifications via Email"
+	                                    )
+	                                )
+	                            ),
+	                            _react3.default.createElement(
+	                                "div",
+	                                null,
+	                                _react3.default.createElement("input", { type: "checkbox", name: "getnotifications", disabled: "true" })
 	                            )
 	                        )
 	                    )
