@@ -9,20 +9,20 @@
     "test:watch": "npm test -- --watch"
   },
   "jest": {
-  "moduleFileExtensions": [
-    "jsx",
-    "js",
-    "json"
-  ],
-  "moduleNameMapper": {
-    "^.+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/config/jest/FileStub.js",
-    "^.+\\.css$": "<rootDir>/config/jest/CSSStub.js"
-  },
-  "testPathIgnorePatterns": [
-    "<rootDir>/(build|docs|node_modules)/"
-  ],
-  "testEnvironment": "node",
-  "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(js|jsx)$"
+    "moduleFileExtensions": [
+      "jsx",
+      "js",
+      "json"
+    ],
+    "moduleNameMapper": {
+      "^.+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/config/jest/FileStub.js",
+      "^.+\\.css$": "<rootDir>/config/jest/CSSStub.js"
+    },
+    "testPathIgnorePatterns": [
+      "<rootDir>/(build|docs|node_modules)/"
+    ],
+    "testEnvironment": "node",
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(js|jsx)$"
   },
   "dependencies": {
     "babel-core": "^6.18.2",
@@ -50,6 +50,7 @@
     "pg": "^6.1.0",
     "python-shell": "^0.3.0",
     "react": "^15.4.0",
+    "react-d3-library": "^1.1.7",
     "react-dom": "^15.4.0",
     "react-leaflet": "^1.0.2",
     "react-redux": "^4.4.6",

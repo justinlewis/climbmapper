@@ -1,6 +1,9 @@
 import React from 'react';
 var ReactDOM = require('react-dom');
 
+import rd3 from 'react-d3-library';
+const RD3Component = rd3.Component;
+
 import GeoJsonUpdatable from "./GeoJsonUpdatable.jsx"
 import { setFeatureInfo } from './actions/MapActions.js';
 
@@ -48,6 +51,8 @@ const ratingLookup = { "ratings":
    }
 };
 
+const defaultWidth = 200;
+
 
 
 class BarChartComponent extends React.Component {
@@ -55,10 +60,18 @@ class BarChartComponent extends React.Component {
 		    super(props);
 
         this.state = {
-          width : 200,
+          width : defaultWidth,
           targetEl : "#chart-row-1",
-          routeArr : []
+          targetChartId : this.props.targetChartId,
+          routeArr : this.props.data,
+          d3: null
+
         }
+
+        // this.state = {
+        //   d3: [{"routeid":105736294,"name":"Bates Arete","crag":null,"area":207,"type":"Boulder","ropegrade":"5.11d","bouldergrade":"V4-","difficultyindex":19,"url":"https://www.mountainproject.com/v/bates-arete/105736294","imgSmall":"https://www.mountainproject.com/images/1/64/6200164_small_9e7d58.jpg","imgMed":"https://www.mountainproject.com/images/1/64/6200164_medium_9e7d58.jpg","stars":4.6,"starVotes":29,"pitches":0,"routeCategory":"TODO"}],
+        //   sampleData: [{"routeid":105736294,"name":"Bates Arete","crag":null,"area":207,"type":"Boulder","ropegrade":"5.11d","bouldergrade":"V4-","difficultyindex":19,"url":"https://www.mountainproject.com/v/bates-arete/105736294","imgSmall":"https://www.mountainproject.com/images/1/64/6200164_small_9e7d58.jpg","imgMed":"https://www.mountainproject.com/images/1/64/6200164_medium_9e7d58.jpg","stars":4.6,"starVotes":29,"pitches":0,"routeCategory":"TODO"}]
+        // }
 
 
 
@@ -159,7 +172,7 @@ class BarChartComponent extends React.Component {
       				}
       				else{
       					if(!route.difficultyindex){
-      						difficultyindex = 999;
+      						route.difficultyindex = 999;
       					}
       					var initialSportFrequency = 0;
       					var initialTradFrequency = 0;
@@ -196,103 +209,117 @@ class BarChartComponent extends React.Component {
       	////
       	// Build the chart
       	////
-      	this.build = function () {
+      	this.build = function (routeArr) {
 
-      		// Clear the chart
-      		if($(targetEl)){
-      			$(targetEl).html("");
-      		}
+          this.setState({routeArr : routeArr});
 
-      		var gradeArr = this.getGradeArr(routeArr);
+          if(routeArr && routeArr.length > 0){
+        		var targetEl = document.createElement('div');
 
-      		var margin = {top: 20, right: 20, bottom: 40, left: 40};
+        		var gradeArr = this.getGradeArr(routeArr);
 
-      		if(!this.state.width){
-      			var dynamicWidth = gradeArr.length * 35;
-      			if(dynamicWidth < 300){
-      				this.state.width = 300;
-      			}
-      			else if (dynamicWidth > 1000){
-      				this.state.width = 1000;
-      			}
-      			this.state.width = this.state.width - margin.left - margin.right;
-      		}
-      		else{
-      			this.state.width = this.state.width - margin.left - margin.right;
-      		}
+        		var margin = {top: 20, right: 20, bottom: 40, left: 40};
 
-
-      		var height = 200 - margin.top - margin.bottom;
-
-      		var x = d3.scale.ordinal()
-      		    .rangeRoundBands([0, this.state.width], .2);
-
-      		var y = d3.scale.linear()
-      		    .rangeRound([height, 0]);
-
-      		var xAxis = d3.svg.axis()
-      		    .scale(x)
-      		    .orient("bottom");
-
-      		var yAxis = d3.svg.axis()
-      		    .scale(y)
-      		    .orient("left")
-      		    .tickValues(this.getTickArray(gradeArr));
-
-      		var svg = d3.select(targetEl).append("svg")
-      		    .attr("width", this.state.width + margin.left + margin.right)
-      		    .attr("height", height + margin.top + margin.bottom)
-      		    .append("g")
-      		    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-      			x.domain(gradeArr.map(function(d) { return d.rating; }));
-      		  	y.domain([0, d3.max(gradeArr, function(d) { return d.frequency; })]);
-
-      		  svg.append("g")
-      		      .attr("class", "x axis")
-      		      .attr("transform", "translate(0," + height + ")")
-      		      .call(xAxis)
-      		      .selectAll("text")
-      	         .style("text-anchor", "end")
-      	         .attr("dx", "-.8em")
-      	         .attr("dy", ".15em")
-      	         .attr("transform", function(d) {
-      	             return "rotate(-65)"
-      	             });
-
-      		  svg.append("g")
-      		      .attr("class", "y axis")
-      		      .call(yAxis)
-      		    .append("text")
-      		      .attr("transform", "rotate(-90)")
-      		      .attr("y", 4)
-      		      .attr("dy", ".71em")
-      		      .style("text-anchor", "end")
-      		      .text("Routes");
-
-      		  svg.selectAll(".bar")
-      		      .data(gradeArr)
-      		    	.enter().append("rect")
-      		      .attr("class", "bar")
-      		      .attr("x", function(d) { return x(d.rating); })
-      		      .attr("y", height )
-      		      .attr("height", 0 )
-      		      .attr("width", x.rangeBand())
-      		      .transition().delay(function (d, i) { return i*100; })
-      		      .duration(500)
-      		      .attr("y", function(d) { return y(d.frequency); })
-      		      .attr("height", function(d) { return height - y(d.frequency); })
+        		if(!this.state.width){
+        			var dynamicWidth = gradeArr.length * 35;
+        			if(dynamicWidth < 300){
+                this.setState({width : 300});
+        			}
+        			else if (dynamicWidth > 1000){
+                this.setState({width : 1000});
+        			}
+        			// this.setState({width : defaultWidth - margin.left - margin.right});
+        		}
+        		else{
+              this.setState({width : defaultWidth - margin.left - margin.right});
+        		}
 
 
+        		var height = 200 - margin.top - margin.bottom;
+
+        		var x = d3.scale.ordinal()
+        		    .rangeRoundBands([0, this.state.width], .2);
+
+        		var y = d3.scale.linear()
+        		    .rangeRound([height, 0]);
+
+        		var xAxis = d3.svg.axis()
+        		    .scale(x)
+        		    .orient("bottom");
+
+        		var yAxis = d3.svg.axis()
+        		    .scale(y)
+        		    .orient("left")
+        		    .tickValues(this.getTickArray(gradeArr));
+
+        		var svg = d3.select(targetEl).append("svg")
+        		    .attr("width", this.state.width + margin.left + margin.right)
+        		    .attr("height", height + margin.top + margin.bottom)
+        		    .append("g")
+        		    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        			x.domain(gradeArr.map(function(d) { return d.rating; }));
+        		  	y.domain([0, d3.max(gradeArr, function(d) { return d.frequency; })]);
+
+        		  svg.append("g")
+        		      .attr("class", "x axis")
+        		      .attr("transform", "translate(0," + height + ")")
+        		      .call(xAxis)
+        		      .selectAll("text")
+        	         .style("text-anchor", "end")
+        	         .attr("dx", "-.8em")
+        	         .attr("dy", ".15em")
+        	         .attr("transform", function(d) {
+        	             return "rotate(-65)"
+        	             });
+
+        		  svg.append("g")
+        		      .attr("class", "y axis")
+        		      .call(yAxis)
+        		    .append("text")
+        		      .attr("transform", "rotate(-90)")
+        		      .attr("y", 4)
+        		      .attr("dy", ".71em")
+        		      .style("text-anchor", "end")
+        		      .text("Routes");
+
+        		  svg.selectAll(".bar")
+        		      .data(gradeArr)
+        		    	.enter().append("rect")
+        		      .attr("class", "bar")
+        		      .attr("x", function(d) { return x(d.rating); })
+        		      // .attr("y", height )
+        		      // .attr("height", 0 )
+        		      .attr("width", x.rangeBand())
+        		      // .transition().delay(function (d, i) { return i*100; })
+        		      // .duration(500)
+        		      .attr("y", function(d) { return y(d.frequency); })
+        		      .attr("height", function(d) { return height - y(d.frequency); })
+
+               console.log("returning chart")
+               return targetEl;
+            }
+
+
+            console.log("returning null")
+            return null;
       	}
     }
 
-    componentWillReceiveProps() {
-
+    componentWillReceiveProps(newProps) {
+      if(newProps && newProps.data){
+        this.setState({ d3: this.build(newProps.data) });
+      }
+      else{
+        this.setState({routeArr : null})
+        this.setState({ d3: null });
+      }
     }
 
     componentDidMount() {
-      this.setState({routeArr: this.props.areaInfo})
+      // TODO: Probably not set state sequentially like this
+      // this.setState({routeArr: this.props.data});
+      this.setState({ d3: this.build(this.props.data) });
 
      }
 
@@ -306,15 +333,16 @@ class BarChartComponent extends React.Component {
 
 
     render () {
-        var that = this;
-
-
 
       return(
         // <BarChart></BarChart>
 
         // <div id="chart-row-2" className="row chart-row" style={hideStyle}></div>
-        this.state.routeArray ? <div id="chart-row-1" className="row chart-row"></div> : null
+        // this.state.routeArray ? <div id="chart-row-1" className="row chart-row"></div> : null
+<div id={this.state.targetChartId}><RD3Component data={this.state.d3} /></div>
+          //  this.state.d3 ? <div id={this.state.targetChartId}><RD3Component data={this.state.d3} /></div> : null
+
+
   		);
     }
 }

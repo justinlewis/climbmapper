@@ -189,10 +189,7 @@ function BarChart(routeArr, targetEl, width){
 	////
 	this.build = function () {
 
-		// Clear the chart
-		if($(targetEl)){
-			$(targetEl).html("");
-		}
+		var node = document.createElement('div');
 
 		var gradeArr = this.getGradeArr(routeArr);
 
