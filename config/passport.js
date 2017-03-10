@@ -37,7 +37,7 @@ module.exports = function(passport) {
 					// Load hash from your password DB. 
 					bcrypt.compare(password, user.password, function(err, res) {
 						// Success
-						return cb(user); 
+						return cb(null, user); 
 					});
 
 					// ... Is this neccessary?
