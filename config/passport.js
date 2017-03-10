@@ -1,5 +1,8 @@
 var Strategy = require('passport-local').Strategy;
 var users = require('../routes/users');
+var bcrypt   = require('bcrypt');
+
+const saltRounds = 10
 
 module.exports = function(passport) {
 
@@ -9,17 +12,38 @@ module.exports = function(passport) {
 	      passReqToCallback : true // allows us to pass back the entire request to the callback
 		},
 		function(req, username, password, cb) {
+
+			// This function generates a random string to compare passwords
+            var someOtherPlaintextPassword = function makeid() {
+				var text = "";
+				var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+				for( var i=0; i < 5; i++ )
+					text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+				console.log(text);
+				return text;
+
+            }
+
 		    users.findByUsername(username, function(err, user) {
-		      if(err) { 
-		      	return cb(err); 
-		      }
-		      if(!user){ 
-		      	return cb(null, false); 
-		      }
-		      if(user.password != password) { 
-		     		return cb(null, false, req.flash('loginMessage', 'Oops... Wrong password. Please try again.')); 
-		     	}
-		      return cb(null, user);
+				if(err) { 
+					return cb(err); 
+				}
+				if(!user){ 
+					return cb(null, false); 
+				}
+				// Load hash from your password DB. 
+				bcrypt.compare(password, user.password, function(err, res) {
+					// Success
+					return cb(user); 
+				});
+
+				// ... Is this neccessary?
+				bcrypt.compare(someOtherPlaintextPassword, user.password, function(err, res) { 
+					// Fail
+					return cb(null, false, req.flash('loginMessage', 'Oops... Wrong password. Please try again.')); 
+				});
 		    });
 		  }
 	));

@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var pg = require('pg');
+var bcrypt   = require('bcrypt');
+
+const saltRounds = 10
 
 var config = require('../config.js');
 
@@ -10,28 +13,33 @@ if(process.env.OPENSHIFT_POSTGRESQL_DB_URL){
 var conString = dbUrl || 'postgres://'+config.user_name+':'+config.password+'@localhost:5432/climbmapper';
 
 
+
 exports.createUser = function(username, password, cb, req) {
+
+    // Hash the password
+    bcrypt.hash(password, saltRounds, function(err, hash) {
    
-   pg.connect(conString, function(err, client, done) {
-	   console.log("creating user")
-	   var query = client.query("INSERT INTO appuser(username, password, displayname, email) VALUES ('"+username+"','"+password+"','"+username+"',null);");
-	   
-	//   var userQuery = client.query("SELECT id, username, password, displayname, email FROM appuser WHERE username = '"+username+"';");
-	   
-		done();  
-	   
-		
-		var newUserObj = {
-	 			"id": 0, // TODO: this is fine for now  
-	 			"username": username, 
-	 			"displayname": username, 
-	 			"emails": ["email"] 
-	 	};
-	 	
-	 	return cb(null, newUserObj, req.flash('loginMessage', 'Now login with your new user. I know I should log you in automatically at this point but for now I need you to do it.'));
-	 })
-	 
-	 //pg.end();
+        // Store hash in your password DB. 
+        pg.connect(conString, function(err, client, done) {
+           console.log("creating user")
+           var query = client.query("INSERT INTO appuser(username, password, displayname, email) VALUES ('"+username+"','"+hash+"','"+username+"',null);");
+           
+        //   var userQuery = client.query("SELECT id, username, password, displayname, email FROM appuser WHERE username = '"+username+"';");
+           
+            done();  
+           
+            
+            var newUserObj = {
+                    "id": 0, // TODO: this is fine for now  
+                    "username": username, 
+                    "displayname": username, 
+                    "emails": ["email"] 
+            };
+            
+            return cb(null, newUserObj, req.flash('loginMessage', 'Now login with your new user. I know I should log you in automatically at this point but for now I need you to do it.'));
+        })
+    });
+    //pg.end();
 }
 
 exports.updateProfile = function(res, user, mpuserkey, email, password, getnotifications) {
