@@ -18,7 +18,7 @@ module.exports = function(passport) {
 				var text = "";
 				var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-				for( var i=0; i < 5; i++ )
+				for( var i=0; i < 10; i++ )
 					text += possible.charAt(Math.floor(Math.random() * possible.length));
 
 				console.log(text);
@@ -33,17 +33,19 @@ module.exports = function(passport) {
 				if(!user){ 
 					return cb(null, false); 
 				}
-				// Load hash from your password DB. 
-				bcrypt.compare(password, user.password, function(err, res) {
-					// Success
-					return cb(user); 
-				});
+				else {
+					// Load hash from your password DB. 
+					bcrypt.compare(password, user.password, function(err, res) {
+						// Success
+						return cb(user); 
+					});
 
-				// ... Is this neccessary?
-				bcrypt.compare(someOtherPlaintextPassword, user.password, function(err, res) { 
-					// Fail
-					return cb(null, false, req.flash('loginMessage', 'Oops... Wrong password. Please try again.')); 
-				});
+					// ... Is this neccessary?
+					bcrypt.compare(someOtherPlaintextPassword, user.password, function(err, res) { 
+						// Fail
+						return cb(null, false, req.flash('loginMessage', 'Oops... Wrong password. Please try again.')); 
+					});
+				}
 		    });
 		  }
 	));
