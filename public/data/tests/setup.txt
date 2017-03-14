@@ -1,0 +1,9 @@
+Instructions on how to run unit tests for Python data files.
+
+Running the tests as a module:
+
+    # Change directory to data
+    cd public/data
+
+    # Explicit is better than implicit.
+    python2.7 -B -v -m unittest discover tests/
