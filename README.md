@@ -80,12 +80,11 @@ Awesome!
 <h4>General Needs</h4>
 See the issues tab for more details.
 
-<ol>
 - [ ] Migration from a Proof of Concept to a real app (IN PROGRESS - see reactify branch)
 - [x] Better security authentication
 - [ ] UI/UX makeover (especially with editing locations)
 - [ ] Stronger domain models that help minimize the bridge to Mountain Project
 - [ ] Connectors to other climbing websites (8a.nu, thecrag.com, etc...)
 - [ ] Ability to add routes directly to ClimbMapper
-</ol>
+
 
