@@ -25,6 +25,7 @@
     "passport": "^0.2.2",
     "passport-http": "^0.3.0",
     "passport-local": "^1.0.0",
+    "pg": "^4.4.3",
     "python-shell": "^0.3.0",
     "request": "^2.67.0",
     "serve-favicon": "~2.3.0"
