@@ -4,64 +4,60 @@ var ReactDOM = require('react-dom');
 import rd3 from 'react-d3-library';
 const RD3Component = rd3.Component;
 
-import GeoJsonUpdatable from "./GeoJsonUpdatable.jsx"
-import { setFeatureInfo } from './actions/MapActions.js';
-
 
 // TODO: replace with database lookup
-const ratingLookup = { "ratings":
-      {
-        "5.0" : 0,
-        "5.1" : 1,
-        "5.2" : 2,
-        "5.3" : 3,
-        "5.4" : 4,
-        "5.5" : 5,
-        "5.6" : 6,
-        "5.7" : 7,
-        "5.8" : 8,
-        "5.9" : 9,
-        "5.10" : 10,
-        "5.10a" : 11,
-        "5.10b" : 12,
-        "5.10c" : 13,
-        "5.10d" : 14,
-        "5.11" : 15,
-        "5.11a" : 16,
-        "5.11b" : 17,
-        "5.11c" : 18,
-        "5.11d" : 19,
-        "5.12" : 20,
-        "5.12a" : 21,
-        "5.12b" : 22,
-        "5.12c" : 23,
-        "5.12d" : 24,
-        "5.13" : 25,
-        "v0" : 26,
-        "v1" : 27,
-        "v2" : 28,
-        "v3" : 29,
-        "v4" : 30,
-        "v5" : 31,
-        "v6" : 32,
-        "v7" : 33,
-        "v8" : 34,
-        "v9" : 35,
-        "v10" : 36
-   }
-};
+// const ratingLookup = { "ratings":
+//       {
+//         "5.0" : 0,
+//         "5.1" : 1,
+//         "5.2" : 2,
+//         "5.3" : 3,
+//         "5.4" : 4,
+//         "5.5" : 5,
+//         "5.6" : 6,
+//         "5.7" : 7,
+//         "5.8" : 8,
+//         "5.9" : 9,
+//         "5.10" : 10,
+//         "5.10a" : 11,
+//         "5.10b" : 12,
+//         "5.10c" : 13,
+//         "5.10d" : 14,
+//         "5.11" : 15,
+//         "5.11a" : 16,
+//         "5.11b" : 17,
+//         "5.11c" : 18,
+//         "5.11d" : 19,
+//         "5.12" : 20,
+//         "5.12a" : 21,
+//         "5.12b" : 22,
+//         "5.12c" : 23,
+//         "5.12d" : 24,
+//         "5.13" : 25,
+//         "v0" : 26,
+//         "v1" : 27,
+//         "v2" : 28,
+//         "v3" : 29,
+//         "v4" : 30,
+//         "v5" : 31,
+//         "v6" : 32,
+//         "v7" : 33,
+//         "v8" : 34,
+//         "v9" : 35,
+//         "v10" : 36
+//    }
+// };
 
 const defaultWidth = 200;
 
 
 
-class BarChartComponent extends React.Component {
+class CountByGradeBarChartComponent extends React.Component {
     constructor(props){
 		    super(props);
 
         this.state = {
           width : defaultWidth,
-          targetEl : "#chart-row-1",
           targetChartId : this.props.targetChartId,
           routeArr : this.props.data,
           d3: null
@@ -105,14 +101,8 @@ class BarChartComponent extends React.Component {
       				return status;
       		}
 
-      		if($(targetEl)){
-      			$(targetEl).html("");
-      		}
 
-      		if(routeArr.length === 0){
-      			$(targetEl).html("Sorry, there are no routes for this location.");
-      		}
-      		else{
+      		if(routeArr.length > 0){
       			var routeGradeObj = function (type, rating, frequency, sportFrequency, tradFrequency, boulderFrequency, difficultyindex) {
       				this.type = type,
       				this.rating = rating,
@@ -296,12 +286,9 @@ class BarChartComponent extends React.Component {
         		      .attr("y", function(d) { return y(d.frequency); })
         		      .attr("height", function(d) { return height - y(d.frequency); })
 
-               console.log("returning chart")
                return targetEl;
             }
 
-
-            console.log("returning null")
             return null;
       	}
     }
@@ -335,17 +322,10 @@ class BarChartComponent extends React.Component {
     render () {
 
       return(
-        // <BarChart></BarChart>
-
-        // <div id="chart-row-2" className="row chart-row" style={hideStyle}></div>
-        // this.state.routeArray ? <div id="chart-row-1" className="row chart-row"></div> : null
-<div id={this.state.targetChartId}><RD3Component data={this.state.d3} /></div>
-          //  this.state.d3 ? <div id={this.state.targetChartId}><RD3Component data={this.state.d3} /></div> : null
-
-
+          <div id={this.state.targetChartId}><RD3Component data={this.state.d3} /></div>
   		);
     }
 }
 
 
-export default BarChartComponent;
+export default CountByGradeBarChartComponent;

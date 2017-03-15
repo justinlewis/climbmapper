@@ -8,7 +8,7 @@ import IssuesModalComponent from './IssuesModal.jsx';
 import WelcomeModalComponent from './WelcomeModal.jsx';
 import FeatureInfoComponent from './FeatureInfo.jsx';
 import AreaRoutesPreviewPanelComponent from './AreaRoutesPreviewPanel.jsx'
-import BarChart from './BarChart.jsx';
+// import BarChart from './BarChart.jsx';
 import LeftSidebarContainer from './containers/LeftSideBarContainer.js'
 
 
@@ -43,7 +43,7 @@ class MapContainerComponent extends React.Component {
   		return(
   	    	<div className="container" id="main">
     		  	<div className="row">
-    	         <LeftSidebarContainer />
+    	         <LeftSidebarContainer routeTypeFilter={store.getState().routeType} />
     				    <div className="col-xs-12 col-sm-6 col-lg-8 right-main-panel">
     				          <div className="row">
     					               {/* <FeatureInfoComponent />  */}   {/*TODO: Remove this and the associated class if not used elsewhere */}

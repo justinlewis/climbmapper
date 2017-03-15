@@ -18,7 +18,7 @@ import tickAreaPts from './utils/GeoJsonTick.js';
 import { setFeatureInfo, hoverFeatureInfo, loadMap, clickFeatureInfo } from './actions/MapActions.js';
 
 
-import BarChart from './BarChart.jsx';
+// import BarChart from './BarChart.jsx';
 // import LineChart from './charts/LineChart.js';
 // import PieChart from './charts/PieChart.js';
 // import RouteHeightPieChart from './charts/RouteHeightPieChart.js';
