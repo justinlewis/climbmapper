@@ -5,6 +5,7 @@ const RD3Component = rd3.Component;
 
 import GradeBarChart from './charts/CountByGradeBarChart.jsx';
 import RouteTypePieChart from './charts/RouteTypePieChart.jsx';
+import RouteHeightPieChart from './charts/RouteHeightPieChart.jsx';
 import { setFeatureInfo } from './actions/MapActions.js';
 
 
@@ -46,6 +47,7 @@ class LeftSidebar extends React.Component {
               { this.state.areaInfo ?
                 <div id="chart-row-1" className="chart-row">
                   <RouteTypePieChart areaInfo={this.state.areaInfo} targetChartId="todo-type-chart" routeTypeFilter={this.state.routeTypeFilter} />
+                  <RouteHeightPieChart areaInfo={this.state.areaInfo} targetChartId="todo-type-chart" routeTypeFilter={this.state.routeTypeFilter} />
                 </div>
                 : null
               }
