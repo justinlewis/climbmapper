@@ -48,7 +48,7 @@ class AreaRoutesPreviewPanelComponent extends React.Component {
         var areaCards = [];
         for(var l=0; l<layers.length; l++){
 
-          if(routeTypeFilter.routeType === "ALL" || layers[l].type.toUpperCase() === routeTypeFilter ){
+          if(routeTypeFilter.routeType === "ALL" || layers[l].type.toUpperCase() === routeTypeFilter.routeType ){
             var name = String(layers[l].name ? layers[l].name : 'n/a');
             var type = String(layers[l].type ? layers[l].type :"n/a");
             if(type.toUpperCase() === "TRAD" || type.toUpperCase() === "SPORT" || type.toUpperCase() === "ALPINE"){

@@ -4,7 +4,7 @@ import React from 'react';
 
 class NavBarTools extends React.Component {
     constructor(props){
-	super(props);
+	     super(props);
     }
 
     handleClick(routeType) {
@@ -12,8 +12,6 @@ class NavBarTools extends React.Component {
     }
 
     render () {
-
-
 
       	//TODO: This is a bad way to pass data to a component.
       	var username = document.getElementById("app-config-el").dataset.username;

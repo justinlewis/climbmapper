@@ -4,20 +4,12 @@ import { connect } from 'react-redux';
 
 import { filterByRouteType } from '../actions/UserActions';
 
-import NavBarComponent from '../NavBar.jsx';
+import NavBarComponent from '../NavBarContainer.jsx';
 
 const mapStateToProps = (state) => {
   return {
-    //info: "test"
+    //add props to pass to NavBarComponent
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    filterByType: (routeTypeSearchText) => {
-      dispatch(filterByRouteType(routeTypeSearchText))
-    }
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(NavBarComponent)
+export default connect(mapStateToProps)(NavBarComponent)

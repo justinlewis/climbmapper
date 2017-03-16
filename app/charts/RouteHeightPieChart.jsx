@@ -26,31 +26,33 @@ class RouteHeightPieChartComponent extends React.Component {
       	////
       	this.build = function (feature) {
 
-          var data = [];
-        	var pitchDict = {};
-          var featureArr = feature.customRouteArr;
-          var targetEl = document.createElement('div');
+          let data = [];
+        	let pitchDict = {};
+          let featureArr = feature.customRouteArr;
+          let targetEl = document.createElement('div');
 
-        	for(var i=0; i<featureArr.length; i++){
-        		var rtPitches = featureArr[i].pitches;
-        		var pitchesLabel = rtPitches.toString();
-        		var rtObj = {};
+        	for(let i=0; i<featureArr.length; i++){
+            let route = featureArr[i];
+            let routeType = route.type;
+        		let rtPitches = route.pitches;
+            if(!rtPitches || rtPitches < 1){
+              rtPitches = "n/a"
+            }
+        		let pitchesLabel = rtPitches.toString();
+        		let rtObj = {};
 
-        		if (data.length === 0 && rtPitches > 0) {
-        			var rtObj = {};
-        			rtObj.pitches = pitchesLabel;
-        			rtObj.count = 1;
-        			data.push(rtObj);
-        		}
+            if(this.state.routeTypeFilter === "ALL" || routeType.toUpperCase() === this.state.routeTypeFilter){
 
-        		if(routeEntryExists(pitchesLabel) && rtPitches > 0){
-        			updateRoutePitchesArr(pitchesLabel);
-        		}
-        		else if(rtPitches > 0) {
-        			rtObj.pitches = pitchesLabel;
-        			rtObj.count = 1;
-        			data.push(rtObj);
-        		}
+            		if(routeEntryExists(pitchesLabel)){
+            			updateRoutePitchesArr(pitchesLabel);
+            		}
+            		else {
+            			rtObj.pitches = pitchesLabel;
+            			rtObj.count = 1;
+            			data.push(rtObj);
+            		}
+
+            }
         	};
 
 
@@ -125,16 +127,16 @@ class RouteHeightPieChartComponent extends React.Component {
         	  g.append("path")
         	      .attr("d", arc)
         	      .style("fill", function(d) { return color(d.data.pitches); })
-        	      .transition()
+        	      // .transition()
         //	      .delay(function(d, i) { return i * 500; })
-        	      .duration(500)
-        	      .attrTween('d', function(d) {
-               		var i = d3.interpolate(d.startAngle+0.1, d.endAngle);
-               		return function(t) {
-                   		d.endAngle = i(t);
-                 		return arc(d);
-              		}
-          			});
+        	      // .duration(500)
+        	      // .attrTween('d', function(d) {
+               // 		var i = d3.interpolate(d.startAngle+0.1, d.endAngle);
+               // 		return function(t) {
+                //    		d.endAngle = i(t);
+                //  		return arc(d);
+              	// 	}
+          			// });
 
         	  g.append("text")
         	      //.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
@@ -153,7 +155,13 @@ class RouteHeightPieChartComponent extends React.Component {
         			})
         			.style("font-size","14px")
         	      .text(function(d) {
-        	      	return d.data.pitches + "p" + " ("+d.data.count+")";
+
+                  if(d.data.pitches === "n/a"){
+                    return d.data.pitches + " ("+d.data.count+")";
+                  }
+                  else{
+        	      	  return d.data.pitches + "p" + " ("+d.data.count+")";
+                  }
 
         	      });
 
@@ -163,6 +171,7 @@ class RouteHeightPieChartComponent extends React.Component {
     }
 
     componentWillReceiveProps(newProps) {
+      debugger
       if(newProps && newProps.areaInfo){
         this.setState({ d3: this.build(newProps.areaInfo) });
       }

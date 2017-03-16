@@ -8,7 +8,6 @@ import IssuesModalComponent from './IssuesModal.jsx';
 import WelcomeModalComponent from './WelcomeModal.jsx';
 import FeatureInfoComponent from './FeatureInfo.jsx';
 import AreaRoutesPreviewPanelComponent from './AreaRoutesPreviewPanel.jsx'
-// import BarChart from './BarChart.jsx';
 import LeftSidebarContainer from './containers/LeftSideBarContainer.js'
 
 

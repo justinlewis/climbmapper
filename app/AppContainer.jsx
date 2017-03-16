@@ -11,7 +11,7 @@ class AppContainerComponent extends React.Component {
     render () {
   	 	return(
   	    	<div>
-  	    		   <NavBarContainer />
+  	    		   <NavBarContainer filterByType={this.props.filterByType}/>
                {/* TODO:  this styleProp is too general. split out the embeded uses of this prop into separate components */}
   		 		     <MapContainerComponent />
   		 	  </div>

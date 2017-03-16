@@ -34,6 +34,10 @@ class LeftSidebar extends React.Component {
       else{
         this.setState({areaInfo : null})
       }
+
+      if(newProps.routeType){
+        this.setState({routeTypeFilter : newProps.routeType});
+      }
     }
 
     render () {

@@ -17,7 +17,7 @@ const reducer = combineReducers({
 });
 const store = createStore(reducer, enhancers);
 
-import AppContainerComponent from './AppContainer.jsx';
+import AppContainerComponent from './containers/AppContainer.js';
 
 class App extends React.Component {
   render () {
