@@ -15,7 +15,7 @@ class RouteTypePieChartComponent extends React.Component {
         this.state = {
           width : defaultWidth,
           targetChartId : this.props.targetChartId,
-          routeTypeFilter : this.props.routeTypeFilter,
+          routeTypeFilter : this.props.routeTypeFilter.routeType,
           areaInfo : this.props.areaInfo,
           d3: null
         }

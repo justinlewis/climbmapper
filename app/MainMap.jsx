@@ -1,6 +1,9 @@
 import React from 'react';
 var ReactDOM = require('react-dom');
 
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+
 import { Map,
   Marker,
   Popup,
@@ -15,15 +18,8 @@ import GeoJsonUpdatable from "./GeoJsonUpdatable.jsx";
 import toDoAreaPts from './utils/GeoJsonToDoArea.js';
 import toDoCragPts from './utils/GeoJsonToDoCrag.js';
 import tickAreaPts from './utils/GeoJsonTick.js';
-import { setFeatureInfo, hoverFeatureInfo, loadMap, clickFeatureInfo } from './actions/MapActions.js';
-
-
-// import BarChart from './BarChart.jsx';
-// import LineChart from './charts/LineChart.js';
-// import PieChart from './charts/PieChart.js';
-// import RouteHeightPieChart from './charts/RouteHeightPieChart.js';
-
-
+import generalUtil from './utils/generalUtil.js';
+import { setFeatureInfo, hoverFeatureInfo, loadMap, clickFeatureInfo, setGlobalTickData } from './actions/MapActions.js';
 
 const TODOFILL = "#0a4958";
 const CRAGFILL = "orange";
@@ -113,6 +109,70 @@ class MapComponent extends React.Component {
         this.getTickAreaPtsCache = function() {
           return this.tickAreaPtsCache;
         }
+
+        this.onSliderChange = this.onSliderChange.bind(this);
+    }
+
+
+    // TODO: Make sure this is used or remove it.  I started it but realized I was heading in the wrong direction
+    onSliderChange(maxPosition) {
+        console.log("slide it into mainmap");
+
+        var allTickArr = [];
+        var tickPts = this.getTickAreaPtsCache();
+        for(var n=0; n<tickPts.features.length; n++){
+          var tickArr = tickPts.features[n].properties.customRouteArr;
+
+          if(tickArr){
+            for(var d=0; d<tickArr.length; d++){
+              allTickArr.push(new Date(tickArr[d].date));
+            }
+          }
+        }
+
+        var sortedAllTickArr = allTickArr.sort(generalUtil.sortDatesAscending);
+        var clone = sortedAllTickArr.slice(0);
+        clone.length = maxPosition
+
+        this.setState({ticks:clone})
+
+        // var selectedDate = sortedAllTickArr[maxPosition];
+
+        // var lineChart = new LineChart(tickAreaPts.features, selectedDate, "#tick-time-chart", $("#tick-time-chart").parent().width());
+        // lineChart.build();
+
+        // var tickLocs = tickPts.features;
+        // var rtsCt = 0;
+        // for(var t=0; t<tickLocs.length; t++){
+        //   var thisLoc = tickLocs[t];
+        //   var thisLocTicks = thisLoc.properties.customTicksArr;
+        //   var laterThanTicksCt = 0;
+        //
+        //   for(var i=0; i<thisLocTicks.length; i++){
+        //     if(new Date(thisLocTicks[i].date) > selectedDate){
+        //       laterThanTicksCt = laterThanTicksCt + 1;
+        //     }
+        //     else{
+        //       rtsCt = rtsCt + 1;
+        //     }
+        //   }
+        //
+        //   var newRadius = this.getLocationSizeBucket(thisLocTicks.length - laterThanTicksCt);
+        //
+        //   map.eachLayer(function (layer) {
+        //     if(layer.feature && layer.feature.properties.customTicksCt){
+        //       var mapLayerId = layer.feature.properties.id;
+        //       if(thisLoc.properties.id === mapLayerId){
+        //         layer.setRadius(newRadius);
+        //       }
+        //     }
+        //   });
+        // }
+    }
+
+
+    onTickSliderDataChange(data){
+      this.props.onTickSliderDataChange(data);
     }
 
     onFeatureClick(feature){
@@ -162,6 +222,8 @@ class MapComponent extends React.Component {
     			});
 
           this.processRoutes(this.state.ticks["routes"], TICKROUTETYPE);
+
+          this.props.setTicksGlobalData(this.state.ticks["routes"]);
     		}.bind(this), "json");
 
 
@@ -334,8 +396,8 @@ class MapComponent extends React.Component {
     			for(let n=0; n<tickAreaPts.features.length; n++){
     				var currAreaId = tickAreaPts.features[n].properties.id;
 
-    				if(!tickAreaPts.features[n].properties.customTicksArr){
-    					tickAreaPts.features[n].properties.customTicksArr = [];
+    				if(!tickAreaPts.features[n].properties.customRouteArr){
+    					tickAreaPts.features[n].properties.customRouteArr = [];
     				}
     				if(!tickAreaPts.features[n].properties.customTradCt){
     					tickAreaPts.features[n].properties.customTradCt = 0;
@@ -368,7 +430,7 @@ class MapComponent extends React.Component {
 
 
     				if(currAreaId === route.area){
-    					tickAreaPts.features[n].properties.customTicksArr.push(route);
+    					tickAreaPts.features[n].properties.customRouteArr.push(route);
     				}
     			}
     		}
@@ -485,7 +547,7 @@ class MapComponent extends React.Component {
           var allTickArr = [];
           var tickPts = this.getTickAreaPtsCache();
           for(var n=0; n<tickPts.features.length; n++){
-            var tickArr = tickPts.features[n].properties.customTicksArr;
+            var tickArr = tickPts.features[n].properties.customRouteArr;
 
             if(tickArr){
               for(var d=0; d<tickArr.length; d++){
@@ -494,90 +556,87 @@ class MapComponent extends React.Component {
             }
           }
 
-          var sortDatesAscending = function (date1, date2) {
-            // This is a comparison function that will result in dates being sorted in
-            // ASCENDING order.
-            if (date1 > date2) return 1;
-            if (date1 < date2) return -1;
-            return 0;
-          };
+          var sortedAllTickArr = allTickArr.sort(generalUtil.sortDatesAscending);
 
-          var sortedAllTickArr = allTickArr.sort(sortDatesAscending);
 
-          $("#tick-slider").slider({
-              range: "min",
-              value: allTickArr.length,
-              min: 1,
-              max: allTickArr.length-1,
-              create: function( event, ui ) {
-                  // A silly hack because the slider is appending a ghostly empty <p> element to my label. No time to look deeper now.
-                  if($("#time-slider-label").next("p").text().trim().length === 0){
-                    $("#time-slider-label").next("p").remove();
-                  }
-              },
-              slide: function( event, ui ) {
-                var sliderPos = ui.value;
-                var selectedDate = sortedAllTickArr[sliderPos];
+          let tickSliderData = {min:1, max:allTickArr.length-1, tickArray: sortedAllTickArr}
+          this.onTickSliderDataChange(tickSliderData);
 
-                if($("#tick-time-chart")){
-                  $("#tick-time-chart").remove()
-                }
 
-                if(selectedDate){
-
-                  if(!$("#chart-row-1").is(':visible')){
-                $("#chart-row-1").show();
-              }
-
-                $("#chart-row-1").append('<div id="tick-time-chart" ></div>');
-                var lineChart = new LineChart(tickAreaPts.features, selectedDate, "#tick-time-chart", $("#tick-time-chart").parent().width());
-                lineChart.build();
-
-                var tickLocs = tickAreaPts.features;
-                var rtsCt = 0;
-                for(var t=0; t<tickLocs.length; t++){
-                  var thisLoc = tickLocs[t];
-                  var thisLocTicks = thisLoc.properties.customTicksArr;
-                  var laterThanTicksCt = 0;
-
-                  for(var i=0; i<thisLocTicks.length; i++){
-                    if(new Date(thisLocTicks[i].date) > selectedDate){
-                      laterThanTicksCt = laterThanTicksCt + 1;
-                    }
-                    else{
-                      rtsCt = rtsCt + 1;
-                    }
-                  }
-
-                  var newRadius = this.getLocationSizeBucket(thisLocTicks.length - laterThanTicksCt);
-
-                  map.eachLayer(function (layer) {
-                    if(layer.feature && layer.feature.properties.customTicksCt){
-                      var mapLayerId = layer.feature.properties.id;
-                      if(thisLoc.properties.id === mapLayerId){
-                        layer.setRadius(newRadius);
-                      }
-                   }
-                });
-                }
-
-                if( ! $("#time-slider-label").is(":visible")){
-                  $("#time-slider-label").show();
-                }
-                $("#time-slider-label").text( selectedDate.getMonth() + " / " + selectedDate.getDay() + " / " + selectedDate.getFullYear()  + " | " + rtsCt + " Ticks");
-              }
-              },
-              stop: function( event, ui ) {
-                setTimeout(function(){
-                  $("#time-slider-label").fadeOut(400);
-                  if($("#tick-time-chart:visible").length > 0){
-                    $("#chart-row-1").fadeOut(400);
-                    $("#time-time-chart").remove();
-                  }
-                }, 30000);
-
-              }
-           });
+          // $("#tick-slider").slider({
+          //     range: "min",
+          //     value: allTickArr.length,
+          //     min: 1,
+          //     max: allTickArr.length-1,
+          //     create: function( event, ui ) {
+          //         // A silly hack because the slider is appending a ghostly empty <p> element to my label. No time to look deeper now.
+          //         if($("#time-slider-label").next("p").text().trim().length === 0){
+          //           $("#time-slider-label").next("p").remove();
+          //         }
+          //     },
+          //     slide: function( event, ui ) {
+          //       var sliderPos = ui.value;
+          //       var selectedDate = sortedAllTickArr[sliderPos];
+          //
+          //       if($("#tick-time-chart")){
+          //         $("#tick-time-chart").remove()
+          //       }
+          //
+          //       if(selectedDate){
+          //
+          //         if(!$("#chart-row-1").is(':visible')){
+          //       $("#chart-row-1").show();
+          //     }
+          //
+          //       $("#chart-row-1").append('<div id="tick-time-chart" ></div>');
+          //       var lineChart = new LineChart(tickAreaPts.features, selectedDate, "#tick-time-chart", $("#tick-time-chart").parent().width());
+          //       lineChart.build();
+          //
+          //       var tickLocs = tickAreaPts.features;
+          //       var rtsCt = 0;
+          //       for(var t=0; t<tickLocs.length; t++){
+          //         var thisLoc = tickLocs[t];
+          //         var thisLocTicks = thisLoc.properties.customTicksArr;
+          //         var laterThanTicksCt = 0;
+          //
+          //         for(var i=0; i<thisLocTicks.length; i++){
+          //           if(new Date(thisLocTicks[i].date) > selectedDate){
+          //             laterThanTicksCt = laterThanTicksCt + 1;
+          //           }
+          //           else{
+          //             rtsCt = rtsCt + 1;
+          //           }
+          //         }
+          //
+          //         var newRadius = this.getLocationSizeBucket(thisLocTicks.length - laterThanTicksCt);
+          //
+          //         map.eachLayer(function (layer) {
+          //           if(layer.feature && layer.feature.properties.customTicksCt){
+          //             var mapLayerId = layer.feature.properties.id;
+          //             if(thisLoc.properties.id === mapLayerId){
+          //               layer.setRadius(newRadius);
+          //             }
+          //          }
+          //       });
+          //       }
+          //
+          //       if( ! $("#time-slider-label").is(":visible")){
+          //         $("#time-slider-label").show();
+          //       }
+          //       $("#time-slider-label").text( selectedDate.getMonth() + " / " + selectedDate.getDay() + " / " + selectedDate.getFullYear()  + " | " + rtsCt + " Ticks");
+          //     }
+          //     },
+          //     stop: function( event, ui ) {
+          //       setTimeout(function(){
+          //         $("#time-slider-label").fadeOut(400);
+          //         if($("#tick-time-chart:visible").length > 0){
+          //           $("#chart-row-1").fadeOut(400);
+          //           $("#time-time-chart").remove();
+          //         }
+          //       }, 30000);
+          //
+          //     }
+          //  });
         }
 
 
@@ -646,6 +705,10 @@ class MapComponent extends React.Component {
         // this.map.off('click', this.onMapClick);
         // this.map = null;
      }
+
+    //  componentWillReceiveProps(newProps){
+    //  }
+
 
      onMapClick() {
        //TODO: I don't think this method is needed.
@@ -764,8 +827,8 @@ class MapComponent extends React.Component {
 
           // This is a really weak check. we need to make sure this is
           var subHeading = "";
-          if(layer.feature.properties.customTicksArr){
-            var layers = layer.feature.properties.customTicksArr;
+          if(layer.feature.properties.customRouteArr){
+            var layers = layer.feature.properties.customRouteArr;
             subHeading = "Ticks";
           }
           else {
@@ -829,7 +892,6 @@ class MapComponent extends React.Component {
         function todoHoverAction(e) {
             var layer = e.target;
             store.dispatch(hoverFeatureInfo(layer));
-            // removeAllCharts();
 
             if(layer.feature.properties.areatype === "TODO") {
               layer.setStyle({"fillColor": TODOFILLHOVER});
@@ -897,13 +959,13 @@ class MapComponent extends React.Component {
         function cragPtsPointToLayer (feature, latlng) {
             return L.circleMarker(latlng, allCragPtsDefaultStyle);
         }
-         function filterByRouteType(feature) {
-           if (feature.properties.customTradCt === 0) {
-             return false
-           } else if (feature.properties.customTradCt > 0) {
-             return true
-           }
-         }
+        //  function filterByRouteType(feature) {
+        //    if (feature.properties.customTradCt === 0) {
+        //      return false
+        //    } else if (feature.properties.customTradCt > 0) {
+        //      return true
+        //    }
+        //  }
 
         // let toDoAreaPts = this.state.todoAreaPts
         // if (this.props.routeType.routeType === 'ALL') {
@@ -980,5 +1042,8 @@ MapComponent.contextTypes = {
   store: React.PropTypes.object
 }
 
-// window.ReactDOM.render(<SimpleExample />, document.getElementById('map'));
-export default MapComponent;
+const mapStateToProps = (state) => {
+  return state
+}
+
+export default connect(mapStateToProps)(MapComponent);

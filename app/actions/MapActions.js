@@ -12,6 +12,13 @@ export function loadData() {
   };
 }
 
+export function setGlobalTickData(ticks) {
+  return {
+    type: types.SET_GLOBAL_TICK_DATA,
+    ticks
+  }
+}
+
 export function setFeatureInfo(info) {
   return {
     type: types.SET_FEATURE_INFO,

@@ -10,17 +10,33 @@ import FeatureInfoComponent from './FeatureInfo.jsx';
 import AreaRoutesPreviewPanelComponent from './AreaRoutesPreviewPanel.jsx'
 import LeftSidebarContainer from './containers/LeftSideBarContainer.js'
 
+import { setFeatureInfo, hoverFeatureInfo, loadMap, clickFeatureInfo, setGlobalTickData } from './actions/MapActions.js';
+
 
 class MapContainerComponent extends React.Component {
     constructor(props){
 		    super(props);
 
         this.state = {
-          showAreaRoutesPreviewPanel : false
+          showAreaRoutesPreviewPanel : false,
+          tickSliderConfig : {},
+          tickRoutes : {}
         }
 
         this.onFeatureClick = this.onFeatureClick.bind(this);
         this.onModalCloseButtonClick = this.onModalCloseButtonClick.bind(this);
+        this.onTickSliderDataChange = this.onTickSliderDataChange.bind(this);
+        this.setTicksGlobalData = this.setTicksGlobalData.bind(this);
+    }
+
+    setTicksGlobalData(ticks){
+      // const { store } = this.context;
+      this.setState({tickRoutes: ticks});
+      // store.dispatch(setGlobalTickData(ticks));
+    }
+
+    onTickSliderDataChange(data){
+      this.setState({tickSliderConfig: data});
     }
 
     onFeatureClick(feature){
@@ -35,14 +51,25 @@ class MapContainerComponent extends React.Component {
       this.setState({showAreaRoutesPreviewPanel : false});
     }
 
+    componentWillReceiveProps(nextProps){
+      // console.log("the props: ", nextProps)
+      // this.setState({tickRoutes : nextProps})
+    }
+
     render () {
       const { store } = this.context;
+
+      console.log("got the store")
 
       // var hideStyle = {display:'none'};
   		return(
   	    	<div className="container" id="main">
     		  	<div className="row">
-    	         <LeftSidebarContainer routeTypeFilter={store.getState().routeType} />
+    	         <LeftSidebarContainer mapComponent={this.refs.childMapComponent}
+                 routeTypeFilter={store.getState().routeType}
+                 tickSliderConfig={this.state.tickSliderConfig}
+                 ticksGlobalData={this.state.tickRoutes}
+               />
     				    <div className="col-xs-12 col-sm-6 col-lg-8 right-main-panel">
     				          <div className="row">
     					               {/* <FeatureInfoComponent />  */}   {/*TODO: Remove this and the associated class if not used elsewhere */}
@@ -50,7 +77,11 @@ class MapContainerComponent extends React.Component {
                       </div>
     				    </div>
     				</div>
-  			  	<MapComponent routeType={this.props.routeType} onFeatureClick={this.onFeatureClick} />
+  			  	<MapComponent routeType={this.props.routeType}
+              onFeatureClick={this.onFeatureClick}
+              onTickSliderDataChange={this.onTickSliderDataChange}
+              setTicksGlobalData={this.setTicksGlobalData}
+            />
   			  	<AboutModalComponent />
             <IssuesModalComponent />
             <WelcomeModalComponent />

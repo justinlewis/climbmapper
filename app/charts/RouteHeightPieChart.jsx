@@ -15,7 +15,7 @@ class RouteHeightPieChartComponent extends React.Component {
         this.state = {
           width : defaultWidth,
           targetChartId : this.props.targetChartId,
-          routeTypeFilter : this.props.routeTypeFilter,
+          routeTypeFilter : this.props.routeTypeFilter.routeType,
           areaInfo : this.props.areaInfo,
           d3: null
         }
@@ -171,7 +171,6 @@ class RouteHeightPieChartComponent extends React.Component {
     }
 
     componentWillReceiveProps(newProps) {
-      debugger
       if(newProps && newProps.areaInfo){
         this.setState({ d3: this.build(newProps.areaInfo) });
       }

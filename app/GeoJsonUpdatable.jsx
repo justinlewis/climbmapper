@@ -10,27 +10,23 @@ export default class GeoJsonUpdatable extends GeoJSON {
     }
 
     componentDidUpdate(prevProps) {
-      var that = this;
-
       var map = this.leafletElement;
 
-      if (typeof this.props.style === 'function'){
+      if (prevProps.data !== this.props.data) {
+          map.addData(this.props.data);
       }
-        if (prevProps.data !== this.props.data) {
-            map.addData(this.props.data);
-        }
 
-        if (prevProps.style !== this.props.style) {
-            map.setStyle(this.props.style);
-        }
+      if (prevProps.style !== this.props.style) {
+          map.setStyle(this.props.style);
+      }
 
-        // if prev and new routeType === "ALL" we will assume it's the initial map load
-        if(prevProps.routeType.routeType === "ALL" && this.props.routeType.routeType === "ALL"){
-          this.resizeLocations(this.props.routeType.routeType)
-        }
-        else if (prevProps.routeType !== this.props.routeType) {
-          this.resizeLocations(this.props.routeType.routeType)
-        }
+      // if prev and new routeType === "ALL" we will assume it's the initial map load
+      if(prevProps.routeType.routeType === "ALL" && this.props.routeType.routeType === "ALL"){
+        this.resizeLocations(this.props.routeType.routeType)
+      }
+      else if (prevProps.routeType !== this.props.routeType) {
+        this.resizeLocations(this.props.routeType.routeType)
+      }
     }
 
     resizeLocations(filter) {
