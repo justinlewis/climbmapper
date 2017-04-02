@@ -1,9 +1,9 @@
 
-export default function sortDatesAscending(date1, date2) {
+export function sortDatesAscending(date1, date2) {
   // This is a comparison function that will result in dates being sorted in
   // ASCENDING order.
-  if (date1 > date2) return 1;
-  if (date1 < date2) return -1;
+  if (date1.date > date2.date) return 1;
+  if (date1.date < date2.date) return -1;
   return 0;
 };
 

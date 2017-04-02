@@ -17,10 +17,12 @@ class MapContainerComponent extends React.Component {
     constructor(props){
 		    super(props);
 
+        console.log("MapContainerComponent::constructor")
+
         this.state = {
           showAreaRoutesPreviewPanel : false,
           tickSliderConfig : {},
-          tickRoutes : {}
+          tickRoutes : []
         }
 
         this.onFeatureClick = this.onFeatureClick.bind(this);
@@ -60,6 +62,7 @@ class MapContainerComponent extends React.Component {
       const { store } = this.context;
 
       console.log("got the store")
+      console.log("MapContainerComponent::render")
 
       // var hideStyle = {display:'none'};
   		return(

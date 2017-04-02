@@ -17,7 +17,7 @@ class TickByDateChartComponent extends React.Component {
           width : this.props.wrapperWidth ? this.props.wrapperWidth : defaultWidth,
           height: 200,
           targetChartId : this.props.targetChartId,
-          routeArr :  this.props.tickRoutes ? this.props.tickRoutes.sort(sortDatesAscending) : [],
+          routeArr :  this.props.tickRoutes && Array.isArray(this.props.tickRoutes) ? this.props.tickRoutes.sort(sortDatesAscending) : [],
           d3: null,
           tickSliderPosition: this.props.tickSliderPosition,
           targetData: []
@@ -30,7 +30,7 @@ class TickByDateChartComponent extends React.Component {
         let totalBoulderCt = 0;
         let totalAlpineCt = 0;
 
-        this.buildData = function () {
+        this.buildData = function (tickSliderPosition) {
       		var routes = [];
           data = [];
           totalCt = 0;
@@ -39,14 +39,19 @@ class TickByDateChartComponent extends React.Component {
           totalBoulderCt = 0;
           totalAlpineCt = 0;
 
-    			var selectedDate = this.state.routeArr[this.state.tickSliderPosition].date; //TODO: should be sorted
+    			var selectedDate = this.state.routeArr[tickSliderPosition - 1].date; //TODO: should be sorted
 
       		for (var di=0; di<this.state.routeArr.length; di++) {
       			var feature = this.state.routeArr[di];
       				if(new Date(feature.date) <= new Date(selectedDate)){
       					routes.push({"date":new Date(feature.date), "type":feature.type});
       				}
+              // else{
+              //   console.log("else - ", feature)
+              // }
       		}
+
+          console.log(routes.length)
 
           // debugger
 
@@ -86,7 +91,10 @@ class TickByDateChartComponent extends React.Component {
       			}
       		}
 
-          this.setState({targetData:data})
+          // TODO: remove this in favor of the return
+          this.setState({targetData:data.sort(sortDatesAscending)})
+
+          return data.sort(sortDatesAscending);
       	}
 
 
@@ -124,13 +132,13 @@ class TickByDateChartComponent extends React.Component {
       	////
       	// Build the chart
       	////
-      	this.build = function () {
+      	this.build = function (tickSliderPosition) {
           if(this.state.routeArr && this.state.routeArr.length > 0){
         		var targetEl = document.createElement('div');
 
             var that = this;
 
-        		this.buildData()
+        		var theData = this.buildData(tickSliderPosition)
 
         		var color = d3.scale.ordinal().range(["#193441", "#3E606F", "#91AA9D", "#D1DBBD"]);
 
@@ -164,18 +172,18 @@ class TickByDateChartComponent extends React.Component {
         		  .append("g")
         		    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        		color.domain(d3.keys(that.state.targetData[0]).filter(function(key) { return key !== "date"; }));
+        		color.domain(d3.keys(theData[0]).filter(function(key) { return key !== "date"; }));
 
         		var climbType = color.domain().map(function(name) {
         		    return {
         		      name: name,
-        		      values: that.state.targetData.map(function(d) {
+        		      values: theData.map(function(d) {
         		        return {date: new Date(d.date), total: +d[name]};
         		      })
         		    };
         		});
 
-        		x.domain(d3.extent(that.state.targetData, function(d) { return new Date(d.date); }));
+        		x.domain(d3.extent(theData, function(d) { return new Date(d.date); }));
 
         		y.domain([d3.min(climbType, function(c) { return d3.min(c.values, function(v) { return v.total; }); }),
         		    d3.max(climbType, function(c) { return d3.max(c.values, function(v) { return v.total; }); })
@@ -222,15 +230,18 @@ class TickByDateChartComponent extends React.Component {
       	}
     }
 
-    shouldComponentUpdate(nextProps, nextState){
-      if((nextProps.tickSliderPosition && nextState.tickSliderPosition) && (nextProps.tickSliderPosition !== this.state.tickSliderPosition)){
-        return true;
-      }
-
-      return false;
-    }
+    // shouldComponentUpdate(nextProps, nextState){
+    //   if((nextProps.tickSliderPosition && nextState.tickSliderPosition) && (nextProps.tickSliderPosition !== this.state.tickSliderPosition)){
+    //     return true;
+    //   }
+    //
+    //   return false;
+    // }
 
     componentWillReceiveProps(newProps) {
+
+      console.log("TickByDateChart::componentWillReceiveProps")
+
       // if(newProps && newProps.tickRoutes){
       //   this.setState({ d3: this.build() });
       // }
@@ -243,12 +254,15 @@ class TickByDateChartComponent extends React.Component {
       }
 
       if(newProps.tickSliderPosition && newProps.tickSliderPosition !== this.state.tickSliderPosition){
-        this.setState({ d3: this.build() });
+        this.setState({ d3: this.build(newProps.tickSliderPosition) });
       }
     }
 
     componentDidMount() {
-      this.setState({ d3: this.build() });
+
+      console.log("TickByDateChart::componentDidMount")
+
+      this.setState({ d3: this.build(this.state.tickSliderPosition) });
      }
 
      componentWillMount() {
@@ -261,6 +275,8 @@ class TickByDateChartComponent extends React.Component {
 
 
     render () {
+
+      console.log("TickByDateChart::render")
 
       return(
           <div id={this.state.targetChartId}><RD3Component data={this.state.d3} /></div>

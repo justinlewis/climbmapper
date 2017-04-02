@@ -121,6 +121,11 @@ body{
 			text-align: center;
 	}
 
+	.container .row{
+		margin-left: 0;
+		margin-right: 0;
+	}
+
 	.row{
 		height: 100%;
 	}
@@ -452,6 +457,10 @@ body{
     	bottom: 0;
     	position: absolute;
     	width: 100%;
+			padding-left: 10px;
+			padding-right: 10px;
+			left: 0;
+
 	}
 
 	#time-slider-label-container{

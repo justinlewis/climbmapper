@@ -393,46 +393,48 @@ class MapComponent extends React.Component {
 
     			// @tickAreaPts
           let tickAreaPts = this.getTickAreaPtsCache();
-    			for(let n=0; n<tickAreaPts.features.length; n++){
-    				var currAreaId = tickAreaPts.features[n].properties.id;
+          if(tickAreaPts){
+      			for(let n=0; n<tickAreaPts.features.length; n++){
+      				var currAreaId = tickAreaPts.features[n].properties.id;
 
-    				if(!tickAreaPts.features[n].properties.customRouteArr){
-    					tickAreaPts.features[n].properties.customRouteArr = [];
-    				}
-    				if(!tickAreaPts.features[n].properties.customTradCt){
-    					tickAreaPts.features[n].properties.customTradCt = 0;
-    				}
-    				if(!tickAreaPts.features[n].properties.customSportCt){
-    					tickAreaPts.features[n].properties.customSportCt = 0;
-    				}
-    				if(!tickAreaPts.features[n].properties.customBoulderCt){
-    					tickAreaPts.features[n].properties.customBoulderCt = 0;
-    				}
-    				if(!tickAreaPts.features[n].properties.customAlpineCt){
-    					tickAreaPts.features[n].properties.customAlpineCt = 0;
-    				}
+      				if(!tickAreaPts.features[n].properties.customRouteArr){
+      					tickAreaPts.features[n].properties.customRouteArr = [];
+      				}
+      				if(!tickAreaPts.features[n].properties.customTradCt){
+      					tickAreaPts.features[n].properties.customTradCt = 0;
+      				}
+      				if(!tickAreaPts.features[n].properties.customSportCt){
+      					tickAreaPts.features[n].properties.customSportCt = 0;
+      				}
+      				if(!tickAreaPts.features[n].properties.customBoulderCt){
+      					tickAreaPts.features[n].properties.customBoulderCt = 0;
+      				}
+      				if(!tickAreaPts.features[n].properties.customAlpineCt){
+      					tickAreaPts.features[n].properties.customAlpineCt = 0;
+      				}
 
-    				if(currAreaId === route.area){
-    					var type = String(route.type ? String(route.type) : 'n/a').trim();
-    					if(type.toLowerCase() === "trad"){
-    						tickAreaPts.features[n].properties.customTradCt = tickAreaPts.features[n].properties.customTradCt + 1;
-    					}
-    					else if(type.toLowerCase() === "sport"){
-    						tickAreaPts.features[n].properties.customSportCt = tickAreaPts.features[n].properties.customSportCt + 1;
-    					}
-    					else if(type.toLowerCase() === "boulder"){
-    						tickAreaPts.features[n].properties.customBoulderCt = tickAreaPts.features[n].properties.customBoulderCt + 1;
-    					}
-    					else if(type.toLowerCase() === "alpine"){
-    						tickAreaPts.features[n].properties.customAlpineCt = tickAreaPts.features[n].properties.customAlpineCt + 1;
-    					}
-    				}
+      				if(currAreaId === route.area){
+      					var type = String(route.type ? String(route.type) : 'n/a').trim();
+      					if(type.toLowerCase() === "trad"){
+      						tickAreaPts.features[n].properties.customTradCt = tickAreaPts.features[n].properties.customTradCt + 1;
+      					}
+      					else if(type.toLowerCase() === "sport"){
+      						tickAreaPts.features[n].properties.customSportCt = tickAreaPts.features[n].properties.customSportCt + 1;
+      					}
+      					else if(type.toLowerCase() === "boulder"){
+      						tickAreaPts.features[n].properties.customBoulderCt = tickAreaPts.features[n].properties.customBoulderCt + 1;
+      					}
+      					else if(type.toLowerCase() === "alpine"){
+      						tickAreaPts.features[n].properties.customAlpineCt = tickAreaPts.features[n].properties.customAlpineCt + 1;
+      					}
+      				}
 
 
-    				if(currAreaId === route.area){
-    					tickAreaPts.features[n].properties.customRouteArr.push(route);
-    				}
-    			}
+      				if(currAreaId === route.area){
+      					tickAreaPts.features[n].properties.customRouteArr.push(route);
+      				}
+      			}
+          }
     		}
 
     		////
@@ -456,7 +458,7 @@ class MapComponent extends React.Component {
             tickLayerStyle : getModifiedStyle.bind(this, 'ALL', areaTickPtsDefaultStyle)
           });
 
-          this.setTimeSlider();
+          // this.setTimeSlider();
     		}
 
 
@@ -543,101 +545,26 @@ class MapComponent extends React.Component {
     		}
 
 
-        this.setTimeSlider = function() {
-          var allTickArr = [];
-          var tickPts = this.getTickAreaPtsCache();
-          for(var n=0; n<tickPts.features.length; n++){
-            var tickArr = tickPts.features[n].properties.customRouteArr;
-
-            if(tickArr){
-              for(var d=0; d<tickArr.length; d++){
-                allTickArr.push(new Date(tickArr[d].date));
-              }
-            }
-          }
-
-          var sortedAllTickArr = allTickArr.sort(generalUtil.sortDatesAscending);
-
-
-          let tickSliderData = {min:1, max:allTickArr.length-1, tickArray: sortedAllTickArr}
-          this.onTickSliderDataChange(tickSliderData);
-
-
-          // $("#tick-slider").slider({
-          //     range: "min",
-          //     value: allTickArr.length,
-          //     min: 1,
-          //     max: allTickArr.length-1,
-          //     create: function( event, ui ) {
-          //         // A silly hack because the slider is appending a ghostly empty <p> element to my label. No time to look deeper now.
-          //         if($("#time-slider-label").next("p").text().trim().length === 0){
-          //           $("#time-slider-label").next("p").remove();
-          //         }
-          //     },
-          //     slide: function( event, ui ) {
-          //       var sliderPos = ui.value;
-          //       var selectedDate = sortedAllTickArr[sliderPos];
-          //
-          //       if($("#tick-time-chart")){
-          //         $("#tick-time-chart").remove()
-          //       }
-          //
-          //       if(selectedDate){
-          //
-          //         if(!$("#chart-row-1").is(':visible')){
-          //       $("#chart-row-1").show();
-          //     }
-          //
-          //       $("#chart-row-1").append('<div id="tick-time-chart" ></div>');
-          //       var lineChart = new LineChart(tickAreaPts.features, selectedDate, "#tick-time-chart", $("#tick-time-chart").parent().width());
-          //       lineChart.build();
-          //
-          //       var tickLocs = tickAreaPts.features;
-          //       var rtsCt = 0;
-          //       for(var t=0; t<tickLocs.length; t++){
-          //         var thisLoc = tickLocs[t];
-          //         var thisLocTicks = thisLoc.properties.customTicksArr;
-          //         var laterThanTicksCt = 0;
-          //
-          //         for(var i=0; i<thisLocTicks.length; i++){
-          //           if(new Date(thisLocTicks[i].date) > selectedDate){
-          //             laterThanTicksCt = laterThanTicksCt + 1;
-          //           }
-          //           else{
-          //             rtsCt = rtsCt + 1;
-          //           }
-          //         }
-          //
-          //         var newRadius = this.getLocationSizeBucket(thisLocTicks.length - laterThanTicksCt);
-          //
-          //         map.eachLayer(function (layer) {
-          //           if(layer.feature && layer.feature.properties.customTicksCt){
-          //             var mapLayerId = layer.feature.properties.id;
-          //             if(thisLoc.properties.id === mapLayerId){
-          //               layer.setRadius(newRadius);
-          //             }
-          //          }
-          //       });
-          //       }
-          //
-          //       if( ! $("#time-slider-label").is(":visible")){
-          //         $("#time-slider-label").show();
-          //       }
-          //       $("#time-slider-label").text( selectedDate.getMonth() + " / " + selectedDate.getDay() + " / " + selectedDate.getFullYear()  + " | " + rtsCt + " Ticks");
-          //     }
-          //     },
-          //     stop: function( event, ui ) {
-          //       setTimeout(function(){
-          //         $("#time-slider-label").fadeOut(400);
-          //         if($("#tick-time-chart:visible").length > 0){
-          //           $("#chart-row-1").fadeOut(400);
-          //           $("#time-time-chart").remove();
-          //         }
-          //       }, 30000);
-          //
-          //     }
-          //  });
-        }
+        // this.setTimeSlider = function() {
+        //   var allTickArr = [];
+        //   var tickPts = this.getTickAreaPtsCache();
+        //   for(var n=0; n<tickPts.features.length; n++){
+        //     var tickArr = tickPts.features[n].properties.customRouteArr;
+        //
+        //     if(tickArr){
+        //       for(var d=0; d<tickArr.length; d++){
+        //         allTickArr.push(new Date(tickArr[d].date));
+        //       }
+        //     }
+        //   }
+        //
+        //   var sortedAllTickArr = allTickArr.sort(generalUtil.sortDatesAscending);
+        //
+        //
+        //   let tickSliderData = {min:1, max:allTickArr.length-1, tickArray: sortedAllTickArr}
+        //   this.onTickSliderDataChange(tickSliderData);
+        //
+        // }
 
 
         this.setSearchBar = function(areas) {

@@ -23,14 +23,16 @@ class LeftSidebar extends React.Component {
     constructor(props){
         super(props);
 
+        console.log("LeftSidebar::constructor")
+
         this.state = {
           // data: [{"routeid":105736294,"name":"Bates Arete","crag":null,"area":207,"type":"Boulder","ropegrade":"5.11d","bouldergrade":"V4-","difficultyindex":19,"url":"https://www.mountainproject.com/v/bates-arete/105736294","imgSmall":"https://www.mountainproject.com/images/1/64/6200164_small_9e7d58.jpg","imgMed":"https://www.mountainproject.com/images/1/64/6200164_medium_9e7d58.jpg","stars":4.6,"starVotes":29,"pitches":0,"routeCategory":"TODO"}]
           areaInfo : null,
           routeTypeFilter : this.props.routeType ? this.props.routeType.routeType : "ALL",
           tickRoutes : this.props.ticksGlobalData ? this.props.ticksGlobalData : [],
           tickSliderMin : 0,
-          tickSliderMax : 50,
-          tickSliderPosition : 50,
+          tickSliderMax : 0,
+          tickSliderPosition : 0,
           showTickSlider : false,
           wrapperWidth : 400, // default
         }
@@ -39,11 +41,14 @@ class LeftSidebar extends React.Component {
     }
 
     componentDidMount() {
-      this.setState({wrapperWidth : this.refs.wrapper.offsetWidth});
+      // this will trigger a re-render
+      // this.setState({wrapperWidth : this.refs.wrapper.offsetWidth});
     }
 
     componentWillReceiveProps(newProps){
       const { store } = this.context;
+
+      console.log("LeftSidebar::componentWillReceiveProps")
 
       if(newProps.areaInfo && newProps.areaInfo.customRouteArr){
         this.setState({areaInfo:newProps.areaInfo, showTickSlider:false});
@@ -68,15 +73,18 @@ class LeftSidebar extends React.Component {
     }
 
     handle(props){
-      this.setState({tickSliderPosition:props, showTickSlider:Math.random()});
+      this.setState({tickSliderPosition:props, showTickSlider:true});
 
       // let that = this;
       // setTimeout(function(){
-      //   that.setState({showTickSlider:false});
-      // }, 3000);
+      //   that.setState({showTickSlider:true});
+      // }, 500);
     };
 
     render () {
+
+        console.log("LeftSideBar::render")
+
     		return(
           <div ref="wrapper" className="col-xs-6 col-lg-4" id="left-sidebar">
             <div id="left-sidebar-heading-info-container">
