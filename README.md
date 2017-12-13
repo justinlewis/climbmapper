@@ -1,5 +1,9 @@
 # climbmapper
 
+
+<strong>NOTE: See the Reactify branch for current efforts! Master is way behind.</strong>
+
+
 An experiment built on Node.js using Mountain Project climbing route data and my climbing area data. 
 
 You can see the app live at www.climbmapper.com
